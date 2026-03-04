@@ -1,0 +1,7 @@
+{
+  "name": "Pasion_y_Furor",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
