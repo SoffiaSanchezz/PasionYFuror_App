@@ -29,6 +29,9 @@
       "@shared/*": [
         "src/app/shared/*"
       ],
+      "@auth-core/*": [
+        "src/app/feature/auth/core/*"
+      ]
     },
     "skipLibCheck": true,
     "useDefineForClassFields": false

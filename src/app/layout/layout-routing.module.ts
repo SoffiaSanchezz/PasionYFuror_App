@@ -10,10 +10,6 @@ const routes: Routes = [
         pathMatch: 'full',
     },
     {
-        path: '',
-        loadChildren: () => import('../feature/auth/auth-feature.module').then(m => m.AuthFeatureModule),
-    },
-    {
         path: 'login',
         loadChildren: () => import('../feature/auth/auth-feature.module').then(m => m.AuthFeatureModule),
     },
