@@ -8,9 +8,10 @@ import { TranslateModule } from '@ngx-translate/core';
 // Routing
 import { AuthFeatureRoutingModule } from './auth-feature-routing.module';
 
-// Pages
-
 // Core
+import { AuthRepository } from './core/repositories/auth.repository';
+import { AuthImplementationRepository } from './data/repositories/auth-implementation.repository';
+import { AuthInteractor } from './core/interactor/auth.interactor';
 
 @NgModule({
     declarations: [],
@@ -23,7 +24,10 @@ import { AuthFeatureRoutingModule } from './auth-feature-routing.module';
         TranslateModule,
         AuthFeatureRoutingModule,
     ],
-    providers: [],
+    providers: [
+        AuthInteractor,
+        { provide: AuthRepository, useClass: AuthImplementationRepository }
+    ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class AuthFeatureModule { }
