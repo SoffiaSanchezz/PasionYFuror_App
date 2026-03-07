@@ -1,0 +1,69 @@
+import { Injectable } from '@angular/core';
+
+@Injectable({
+    providedIn: 'root',
+})
+export class SessionProviderService {
+    private readonly TOKEN_KEY = 'auth_token';
+    private readonly USER_KEY = 'user_info';
+
+    constructor() { }
+
+    /**
+     * Get authentication token from storage
+     */
+    getInformationToken(): string | null {
+        return localStorage.getItem(this.TOKEN_KEY);
+    }
+
+    /**
+     * Set authentication token in storage
+     */
+    setInformationToken(token: string): void {
+        localStorage.setItem(this.TOKEN_KEY, token);
+    }
+
+    /**
+     * Remove authentication token from storage
+     */
+    removeInformationToken(): void {
+        localStorage.removeItem(this.TOKEN_KEY);
+    }
+
+    /**
+     * Get user information from storage
+     */
+    getUserInfo<T = Record<string, unknown>>(): T | null {
+        const userInfo = localStorage.getItem(this.USER_KEY);
+        return userInfo ? JSON.parse(userInfo) : null;
+    }
+
+    /**
+     * Set user information in storage
+     */
+    setUserInfo(userInfo: Record<string, unknown>): void {
+        localStorage.setItem(this.USER_KEY, JSON.stringify(userInfo));
+    }
+
+    /**
+     * Remove user information from storage
+     */
+    removeUserInfo(): void {
+        localStorage.removeItem(this.USER_KEY);
+    }
+
+    /**
+     * Check if user is authenticated
+     */
+    isAuthenticated(): boolean {
+        return !!this.getInformationToken();
+    }
+
+    /**
+     * Clear all session data
+     */
+    clearSession(): void {
+        this.removeInformationToken();
+        this.removeUserInfo();
+    }
+}

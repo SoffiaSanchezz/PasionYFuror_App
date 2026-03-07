@@ -1,2 +1,121 @@
-// For information on how to create your own theme, please refer to:
-// https://ionicframework.com/docs/theming/
+/* Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&family=Bebas+Neue&family=Rock+Salt&family=Urbanist:wght@400;600&display=swap');
+
+/**
+ * Global Design System - Pasion y Furor Theme
+ * ----------------------------------------------------------------------------
+ */
+:root {
+  /* 1. Core Colors (Admin Dashboard Theme) */
+  --background: #0a0a0b;
+  --foreground: #fafafa;
+  --card: #141416;
+  --card-foreground: #fafafa;
+  --popover: #141416;
+  --popover-foreground: #fafafa;
+  --primary: #B11226;
+  --primary-foreground: #ffffff;
+  --secondary: #1f1f23;
+  --secondary-foreground: #fafafa;
+  --muted: #1f1f23;
+  --muted-foreground: #a1a1aa;
+  --accent: #E3B23C;
+  --accent-foreground: #0a0a0b;
+  --destructive: #7A0F1C;
+  --destructive-foreground: #fafafa;
+  --border: #27272a;
+  --input: #27272a;
+  --ring: #B11226;
+  --chart-1: #B11226;
+  --chart-2: #E3B23C;
+  --chart-3: #1BA6A6;
+  --chart-4: #7A0F1C;
+  --chart-5: #C89B2C;
+  --radius: 1rem;
+  --radius-sm: 0.75rem;
+  --sidebar: #0f0f11;
+  --sidebar-foreground: #fafafa;
+  --sidebar-primary: #B11226;
+  --sidebar-accent: #1f1f23;
+  --sidebar-border: #27272a;
+
+  /* 2. Spacing System (4px - 32px) */
+  --space-4: 0.25rem;  /* 4px */
+  --space-8: 0.5rem;   /* 8px */
+  --space-12: 0.75rem; /* 12px */
+  --space-16: 1rem;    /* 16px */
+  --space-20: 1.25rem; /* 20px */
+  --space-24: 1.5rem;  /* 24px */
+  --space-32: 2rem;    /* 32px */
+
+  /* 3. Radius & Aesthetics */
+  --radius: 1rem;      /* Borde redondeado consistente */
+  --radius-sm: 0.5rem;
+
+  /* 4. Elevation & Shadows */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+  --shadow-glow: 0 0 20px rgba(177, 18, 38, 0.4); /* Glow basado en --primary */
+
+  /* 5. Z-Index Hierarchy */
+  --z-hide: -1;
+  --z-base: 1;
+  --z-dropdown: 1000;
+  --z-sticky: 1100;
+  --z-modal: 1200;
+  --z-popover: 1300;
+  --z-tooltip: 1400;
+
+  /* 6. Opacity & States */
+  --op-disabled: 0.5;
+  --op-overlay: 0.75;
+  --op-hover: 0.1;
+  --transition: all 0.2s ease;
+
+  /* 7. Containers & Layout */
+  --container-sm: 640px;
+  --container-md: 768px;
+  --container-lg: 1024px;
+  --container-xl: 1280px;
+  --header-height: 4rem;
+
+  /**
+   * Ionic Theme Mapping
+   * -------------------------------------------------------------------------
+   */
+  --ion-font-family: var(--font-oswald);
+  --ion-background-color: var(--background);
+  --ion-text-color: var(--foreground);
+
+  /* Primary */
+  --ion-color-primary: #B11226;
+  --ion-color-primary-rgb: 177, 18, 38;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #9c1022;
+  --ion-color-primary-tint: #b92a3c;
+
+  /* Secondary */
+  --ion-color-secondary: #1f1f23;
+  --ion-color-secondary-rgb: 31, 31, 35;
+  --ion-color-secondary-contrast: #fafafa;
+  --ion-color-secondary-contrast-rgb: 250, 250, 250;
+  --ion-color-secondary-shade: #1b1b1f;
+  --ion-color-secondary-tint: #353539;
+
+  /* Warning (Accent) */
+  --ion-color-warning: #E3B23C;
+  --ion-color-warning-rgb: 227, 178, 60;
+  --ion-color-warning-contrast: #0a0a0b;
+  --ion-color-warning-contrast-rgb: 10, 10, 11;
+  --ion-color-warning-shade: #c89d35;
+  --ion-color-warning-tint: #e6ba50;
+
+  /* Danger (Destructive) */
+  --ion-color-danger: #7A0F1C;
+  --ion-color-danger-rgb: 122, 15, 28;
+  --ion-color-danger-contrast: #ffffff;
+  --ion-color-danger-contrast-rgb: 255, 255, 255;
+  --ion-color-danger-shade: #6b0d19;
+  --ion-color-danger-tint: #872733;
+}
