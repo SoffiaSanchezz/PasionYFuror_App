@@ -7,12 +7,13 @@ import {
 } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ApiConfig } from '@shared/services/api/api.config';
+import { environment } from '../../../../environments/environment';
 import { Observable, catchError, map, throwError } from 'rxjs';
 import { SessionProviderService } from '../session/session-provider.service';
 
 // Tipos para el API Service
 type ApiResponse<T = unknown> = T;
-type ApiRequestData = Record<string, unknown> | FormData | string | null;
+type ApiRequestData = any;
 
 @Injectable({
     providedIn: 'root',
@@ -40,7 +41,7 @@ export class ApiService {
     }
 
     public get<T = unknown>(url: string, params?: HttpParams): Observable<ApiResponse<T>> {
-        return this.http.get<ApiResponse<T>>(`${url}`, { headers: this.reqHeader, params }).pipe(
+        return this.http.get<ApiResponse<T>>(`${environment.apiUrl}/${url}`, { headers: this.reqHeader, params }).pipe(
             catchError((error: HttpErrorResponse) => {
                 return this.errorHandler(error);
             }),
@@ -53,7 +54,7 @@ export class ApiService {
         data: ApiRequestData,
         params?: HttpParams
     ): Observable<ApiResponse<T>> {
-        return this.http.post<ApiResponse<T>>(`${url}`, data, { headers: this.reqHeader, params }).pipe(
+        return this.http.post<ApiResponse<T>>(`${environment.apiUrl}/${url}`, data, { headers: this.reqHeader, params }).pipe(
             catchError((error: HttpErrorResponse) => {
                 return this.errorHandler(error);
             }),
@@ -62,7 +63,7 @@ export class ApiService {
     }
 
     public put<T = unknown>(url: string, data: ApiRequestData): Observable<ApiResponse<T>> {
-        return this.http.put<ApiResponse<T>>(`${url}`, data, { headers: this.reqHeader }).pipe(
+        return this.http.put<ApiResponse<T>>(`${environment.apiUrl}/${url}`, data, { headers: this.reqHeader }).pipe(
             catchError((error: HttpErrorResponse) => {
                 return this.errorHandler(error);
             }),
@@ -71,7 +72,7 @@ export class ApiService {
     }
 
     public patch<T = unknown>(url: string, data: ApiRequestData): Observable<ApiResponse<T>> {
-        return this.http.patch<ApiResponse<T>>(`${url}`, data, { headers: this.reqHeader }).pipe(
+        return this.http.patch<ApiResponse<T>>(`${environment.apiUrl}/${url}`, data, { headers: this.reqHeader }).pipe(
             catchError((error: HttpErrorResponse) => {
                 return this.errorHandler(error);
             }),
@@ -80,7 +81,7 @@ export class ApiService {
     }
 
     public delete<T = unknown>(url: string, params?: HttpParams): Observable<ApiResponse<T>> {
-        return this.http.delete<ApiResponse<T>>(`${url}`, { headers: this.reqHeader, params }).pipe(
+        return this.http.delete<ApiResponse<T>>(`${environment.apiUrl}/${url}`, { headers: this.reqHeader, params }).pipe(
             catchError((error: HttpErrorResponse) => {
                 return this.errorHandler(error);
             }),
