@@ -22,6 +22,17 @@
       "es2018",
       "dom"
     ],
+    "paths": {
+      "@core/*": [
+        "src/app/core/*"
+      ],
+      "@shared/*": [
+        "src/app/shared/*"
+      ],
+      "@auth-core/*": [
+        "src/app/feature/auth/core/*"
+      ]
+    },
     "skipLibCheck": true,
     "useDefineForClassFields": false
   },
