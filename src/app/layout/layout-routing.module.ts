@@ -14,6 +14,14 @@ const routes: Routes = [
         loadChildren: () => import('../feature/auth/auth-feature.module').then(m => m.AuthFeatureModule),
     },
     {
+        path: 'admin',
+        loadChildren: () => import('../feature/admin/admin-feature.module').then(m => m.AdminFeatureModule),
+    },
+    {
+        path: 'dashboard',
+        loadChildren: () => import('../feature/dashboard/dashboard-feature.module').then(m => m.DashboardFeatureModule),
+    },
+    {
         path: '**',
         component: PageNotFoundComponent,
     },
