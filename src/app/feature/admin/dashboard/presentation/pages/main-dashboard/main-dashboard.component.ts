@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { IonicModule } from '@ionic/angular';
 import { AnimationOptions, LottieComponent } from 'ngx-lottie';
-import { SidebarComponent } from '@shared/components/menus/sidebar/sidebar.component';
 import { SessionProviderService } from '@shared/services/session/session-provider.service';
+import { StatCardComponent } from '@shared/components/cards/stat-card/stat-card.component';
 
+// Interfaces definidas para mejor tipado
 interface TodayClass {
   time: string;
   duration: string;
@@ -24,123 +26,69 @@ interface Activity {
 @Component({
   selector: 'app-main-dashboard',
   standalone: true,
-  imports: [CommonModule, SidebarComponent, LottieComponent],
+  imports: [CommonModule, LottieComponent, StatCardComponent, IonicModule],
   templateUrl: './main-dashboard.component.html',
-  styleUrls: ['./main-dashboard.component.scss']
+  styleUrls: ['./main-dashboard.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MainDashboardComponent implements OnInit {
   // UI State
-  sidebarCollapsed: boolean = false;
-  isLoading: boolean = true;
+  sidebarCollapsed = false;
+  isLoading = true;
   
   // User Data
-  userName: string = '';
-  userRole: string = '';
-  userInitials: string = 'AU';
+  userName = '';
+  userRole = '';
+  userInitials = 'AU';
 
   // Lottie Options
-  lottieOptions: AnimationOptions = {
+  readonly lottieOptions: AnimationOptions = {
     path: 'assets/animations/Dancingfire.json',
   };
 
-  // Mock Data
+  // Datos mockeados centralizados
   todayClasses: TodayClass[] = [
-    {
-      time: '09:00 AM',
-      duration: '1h 30min',
-      name: 'Salsa Nivel Intermedio',
-      instructor: 'María García',
-      enrolled: 18,
-      capacity: 20,
-      capacityPercent: 90
-    },
-    {
-      time: '11:00 AM',
-      duration: '1h',
-      name: 'Bachata Principiante',
-      instructor: 'Carlos Rodríguez',
-      enrolled: 12,
-      capacity: 15,
-      capacityPercent: 80
-    },
-    {
-      time: '02:00 PM',
-      duration: '1h 30min',
-      name: 'Tango Avanzado',
-      instructor: 'Ana Martínez',
-      enrolled: 8,
-      capacity: 12,
-      capacityPercent: 67
-    },
-    {
-      time: '05:00 PM',
-      duration: '1h',
-      name: 'Hip Hop Kids',
-      instructor: 'Juan Pérez',
-      enrolled: 20,
-      capacity: 25,
-      capacityPercent: 80
-    }
+    { time: '09:00 AM', duration: '1.5h', name: 'Salsa Intermedio', instructor: 'María G.', enrolled: 18, capacity: 20, capacityPercent: 90 },
+    { time: '11:00 AM', duration: '1h', name: 'Bachata Principiante', instructor: 'Carlos R.', enrolled: 12, capacity: 15, capacityPercent: 80 },
+    { time: '02:00 PM', duration: '1.5h', name: 'Tango Avanzado', instructor: 'Ana M.', enrolled: 8, capacity: 12, capacityPercent: 67 },
+    { time: '05:00 PM', duration: '1h', name: 'Hip Hop Kids', instructor: 'Juan P.', enrolled: 20, capacity: 25, capacityPercent: 80 }
   ];
 
   recentActivity: Activity[] = [
-    {
-      type: 'enrollment',
-      icon: 'bi-person-plus',
-      title: 'Nuevo estudiante: Laura González',
-      time: 'Hace 5 minutos'
-    },
-    {
-      type: 'payment',
-      icon: 'bi-credit-card',
-      title: 'Pago recibido: $150.00',
-      time: 'Hace 15 minutos'
-    },
-    {
-      type: 'attendance',
-      icon: 'bi-check-circle',
-      title: 'Asistencia registrada: Salsa Intermedio',
-      time: 'Hace 1 hora'
-    },
-    {
-      type: 'schedule',
-      icon: 'bi-calendar-plus',
-      title: 'Nueva clase programada: Merengue',
-      time: 'Hace 2 horas'
-    }
+    { type: 'enrollment', icon: 'bi-person-plus', title: 'Nuevo estudiante: Laura G.', time: 'Hace 5 min' },
+    { type: 'payment', icon: 'bi-credit-card', title: 'Pago recibido: $150.00', time: 'Hace 15 min' },
+    { type: 'attendance', icon: 'bi-check-circle', title: 'Asistencia: Salsa Intermedio', time: 'Hace 1h' },
+    { type: 'schedule', icon: 'bi-calendar-plus', title: 'Clase programada: Merengue', time: 'Hace 2h' }
   ];
 
-  constructor(private sessionProvider: SessionProviderService) { }
+  constructor(
+    private readonly sessionProvider: SessionProviderService,
+    private readonly cdr: ChangeDetectorRef
+  ) { }
 
   ngOnInit(): void {
-    this.loadDashboardData();
+    this.initDashboard();
   }
 
-  private loadDashboardData(): void {
-    this.isLoading = true;
-    
-    // Obtener datos de sesión
+  private initDashboard(): void {
     this.userName = this.sessionProvider.getUserName() || 'Usuario';
     this.userRole = this.sessionProvider.getUserRole();
-    this.generateInitials();
+    this.userInitials = this.getInitials(this.userName);
 
-    // Simular carga de datos para mostrar el loader
+    // Simular carga de datos
     setTimeout(() => {
       this.isLoading = false;
-    }, 1500);
+      this.cdr.detectChanges(); // Forzar actualización de la UI
+    }, 1000);
   }
 
-  private generateInitials(): void {
-    if (!this.userName) {
-      this.userInitials = 'AU';
-      return;
-    }
-    const names = this.userName.split(' ');
+  private getInitials(name: string): string {
+    if (!name) return 'AU';
+    const names = name.split(' ').filter(n => n.length > 0);
     if (names.length >= 2) {
-      this.userInitials = (names[0].charAt(0) + names[names.length - 1].charAt(0)).toUpperCase();
-    } else {
-      this.userInitials = this.userName.substring(0, 2).toUpperCase();
+      return (names[0][0] + names[names.length - 1][0]).toUpperCase();
     }
+    return name.substring(0, 2).toUpperCase();
   }
 
   onSidebarToggle(collapsed: boolean): void {

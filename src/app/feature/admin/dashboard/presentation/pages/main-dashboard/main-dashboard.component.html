@@ -5,10 +5,10 @@
     </div>
 
     <!-- SIDEBAR -->
-    <app-sidebar [collapsed]="sidebarCollapsed" (collapsedChange)="onSidebarToggle($event)"></app-sidebar>
+    <!-- <app-sidebar [collapsed]="sidebarCollapsed" (collapsedChange)="onSidebarToggle($event)"></app-sidebar> -->
 
     <!-- MAIN CONTENT -->
-    <main class="main-content" [class.sidebar-collapsed]="sidebarCollapsed" *ngIf="!isLoading">
+    <ion-content class="main-content" [class.sidebar-collapsed]="sidebarCollapsed" *ngIf="!isLoading">
         <!-- Header -->
         <header class="dashboard-header">
             <div class="header-left">
@@ -32,57 +32,41 @@
 
         <!-- Stats Section -->
         <section class="stats-section">
-            <div class="stat-card">
-                <div class="stat-icon students">
-                    <i class="bi bi-people-fill"></i>
-                </div>
-                <div class="stat-info">
-                    <span class="stat-label">Estudiantes</span>
-                    <span class="stat-value">248</span>
-                    <span class="stat-change positive">
-                        <i class="bi bi-arrow-up"></i> 12% este mes
-                    </span>
-                </div>
-            </div>
+            <app-stat-card 
+                label="Estudiantes" 
+                value="248" 
+                icon="bi-people-fill" 
+                colorClass="students" 
+                change="12% este mes" 
+                changeType="positive">
+            </app-stat-card>
 
-            <div class="stat-card">
-                <div class="stat-icon classes">
-                    <i class="bi bi-calendar-check"></i>
-                </div>
-                <div class="stat-info">
-                    <span class="stat-label">Clases Hoy</span>
-                    <span class="stat-value">8</span>
-                    <span class="stat-change neutral">
-                        <i class="bi bi-dash"></i> Sin cambios
-                    </span>
-                </div>
-            </div>
+            <app-stat-card 
+                label="Clases Hoy" 
+                value="8" 
+                icon="bi-calendar-check" 
+                colorClass="classes" 
+                change="Sin cambios" 
+                changeType="neutral">
+            </app-stat-card>
 
-            <div class="stat-card">
-                <div class="stat-icon revenue">
-                    <i class="bi bi-currency-dollar"></i>
-                </div>
-                <div class="stat-info">
-                    <span class="stat-label">Ingresos</span>
-                    <span class="stat-value">$12,450</span>
-                    <span class="stat-change positive">
-                        <i class="bi bi-arrow-up"></i> 8% este mes
-                    </span>
-                </div>
-            </div>
+            <app-stat-card 
+                label="Ingresos" 
+                value="$12,450" 
+                icon="bi-currency-dollar" 
+                colorClass="revenue" 
+                change="8% este mes" 
+                changeType="positive">
+            </app-stat-card>
 
-            <div class="stat-card">
-                <div class="stat-icon attendance">
-                    <i class="bi bi-check-circle"></i>
-                </div>
-                <div class="stat-info">
-                    <span class="stat-label">Asistencia</span>
-                    <span class="stat-value">94%</span>
-                    <span class="stat-change positive">
-                        <i class="bi bi-arrow-up"></i> 3% esta semana
-                    </span>
-                </div>
-            </div>
+            <app-stat-card 
+                label="Asistencia" 
+                value="94%" 
+                icon="bi-check-circle" 
+                colorClass="attendance" 
+                change="3% esta semana" 
+                changeType="positive">
+            </app-stat-card>
         </section>
 
         <!-- Main Content Grid -->
@@ -168,5 +152,5 @@
                 </div>
             </div>
         </section>
-    </main>
+    </ion-content>
 </div>
