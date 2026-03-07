@@ -1,10 +1,55 @@
-<ion-content class="ion-padding">
-  <div class="login-container">
-    <h1>Pasión y Furor</h1>
-    <p>Este es mi logiiiinnnnn</p>
-    
-    <ion-button expand="block" (click)="onLogin()">
-      Probar Login (Architecture)
-    </ion-button>
-  </div>
-</ion-content>
+<div class="login-container d-flex justify-content-center align-items-center min-vh-100 p-3 overflow-hidden">
+    <!-- Lottie Loader (conditional display) -->
+    <div *ngIf="isLoading" class="loader-overlay">
+        <ng-lottie [options]="lottieOptions" [width]="'500px'" [height]="'500px'"></ng-lottie>
+    </div>
+
+    <!-- Login Card (conditional display) -->
+    <div *ngIf="!isLoading" class="card shadow-lg border-0 rounded-4 p-4 p-md-5" style="max-width: 480px; width: 100%;">
+        <!-- Header con logo a la izquierda y texto centrado -->
+        <div class="d-flex align-items-center mb-4">
+            <img src="assets/img/LogoPasionyFuror.png" alt="Logo Pasion y Furor" class="me-3" style="height: 80px; width: auto; flex-shrink: 0;">
+            <div class="flex-grow-1 text-center">
+                <h2 class="card-title mb-1">Iniciar Sesión</h2>
+                <p class="card-subtitle text-muted">Bienvenido de nuevo a la Casa de los Artistas.</p>
+            </div>
+        </div>
+
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+            <div class="mb-3">
+                <label for="email" class="form-label">Correo Electrónico</label>
+                <input id="email" formControlName="email" type="email" placeholder="tu.correo@ejemplo.com"
+                    class="form-control"
+                    [class.is-invalid]="email?.invalid && (email?.dirty || email?.touched)" />
+                <div *ngIf="email?.invalid && (email?.dirty || email?.touched)" class="invalid-feedback">
+                    <span *ngIf="email?.errors?.['required']">El correo es obligatorio.</span>
+                    <span *ngIf="email?.errors?.['email']">Por favor, introduce un correo válido.</span>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label for="password" class="form-label">Contraseña</label>
+                <div class="position-relative">
+                    <input id="password" formControlName="password" [type]="showPassword ? 'text' : 'password'" placeholder="••••••••"
+                        class="form-control pe-5"
+                        [class.is-invalid]="password?.invalid && (password?.dirty || password?.touched)" />
+                    <button class="btn border-0 bg-transparent position-absolute end-0 top-50 translate-middle-y" type="button" (click)="togglePasswordVisibility()">
+                        <i class="bi fs-5" [class.bi-eye]="!showPassword" [class.bi-eye-slash]="showPassword"></i>
+                    </button>
+                    <div *ngIf="password?.invalid && (password?.dirty || password?.touched)" class="invalid-feedback">
+                        <span *ngIf="password?.errors?.['required']">La contraseña es obligatoria.</span>
+                    </div>
+                </div>
+            </div>
+
+            <div *ngIf="errorMessage" class="alert alert-danger mb-3" role="alert">
+                {{ errorMessage }}
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 py-2 text-white"
+                [disabled]="isLoading || loginForm.invalid">
+                {{ isLoading ? 'Cargando...' : 'Entrar' }}
+            </button>
+        </form>
+    </div>
+</div>
