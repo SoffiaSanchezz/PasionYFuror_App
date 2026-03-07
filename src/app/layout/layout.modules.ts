@@ -6,6 +6,8 @@ import { HttpClient, HttpClientModule, provideHttpClient, withFetch } from '@ang
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TRANSLATE_HTTP_LOADER_CONFIG, TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { provideLottieOptions } from 'ngx-lottie';
+import player from 'lottie-web';
 
 import { LayoutComponent } from './layout.component';
 import { LayoutRoutingModule } from './layout-routing.module';
@@ -20,6 +22,11 @@ import { ApiService } from '@shared/services/api/api.service';
 // Factory function for TranslateHttpLoader
 export function createTranslateLoader() {
     return new TranslateHttpLoader();
+}
+
+// Player factory for ngx-lottie
+export function playerFactory() {
+    return player;
 }
 
 @NgModule({
@@ -44,6 +51,9 @@ export function createTranslateLoader() {
         ApiService,
         I18nService,
         provideHttpClient(withFetch()),
+        provideLottieOptions({
+            player: playerFactory,
+        }),
         {
             provide: TRANSLATE_HTTP_LOADER_CONFIG,
             useValue: { prefix: './assets/i18n/', suffix: '.json' },
