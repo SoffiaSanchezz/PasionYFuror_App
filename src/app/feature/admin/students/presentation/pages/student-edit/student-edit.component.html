@@ -1,0 +1,238 @@
+<div class="student-page-container">
+  <!-- SIDEBAR -->
+  <app-sidebar [collapsed]="sidebarCollapsed" (collapsedChange)="onSidebarToggle($event)"></app-sidebar>
+
+  <ion-content class="main-content" [class.sidebar-collapsed]="sidebarCollapsed">
+    <div class="content-wrapper">
+      <div class="affiliation-card">
+        <!-- Card Header -->
+        <div class="card-header">
+          <div class="header-content">
+            <div class="header-icon">
+              <i class="bi bi-person-gear"></i>
+            </div>
+            <div class="header-text">
+              <h1 class="page-title">Editar Estudiante</h1>
+              <p class="page-subtitle">Modifica los datos del estudiante existente</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Loading State -->
+        <div *ngIf="isLoading" class="p-5 text-center">
+          <ion-spinner name="crescent" color="danger"></ion-spinner>
+          <p class="mt-3 text-muted">Cargando información...</p>
+        </div>
+
+        <div class="card-body" *ngIf="!isLoading">
+          <form [formGroup]="studentForm">
+            <div class="form-section">
+              <div class="section-header">
+                <div class="section-icon student">
+                  <i class="bi bi-person-badge"></i>
+                </div>
+                <h3 class="section-title">Datos del Estudiante</h3>
+              </div>
+
+              <!-- Student Photo Preview -->
+              <div class="photo-preview-section" *ngIf="studentPhotoUrl">
+                <div class="avatar-wrapper">
+                  <img [src]="studentPhotoUrl" alt="Foto del Estudiante">
+                  <div class="avatar-label">Foto Actual</div>
+                </div>
+              </div>
+
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label">
+                    Nombre Completo
+                    <span class="required">*</span>
+                  </label>
+                  <div class="input-wrapper">
+                    <i class="bi bi-person input-icon"></i>
+                    <input type="text" class="form-input" formControlName="fullName" placeholder="Ej: Juan Pérez García"
+                      [class.is-invalid]="studentForm.get('fullName')?.invalid && studentForm.get('fullName')?.touched">
+                  </div>
+                  <span *ngIf="studentForm.get('fullName')?.invalid && studentForm.get('fullName')?.touched"
+                    class="error-message">
+                    Nombre completo es requerido
+                  </span>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">
+                    Documento de Identidad
+                    <span class="required">*</span>
+                  </label>
+                  <div class="input-wrapper">
+                    <i class="bi bi-card-text input-icon"></i>
+                    <input type="text" class="form-input" formControlName="documentId" placeholder="Ej: 1234567890"
+                      [class.is-invalid]="studentForm.get('documentId')?.invalid && studentForm.get('documentId')?.touched">
+                  </div>
+                  <span *ngIf="studentForm.get('documentId')?.invalid && studentForm.get('documentId')?.touched"
+                    class="error-message">
+                    Documento es requerido
+                  </span>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">
+                    Fecha de Nacimiento
+                    <span class="required">*</span>
+                  </label>
+                  <div class="input-wrapper">
+                    <i class="bi bi-calendar3 input-icon"></i>
+                    <input type="date" class="form-input" formControlName="dateOfBirth"
+                      [class.is-invalid]="studentForm.get('dateOfBirth')?.invalid && studentForm.get('dateOfBirth')?.touched">
+                  </div>
+                  <span *ngIf="studentForm.get('dateOfBirth')?.invalid && studentForm.get('dateOfBirth')?.touched"
+                    class="error-message">
+                    Fecha de nacimiento es requerida
+                  </span>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">
+                    Correo Electrónico
+                    <span class="required">*</span>
+                  </label>
+                  <div class="input-wrapper">
+                    <i class="bi bi-envelope input-icon"></i>
+                    <input type="email" class="form-input" formControlName="email" placeholder="correo@ejemplo.com"
+                      [class.is-invalid]="studentForm.get('email')?.invalid && studentForm.get('email')?.touched">
+                  </div>
+                  <span *ngIf="studentForm.get('email')?.invalid && studentForm.get('email')?.touched"
+                    class="error-message">
+                    <span *ngIf="studentForm.get('email')?.errors?.['required']">Correo es requerido</span>
+                    <span *ngIf="studentForm.get('email')?.errors?.['email']">Formato de correo inválido</span>
+                  </span>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">
+                    Teléfono
+                    <span class="required">*</span>
+                  </label>
+                  <div class="input-wrapper">
+                    <i class="bi bi-telephone input-icon"></i>
+                    <input type="tel" class="form-input" formControlName="phone" placeholder="Ej: 300 123 4567"
+                      [class.is-invalid]="studentForm.get('phone')?.invalid && studentForm.get('phone')?.touched">
+                  </div>
+                  <span *ngIf="studentForm.get('phone')?.invalid && studentForm.get('phone')?.touched"
+                    class="error-message">
+                    Teléfono es requerido
+                  </span>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">
+                    Dirección
+                    <span class="required">*</span>
+                  </label>
+                  <div class="input-wrapper">
+                    <i class="bi bi-geo-alt input-icon"></i>
+                    <input type="text" class="form-input" formControlName="address" placeholder="Ej: Calle 123 #45-67"
+                      [class.is-invalid]="studentForm.get('address')?.invalid && studentForm.get('address')?.touched">
+                  </div>
+                  <span *ngIf="studentForm.get('address')?.invalid && studentForm.get('address')?.touched"
+                    class="error-message">
+                    Dirección es requerida
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Guardian Form (si es menor) -->
+            <div *ngIf="isMinor" [formGroup]="guardianForm">
+              <div class="form-section guardian">
+                <div class="section-header">
+                  <div class="section-icon guardian">
+                    <i class="bi bi-people-fill"></i>
+                  </div>
+                  <h3 class="section-title">Datos del Acudiente</h3>
+                </div>
+
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label class="form-label">
+                      Nombre Completo
+                      <span class="required">*</span>
+                    </label>
+                    <div class="input-wrapper">
+                      <i class="bi bi-person input-icon"></i>
+                      <input type="text" class="form-input" formControlName="fullName" placeholder="Nombre del acudiente"
+                        [class.is-invalid]="guardianForm.get('fullName')?.invalid && guardianForm.get('fullName')?.touched">
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label">
+                      Documento
+                      <span class="required">*</span>
+                    </label>
+                    <div class="input-wrapper">
+                      <i class="bi bi-card-text input-icon"></i>
+                      <input type="text" class="form-input" formControlName="documentId"
+                        placeholder="Documento del acudiente"
+                        [class.is-invalid]="guardianForm.get('documentId')?.invalid && guardianForm.get('documentId')?.touched">
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label">
+                      Teléfono
+                      <span class="required">*</span>
+                    </label>
+                    <div class="input-wrapper">
+                      <i class="bi bi-telephone input-icon"></i>
+                      <input type="tel" class="form-input" formControlName="phone" placeholder="Teléfono del acudiente"
+                        [class.is-invalid]="guardianForm.get('phone')?.invalid && guardianForm.get('phone')?.touched">
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label">
+                      Parentesco
+                      <span class="required">*</span>
+                    </label>
+                    <div class="input-wrapper">
+                      <i class="bi bi-diagram-3 input-icon"></i>
+                      <input type="text" class="form-input" formControlName="relationship"
+                        placeholder="Ej: Padre, Madre, Tutor"
+                        [class.is-invalid]="guardianForm.get('relationship')?.invalid && guardianForm.get('relationship')?.touched">
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label">
+                      Correo Electrónico
+                      <span class="required">*</span>
+                    </label>
+                    <div class="input-wrapper">
+                      <i class="bi bi-envelope input-icon"></i>
+                      <input type="email" class="form-input" formControlName="email" placeholder="correo.acudiente@ejemplo.com"
+                        [class.is-invalid]="guardianForm.get('email')?.invalid && guardianForm.get('email')?.touched">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- Card Footer -->
+        <div class="card-footer" *ngIf="!isLoading">
+          <button class="btn-secondary" (click)="goToStudentList()" type="button">
+            <i class="bi bi-arrow-left"></i>
+            Cancelar
+          </button>
+
+          <button class="btn-primary" (click)="updateStudent()" type="submit" [disabled]="studentForm.invalid || (isMinor && guardianForm.invalid)">
+            <i class="bi bi-check-circle"></i>
+            Actualizar Estudiante
+          </button>
+        </div>
+      </div>
+    </div>
+  </ion-content>
+</div>
