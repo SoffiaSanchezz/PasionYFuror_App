@@ -44,7 +44,6 @@ export function playerFactory() {
                 provide: TranslateLoader,
                 useFactory: createTranslateLoader,
             },
-            defaultLanguage: 'es',
         }),
     ],
     providers: [

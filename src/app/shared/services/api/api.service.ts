@@ -19,15 +19,12 @@ type ApiRequestData = any;
     providedIn: 'root',
 })
 export class ApiService {
-    public reqHeader!: HttpHeaders;
     constructor(
         private http: HttpClient,
         private readonly sessionProvider: SessionProviderService
-    ) {
-        this.updateHeaders();
-    }
+    ) {}
 
-    private updateHeaders(): void {
+    private getHeaders(): HttpHeaders {
         const token = this.sessionProvider.getInformationToken();
         const headers: Record<string, string> = {
             'Content-Type': ApiConfig.contentType,
@@ -37,11 +34,11 @@ export class ApiService {
             headers['Authorization'] = `${ApiConfig.carry} ${token}`;
         }
 
-        this.reqHeader = new HttpHeaders(headers);
+        return new HttpHeaders(headers);
     }
 
     public get<T = unknown>(url: string, params?: HttpParams): Observable<ApiResponse<T>> {
-        return this.http.get<ApiResponse<T>>(`${environment.apiUrl}/${url}`, { headers: this.reqHeader, params }).pipe(
+        return this.http.get<ApiResponse<T>>(`${environment.apiUrl}/${url}`, { headers: this.getHeaders(), params }).pipe(
             catchError((error: HttpErrorResponse) => {
                 return this.errorHandler(error);
             }),
@@ -54,7 +51,7 @@ export class ApiService {
         data: ApiRequestData,
         params?: HttpParams
     ): Observable<ApiResponse<T>> {
-        return this.http.post<ApiResponse<T>>(`${environment.apiUrl}/${url}`, data, { headers: this.reqHeader, params }).pipe(
+        return this.http.post<ApiResponse<T>>(`${environment.apiUrl}/${url}`, data, { headers: this.getHeaders(), params }).pipe(
             catchError((error: HttpErrorResponse) => {
                 return this.errorHandler(error);
             }),
@@ -63,7 +60,7 @@ export class ApiService {
     }
 
     public put<T = unknown>(url: string, data: ApiRequestData): Observable<ApiResponse<T>> {
-        return this.http.put<ApiResponse<T>>(`${environment.apiUrl}/${url}`, data, { headers: this.reqHeader }).pipe(
+        return this.http.put<ApiResponse<T>>(`${environment.apiUrl}/${url}`, data, { headers: this.getHeaders() }).pipe(
             catchError((error: HttpErrorResponse) => {
                 return this.errorHandler(error);
             }),
@@ -72,7 +69,7 @@ export class ApiService {
     }
 
     public patch<T = unknown>(url: string, data: ApiRequestData): Observable<ApiResponse<T>> {
-        return this.http.patch<ApiResponse<T>>(`${environment.apiUrl}/${url}`, data, { headers: this.reqHeader }).pipe(
+        return this.http.patch<ApiResponse<T>>(`${environment.apiUrl}/${url}`, data, { headers: this.getHeaders() }).pipe(
             catchError((error: HttpErrorResponse) => {
                 return this.errorHandler(error);
             }),
@@ -81,7 +78,7 @@ export class ApiService {
     }
 
     public delete<T = unknown>(url: string, params?: HttpParams): Observable<ApiResponse<T>> {
-        return this.http.delete<ApiResponse<T>>(`${environment.apiUrl}/${url}`, { headers: this.reqHeader, params }).pipe(
+        return this.http.delete<ApiResponse<T>>(`${environment.apiUrl}/${url}`, { headers: this.getHeaders(), params }).pipe(
             catchError((error: HttpErrorResponse) => {
                 return this.errorHandler(error);
             }),
