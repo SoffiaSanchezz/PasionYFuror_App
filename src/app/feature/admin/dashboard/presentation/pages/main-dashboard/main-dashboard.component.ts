@@ -4,6 +4,7 @@ import { IonicModule } from '@ionic/angular';
 import { AnimationOptions, LottieComponent } from 'ngx-lottie';
 import { SessionProviderService } from '@shared/services/session/session-provider.service';
 import { StatCardComponent } from '@shared/components/cards/stat-card/stat-card.component';
+import { SidebarComponent } from '../../../../../../shared/components/menus/sidebar/sidebar.component';
 
 // Interfaces definidas para mejor tipado
 interface TodayClass {
@@ -26,7 +27,7 @@ interface Activity {
 @Component({
   selector: 'app-main-dashboard',
   standalone: true,
-  imports: [CommonModule, LottieComponent, StatCardComponent, IonicModule],
+  imports: [CommonModule, LottieComponent, StatCardComponent, SidebarComponent, IonicModule],
   templateUrl: './main-dashboard.component.html',
   styleUrls: ['./main-dashboard.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
