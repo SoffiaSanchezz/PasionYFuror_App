@@ -5,6 +5,7 @@ import { AnimationOptions, LottieComponent } from 'ngx-lottie';
 import { SessionProviderService } from '@shared/services/session/session-provider.service';
 import { StatCardComponent } from '@shared/components/cards/stat-card/stat-card.component';
 import { SidebarComponent } from '../../../../../../shared/components/menus/sidebar/sidebar.component';
+import { SearchInputComponent } from '@shared/components/inputs/search-input/search-input.component';
 
 // Interfaces definidas para mejor tipado
 interface TodayClass {
@@ -27,7 +28,7 @@ interface Activity {
 @Component({
   selector: 'app-main-dashboard',
   standalone: true,
-  imports: [CommonModule, LottieComponent, StatCardComponent, SidebarComponent, IonicModule],
+  imports: [CommonModule, LottieComponent, StatCardComponent, SidebarComponent, SearchInputComponent, IonicModule],
   templateUrl: './main-dashboard.component.html',
   styleUrls: ['./main-dashboard.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -69,6 +70,11 @@ export class MainDashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.initDashboard();
+  }
+
+  handleSearch(term: string): void {
+    console.log('Dashboard search:', term);
+    // Aquí puedes implementar la lógica de búsqueda global si lo deseas
   }
 
   private initDashboard(): void {

@@ -17,10 +17,11 @@
                     <p class="header-subtitle">Bienvenido de nuevo, {{ userName }}</p>
                 </div>
                 <div class="header-right">
-                    <div class="search-box">
-                        <i class="bi bi-search"></i>
-                        <input type="text" placeholder="Buscar estudiantes, clases..." />
-                    </div>
+                    <app-search-input 
+                        placeholder="Buscar estudiantes, clases..."
+                        (onSearch)="handleSearch($event)"
+                        class="dashboard-search">
+                    </app-search-input>
                     <button class="notification-btn">
                         <i class="bi bi-bell"></i>
                         <span class="notification-dot"></span>
