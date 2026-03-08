@@ -8,6 +8,10 @@ const routes: Routes = [
     component: MainDashboardComponent
   },
   {
+    path: 'students',
+    loadChildren: () => import('./students/students-feature.module').then(m => m.StudentsFeatureModule)
+  },
+  {
     path: '',
     redirectTo: 'dashboard',
     pathMatch: 'full'
