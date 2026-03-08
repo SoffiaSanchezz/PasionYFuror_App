@@ -1,0 +1,138 @@
+<div class="student-page-container">
+  <!-- SIDEBAR (Fijo) -->
+  <app-sidebar [collapsed]="sidebarCollapsed" (collapsedChange)="onSidebarToggle($event)"></app-sidebar>
+
+  <!-- ESPACIADOR (Ocupa el espacio del sidebar en el flujo flex) -->
+  <aside class="sidebar-spacer" [class.collapsed]="sidebarCollapsed"></aside>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <ion-content class="main-content">
+    <div class="content-wrapper">
+      
+      <!-- Loader Overlay -->
+      <div *ngIf="isLoading" class="loader-overlay">
+        <ion-spinner name="crescent" color="danger"></ion-spinner>
+        <p>Sincronizando estudiantes...</p>
+      </div>
+
+      <!-- Header Section -->
+      <header class="page-header">
+        <div class="header-info">
+          <h1 class="title">GESTIÓN DE ESTUDIANTES</h1>
+          <p class="subtitle">Panel de administración académica y control de afiliados</p>
+        </div>
+        <div class="header-actions">
+          <button class="btn-add" routerLink="/admin/students/new">
+            <i class="bi bi-person-plus-fill"></i>
+            <span>Nuevo Estudiante</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Stats Summary -->
+      <section class="stats-summary" *ngIf="!isLoading">
+        <app-stat-card 
+          label="Activos" 
+          [value]="activeStudents.length" 
+          icon="bi-person-check-fill" 
+          colorClass="revenue">
+        </app-stat-card>
+        
+        <app-stat-card 
+          label="Inactivos" 
+          [value]="disabledStudents.length" 
+          icon="bi-person-x-fill" 
+          colorClass="attendance">
+        </app-stat-card>
+
+        <app-stat-card 
+          label="Total Base" 
+          [value]="activeStudents.length + disabledStudents.length" 
+          icon="bi-people-fill" 
+          colorClass="students">
+        </app-stat-card>
+      </section>
+
+      <!-- Search & Filters -->
+      <section class="filter-bar" *ngIf="!isLoading">
+        <div class="search-box">
+          <i class="bi bi-search"></i>
+          <input type="text" placeholder="Buscar por nombre, Identificacion o email..." 
+                [(ngModel)]="searchTerm" (input)="applyFilter()">
+        </div>
+
+        <ion-segment [(ngModel)]="currentTab" (ionChange)="selectTab($event)" mode="ios" class="custom-segment">
+          <ion-segment-button value="active">
+            <ion-label>ACTIVOS</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="disabled">
+            <ion-label>DESHABILITADOS</ion-label>
+          </ion-segment-button>
+        </ion-segment>
+      </section>
+
+      <!-- DATA TABLE DE ESTUDIANTES -->
+      <section class="students-display" *ngIf="!isLoading">
+        <div class="table-view" *ngIf="currentTab === 'active'">
+          <app-data-table 
+            [columns]="studentColumns"
+            [data]="filteredActiveStudents"
+            [actions]="activeActions"
+            [isLoading]="isLoading"
+            emptyMessage="No se encontraron estudiantes activos"
+            (actionClicked)="onTableAction($event)"
+            (rowClicked)="selectStudent($event)">
+          </app-data-table>
+        </div>
+
+        <div class="table-view" *ngIf="currentTab === 'disabled'">
+          <app-data-table 
+            [columns]="studentColumns"
+            [data]="filteredDisabledStudents"
+            [actions]="disabledActions"
+            [isLoading]="isLoading"
+            emptyMessage="No se encontraron estudiantes deshabilitados"
+            (actionClicked)="onTableAction($event)"
+            (rowClicked)="selectStudent($event)">
+          </app-data-table>
+        </div>
+      </section>
+    </div>
+  </ion-content>
+
+  <!-- Modal Acudiente -->
+  <div class="modal fade" id="guardianInfoModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content glass-modal">
+        <div class="modal-header">
+          <h5 class="modal-title">INFO. ACUDIENTE</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body" *ngIf="selectedGuardianInfo">
+          <div class="student-ref">
+            <label>ESTUDIANTE</label>
+            <p>{{ selectedStudent?.fullName }}</p>
+          </div>
+          <div class="guardian-details">
+            <div class="info-item">
+              <i class="bi bi-person-vcard"></i>
+              <div><label>Nombre</label><p>{{ selectedGuardianInfo.fullName }}</p></div>
+            </div>
+            <div class="info-item">
+              <i class="bi bi-telephone"></i>
+              <div><label>Teléfono</label><p>{{ selectedGuardianInfo.phone }}</p></div>
+            </div>
+            <div class="info-item">
+              <i class="bi bi-envelope"></i>
+              <div><label>Email</label><p>{{ selectedGuardianInfo.email || 'N/A' }}</p></div>
+            </div>
+            <div class="info-item">
+              <i class="bi bi-people"></i>
+              <div><label>Vínculo</label><p>{{ selectedGuardianInfo.relationship }}</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
