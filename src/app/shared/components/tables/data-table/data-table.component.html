@@ -1,0 +1,78 @@
+<div class="table-container shadow-premium">
+  <div class="table-responsive-wrapper">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th *ngFor="let col of columns" [class.sortable]="col.sortable">
+            {{ col.label }}
+          </th>
+          <th *ngIf="actions.length > 0" class="actions-header">Acciones</th>
+        </tr>
+      </thead>
+      
+      <tbody *ngIf="!isLoading && data.length > 0">
+        <tr *ngFor="let row of data" (click)="onRowClick(row)" class="table-row">
+          <td *ngFor="let col of columns">
+            
+            <!-- AVATAR + TEXT (e.g., Student name + photo) -->
+            <div *ngIf="col.type === 'avatar-text'" class="avatar-info-cell">
+              <div class="avatar-wrapper">
+                <img [src]="row.photoPath || 'assets/img/LogoPasionyFuror.png'" alt="Avatar">
+              </div>
+              <span class="cell-text-bold">{{ row[col.key] }}</span>
+            </div>
+
+            <!-- BADGE (e.g., ID Document) -->
+            <div *ngIf="col.type === 'badge'" class="badge-cell">
+              <span class="badge-custom">{{ row[col.key] }}</span>
+            </div>
+
+            <!-- DATE -->
+            <div *ngIf="col.type === 'date'" class="date-cell text-muted">
+              {{ row[col.key] | date:'dd/MM/yyyy' }}
+            </div>
+
+            <!-- STATUS BADGE -->
+            <div *ngIf="col.type === 'status'" class="status-cell">
+              <span class="status-badge" [ngClass]="row[col.key]">
+                <span class="status-dot"></span>
+                {{ row[col.key] }}
+              </span>
+            </div>
+
+            <!-- DEFAULT TEXT -->
+            <div *ngIf="!col.type || col.type === 'text'" class="text-cell">
+              {{ row[col.key] || '---' }}
+            </div>
+
+          </td>
+
+          <!-- ACTIONS -->
+          <td *ngIf="actions.length > 0" class="actions-cell">
+            <div class="actions-wrapper">
+              <button *ngFor="let action of actions" 
+                      class="btn-action" 
+                      [ngClass]="action.color" 
+                      [title]="action.tooltip"
+                      (click)="onAction(action.name, row, $event)">
+                <i class="bi" [ngClass]="'bi-' + action.icon"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- LOADING STATE -->
+    <div *ngIf="isLoading" class="table-state-wrapper loading">
+      <ion-spinner name="crescent" color="danger"></ion-spinner>
+      <p>Cargando datos...</p>
+    </div>
+
+    <!-- EMPTY STATE -->
+    <div *ngIf="!isLoading && data.length === 0" class="table-state-wrapper empty">
+      <i class="bi bi-inbox empty-icon"></i>
+      <p>{{ emptyMessage }}</p>
+    </div>
+  </div>
+</div>

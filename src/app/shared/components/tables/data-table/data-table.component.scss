@@ -1,0 +1,171 @@
+.table-container {
+  background: var(--bg-secondary, #1a1a1a);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+  width: 100%;
+}
+
+.table-responsive-wrapper {
+  overflow-x: auto;
+  width: 100%;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  color: var(--text-primary, #fff);
+
+  thead {
+    background: rgba(255, 255, 255, 0.02);
+    
+    th {
+      padding: 1.25rem 1.5rem;
+      text-align: left;
+      font-family: var(--font-urbanist, 'Urbanist', sans-serif);
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted, #888);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      white-space: nowrap;
+    }
+
+    .actions-header { text-align: right; }
+  }
+
+  tbody {
+    .table-row {
+      transition: all 0.2s ease;
+      cursor: pointer;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.03);
+        transform: scale(1.002);
+      }
+
+      td {
+        padding: 1.25rem 1.5rem;
+        vertical-align: middle;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        font-family: var(--font-urbanist, 'Urbanist', sans-serif);
+        font-size: 0.95rem;
+      }
+    }
+  }
+}
+
+/* CELL STYLES */
+.avatar-info-cell {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+
+  .avatar-wrapper {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--bg-primary);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+
+    img { width: 100%; height: 100%; object-fit: cover; }
+  }
+
+  .cell-text-bold { font-weight: 600; color: #fff; }
+}
+
+.badge-custom {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
+  font-family: var(--font-oswald, 'Oswald', sans-serif);
+  font-size: 0.85rem;
+  color: var(--accent-primary, #ff4d4d);
+  letter-spacing: 0.5px;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.9rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+
+  &.activo {
+    background: rgba(46, 204, 113, 0.1);
+    color: #2ecc71;
+  }
+
+  &.inactivo {
+    background: rgba(231, 76, 60, 0.1);
+    color: #e74c3c;
+  }
+
+  .status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+    box-shadow: 0 0 8px currentColor;
+  }
+}
+
+/* ACTIONS */
+.actions-cell {
+  text-align: right;
+  
+  .actions-wrapper {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+  }
+}
+
+.btn-action {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    transform: translateY(-2px);
+    color: #fff;
+  }
+
+  &.primary:hover { background: rgba(52, 152, 219, 0.2); color: #3498db; }
+  &.warning:hover { background: rgba(241, 196, 15, 0.2); color: #f1c40f; }
+  &.success:hover { background: rgba(46, 204, 113, 0.2); color: #2ecc71; }
+  &.danger:hover { background: rgba(231, 76, 60, 0.2); color: #e74c3c; }
+  &.info:hover { background: rgba(155, 89, 182, 0.2); color: #9b59b6; }
+}
+
+/* TABLE STATES */
+.table-state-wrapper {
+  padding: 4rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 1rem;
+  color: var(--text-muted);
+
+  &.empty {
+    .empty-icon { font-size: 3rem; opacity: 0.3; }
+    p { font-family: var(--font-urbanist); font-size: 1.1rem; }
+  }
+}
