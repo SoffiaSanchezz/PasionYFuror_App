@@ -1,3 +1,56 @@
-<p>
-  sidebar works!
-</p>
+<!-- SIDEBAR (Escritorio y Tablet) -->
+<aside class="sidebar d-none d-md-flex" [class.collapsed]="collapsed">
+  <div class="sidebar-header">
+    <div class="logo">
+      <img *ngIf="collapsed" src="assets/img/LogoPasionyFuror.png" alt="Logo" class="logo-img">
+      <span *ngIf="!collapsed" class="text-center text-text text-white">Pasion y Furor</span>
+    </div>
+    <button class="toggle-btn" (click)="toggleSidebar()">
+      <i class="bi" [class]="collapsed ? 'bi-chevron-right' : 'bi-chevron-left'"></i>
+    </button>
+  </div>
+
+  <nav class="sidebar-nav">
+    <ul>
+      <li *ngFor="let item of navItems">
+        <a [routerLink]="item.route" routerLinkActive="active" 
+          (click)="setActiveItem(item)" [title]="collapsed ? item.label : ''">
+          <i class="bi" [class]="'bi-' + item.icon"></i>
+          <span class="nav-label" *ngIf="!collapsed">{{ item.label }}</span>
+          <span class="badge" *ngIf="item.badge && !collapsed">{{ item.badge }}</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="user-info" *ngIf="!collapsed">
+      <div class="avatar">
+        <i class="bi bi-person-fill"></i>
+      </div>
+      <div class="user-details">
+        <span class="user-name">{{ userName }}</span>
+        <span class="user-role">{{ userRole }}</span>
+      </div>
+    </div>
+    <button class="logout-btn" [title]="collapsed ? 'Cerrar Sesión' : ''" (click)="logout()">
+      <i class="bi bi-box-arrow-right"></i>
+      <span *ngIf="!collapsed">Cerrar Sesión</span>
+    </button>
+  </div>
+</aside>
+
+<!-- BOTTOM NAVIGATION (Móvil) -->
+<nav class="bottom-nav d-md-none">
+  <div class="bottom-nav-container">
+    <a *ngFor="let item of navItems" 
+       [routerLink]="item.route" 
+       routerLinkActive="active" 
+       class="bottom-nav-item">
+      <div class="nav-icon-wrapper">
+        <i class="bi" [class]="'bi-' + item.icon"></i>
+      </div>
+      <span class="nav-text">{{ item.label }}</span>
+    </a>
+  </div>
+</nav>
