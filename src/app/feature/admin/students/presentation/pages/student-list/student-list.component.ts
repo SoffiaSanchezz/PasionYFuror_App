@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { finalize } from 'rxjs';
-import { IonicModule } from '@ionic/angular';
+import { IonicModule, NavController } from '@ionic/angular';
 
 import Swal from 'sweetalert2';
 
@@ -64,11 +64,39 @@ export class StudentListComponent implements OnInit {
     private readonly deleteStudentUseCase: DeleteStudentUseCase,
     private readonly studentsService: StudentsService,
     private readonly router: Router,
+    private readonly navCtrl: NavController,
     private readonly cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {
+    // ngOnInit solo se dispara una vez al crear el componente.
+  }
+
+  // Hook de Ionic: Se dispara cada vez que la página entra en foco
+  ionViewWillEnter() {
+    this.fixFocusAndVisibility();
     this.loadStudents();
+  }
+
+  private fixFocusAndVisibility() {
+    // 1. Quitar foco de cualquier elemento (previene error de aria-hidden)
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+
+    // 2. Limpieza de Bootstrap residual
+    document.body.classList.remove('modal-open');
+    const backdrops = document.querySelectorAll('.modal-backdrop');
+    backdrops.forEach(b => b.remove());
+    document.body.style.overflow = '';
+    document.body.style.paddingRight = '';
+
+    // 3. Forzar visibilidad de la página
+    const page = document.querySelector('app-student-list');
+    if (page) {
+      page.classList.remove('ion-page-hidden');
+      page.removeAttribute('aria-hidden');
+    }
   }
 
   onSidebarToggle(collapsed: boolean): void {
@@ -84,16 +112,21 @@ export class StudentListComponent implements OnInit {
         finalize(() => {
           this.isLoading = false;
           this.applyFilter();
-          this.cdr.detectChanges();
+          this.cdr.markForCheck(); 
+          this.cdr.detectChanges(); // Forzar renderizado visual
         })
       )
       .subscribe({
         next: (students: StudentEntity[]) => {
-          this.activeStudents = students.filter(s => s.status === 'activo');
-          this.disabledStudents = students.filter(s => s.status === 'inactivo');
+          if (Array.isArray(students)) {
+            this.activeStudents = students.filter(s => s && s.status === 'activo');
+            this.disabledStudents = students.filter(s => s && s.status === 'inactivo');
+          }
         },
         error: (error: any) => {
           console.error('Error al cargar estudiantes:', error);
+          this.activeStudents = [];
+          this.disabledStudents = [];
         }
       });
   }
@@ -113,12 +146,6 @@ export class StudentListComponent implements OnInit {
 
   selectTab(event: any): void {
     this.currentTab = event.detail?.value || event;
-    this.selectedStudent = null;
-    this.applyFilter();
-  }
-
-  setTab(tab: string): void {
-    this.currentTab = tab;
     this.selectedStudent = null;
     this.applyFilter();
   }
@@ -147,7 +174,10 @@ export class StudentListComponent implements OnInit {
   }
 
   editStudent(studentId: string): void {
-    this.router.navigate(['/admin/students/edit', studentId]);
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+    this.navCtrl.navigateForward(['/admin/students/edit', studentId]);
   }
 
   toggleStudentStatus(student: StudentEntity): void {

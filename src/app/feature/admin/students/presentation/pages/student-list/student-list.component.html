@@ -10,7 +10,7 @@
     <div class="content-wrapper">
       
       <!-- Loader Overlay -->
-      <div *ngIf="isLoading && !isGuardianModalOpen" class="loader-overlay">
+      <div *ngIf="isLoading && activeStudents.length === 0" class="loader-overlay">
         <ion-spinner name="crescent" color="danger"></ion-spinner>
         <p>Sincronizando estudiantes...</p>
       </div>
@@ -30,7 +30,7 @@
       </header>
 
       <!-- Stats Summary -->
-      <section class="stats-summary" *ngIf="!isLoading">
+      <section class="stats-summary" *ngIf="!isLoading || activeStudents.length > 0">
         <app-stat-card 
           label="Activos" 
           [value]="activeStudents.length" 
@@ -54,7 +54,7 @@
       </section>
 
       <!-- Search & Filters -->
-      <section class="filter-bar" *ngIf="!isLoading">
+      <section class="filter-bar" *ngIf="!isLoading || activeStudents.length > 0">
         <div class="search-box">
           <i class="bi bi-search"></i>
           <input type="text" placeholder="Buscar por nombre, Identificacion o email..." 
@@ -72,7 +72,7 @@
       </section>
 
       <!-- DATA TABLE DE ESTUDIANTES -->
-      <section class="students-display" *ngIf="!isLoading">
+      <section class="students-display" *ngIf="!isLoading || activeStudents.length > 0">
         <div class="table-view" *ngIf="currentTab === 'active'">
           <app-data-table 
             [columns]="studentColumns"
@@ -100,7 +100,7 @@
     </div>
   </ion-content>
 
-  <!-- Modal Ionic para Info de Acudiente -->
+  <!-- Modal Ionic para Info de Acudiente (Reemplaza a Bootstrap) -->
   <ion-modal [isOpen]="isGuardianModalOpen" (didDismiss)="closeGuardianModal()">
     <ng-template>
       <ion-header>
@@ -118,7 +118,7 @@
         <div class="modal-body-custom">
           <div class="student-ref-custom mb-4 p-3 rounded" style="background: rgba(255,255,255,0.05);">
             <label class="d-block small text-danger fw-bold">ESTUDIANTE</label>
-            <p class="h5 m-0">{{ selectedStudent?.fullName }}</p>
+            <p class="h5 m-0">{{ selectedStudent?.fullName || 'N/A' }}</p>
           </div>
 
           <!-- Si es menor y hay info -->
@@ -149,7 +149,7 @@
             </div>
           </div>
 
-          <!-- Si es menor pero no hay info (error de carga) -->
+          <!-- Si es menor pero no hay info -->
           <div class="no-guardian-content py-4 text-center" *ngIf="selectedStudent?.isMinor && !selectedGuardianInfo && !isLoading">
             <div class="alert alert-warning bg-opacity-10 border-warning border-opacity-25">
               <i class="bi bi-exclamation-triangle-fill fs-1 d-block mb-3 text-warning"></i>
