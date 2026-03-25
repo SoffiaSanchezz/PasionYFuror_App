@@ -33,7 +33,7 @@
             ],
             "styles": ["src/global.scss", "src/theme/variables.scss"],
             "scripts": [],
-            "allowedCommonJsDependencies": ["lottie-web"]
+            "allowedCommonJsDependencies": ["lottie-web", "sweetalert2"]
           },
           "configurations": {
             "production": {
