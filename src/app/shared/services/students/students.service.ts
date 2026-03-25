@@ -41,8 +41,8 @@ export class StudentsService {
     return this.api.get<Student>(`${this.endpoint}/${id}`);
   }
 
-  deleteStudent(id: string): Observable<void> {
-    return this.api.delete<void>(`${this.endpoint}/${id}`);
+  deleteStudent(id: string, permanent: boolean = false): Observable<any> {
+    return this.api.delete<any>(`${this.endpoint}/${id}?permanent=${permanent}`);
   }
 
   toggleStudentStatus(id: string, status: string): Observable<Student> {
@@ -63,5 +63,9 @@ export class StudentsService {
 
   getGuardianInfo(id: string): Observable<any> {
     return this.api.get<any>(`${this.endpoint}/${id}/guardian`);
+  }
+
+  getRegulation(): Observable<Blob> {
+    return this.api.getBlob(`${this.endpoint}/regulation`);
   }
 }
