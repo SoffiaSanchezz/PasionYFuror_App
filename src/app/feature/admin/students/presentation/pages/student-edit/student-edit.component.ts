@@ -82,16 +82,20 @@ export class StudentEditComponent implements OnInit {
           catchError(error => {
             console.error('Error loading student:', error);
             this.studentNotFound = true;
+            this.isLoading = false;
+            this.cdr.detectChanges();
             return of(null);
           })
         );
-      }),
-      finalize(() => {
-        this.isLoading = false;
-        this.cdr.detectChanges();
       })
     ).subscribe(student => {
-      if (!student) return;
+      this.isLoading = false; // Desactivar aquí
+      
+      if (!student) {
+        if (!this.studentNotFound) this.router.navigate(['/admin/students']);
+        this.cdr.detectChanges();
+        return;
+      }
 
       this.isMinor = !!student.isMinor;
       this.applyGuardianValidators(this.isMinor);
@@ -118,6 +122,8 @@ export class StudentEditComponent implements OnInit {
       if (student.photoPath) {
         this.studentPhotoUrl = this.sanitizer.bypassSecurityTrustUrl(student.photoPath);
       }
+      
+      this.cdr.detectChanges(); // Forzar renderizado de los datos en el form
     });
   }
 
