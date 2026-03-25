@@ -1,5 +1,6 @@
 <div class="table-container shadow-premium">
-  <div class="table-responsive-wrapper">
+  <!-- VISTA DESKTOP (Tabla - Visible desde tablets hacia arriba) -->
+  <div class="table-responsive-wrapper d-none d-md-block">
     <table class="data-table">
       <thead>
         <tr>
@@ -14,7 +15,7 @@
         <tr *ngFor="let row of data" (click)="onRowClick(row)" class="table-row">
           <td *ngFor="let col of columns">
             
-            <!-- AVATAR + TEXT (e.g., Student name + photo) -->
+            <!-- AVATAR + TEXT -->
             <div *ngIf="col.type === 'avatar-text'" class="avatar-info-cell">
               <div class="avatar-wrapper">
                 <img [src]="row.photoPath || 'assets/img/LogoPasionyFuror.png'" alt="Avatar">
@@ -22,7 +23,7 @@
               <span class="cell-text-bold">{{ row[col.key] }}</span>
             </div>
 
-            <!-- BADGE (e.g., ID Document) -->
+            <!-- BADGE -->
             <div *ngIf="col.type === 'badge'" class="badge-cell">
               <span class="badge-custom">{{ row[col.key] }}</span>
             </div>
@@ -62,17 +63,59 @@
         </tr>
       </tbody>
     </table>
+  </div>
 
-    <!-- LOADING STATE -->
-    <div *ngIf="isLoading" class="table-state-wrapper loading">
-      <ion-spinner name="crescent" color="danger"></ion-spinner>
-      <p>Cargando datos...</p>
-    </div>
+  <!-- VISTA MÓVIL (Tarjetas - Solo visible en móviles) -->
+  <div class="mobile-cards-view d-md-none" *ngIf="!isLoading && data.length > 0">
+    <div class="student-mobile-card" *ngFor="let row of data" (click)="onRowClick(row)">
+      <div class="card-header-mobile">
+        <div class="user-meta">
+          <div class="mobile-avatar-wrapper">
+            <img [src]="row.photoPath || 'assets/img/LogoPasionyFuror.png'" class="mobile-avatar">
+            <div class="status-indicator-mini" [ngClass]="row.status"></div>
+          </div>
+          <div class="name-id">
+            <span class="m-name">{{ row.fullName }}</span>
+            <span class="m-doc">{{ row.documentId }}</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card-body-mobile">
+        <div class="info-line">
+          <i class="bi bi-envelope"></i>
+          <span>{{ row.email || 'Sin correo electrónico' }}</span>
+        </div>
+        <div class="info-line">
+          <i class="bi bi-telephone"></i>
+          <span>{{ row.phone }}</span>
+        </div>
+        <div class="info-line" *ngIf="row.isMinor">
+          <i class="bi bi-shield-check"></i>
+          <span class="text-warning">Menor de Edad</span>
+        </div>
+      </div>
 
-    <!-- EMPTY STATE -->
-    <div *ngIf="!isLoading && data.length === 0" class="table-state-wrapper empty">
-      <i class="bi bi-inbox empty-icon"></i>
-      <p>{{ emptyMessage }}</p>
+      <div class="card-actions-mobile">
+        <button *ngFor="let action of actions" 
+                class="m-btn-action" 
+                [ngClass]="action.color"
+                (click)="onAction(action.name, row, $event)">
+          <i class="bi" [ngClass]="'bi-' + action.icon"></i>
+        </button>
+      </div>
     </div>
+  </div>
+
+  <!-- LOADING STATE -->
+  <div *ngIf="isLoading" class="table-state-wrapper loading">
+    <ion-spinner name="crescent" color="danger"></ion-spinner>
+    <p>Cargando datos...</p>
+  </div>
+
+  <!-- EMPTY STATE -->
+  <div *ngIf="!isLoading && data.length === 0" class="table-state-wrapper empty">
+    <i class="bi bi-inbox empty-icon"></i>
+    <p>{{ emptyMessage }}</p>
   </div>
 </div>
