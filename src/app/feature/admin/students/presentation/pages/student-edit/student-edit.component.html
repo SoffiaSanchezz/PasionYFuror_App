@@ -24,7 +24,20 @@
           <p class="mt-3 text-muted">Cargando información...</p>
         </div>
 
-        <div class="card-body" *ngIf="!isLoading">
+        <!-- Not Found State -->
+        <div *ngIf="!isLoading && studentNotFound" class="p-5 text-center">
+          <div class="alert alert-warning d-flex align-items-center justify-content-center gap-2">
+            <i class="bi bi-exclamation-triangle-fill fs-4"></i>
+            <div>
+              <strong>Error:</strong> El estudiante no existe o no se pudo cargar.
+            </div>
+          </div>
+          <button class="btn-secondary mt-3 mx-auto" (click)="goToStudentList()">
+            <i class="bi bi-arrow-left"></i> Volver a la lista
+          </button>
+        </div>
+
+        <div class="card-body" *ngIf="!isLoading && !studentNotFound">
           <form [formGroup]="studentForm">
             <div class="form-section">
               <div class="section-header">

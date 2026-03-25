@@ -3,12 +3,11 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { filter, switchMap, finalize } from 'rxjs/operators';
+import { catchError, finalize, switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { IonicModule } from '@ionic/angular';
 
 import { GetStudentsUseCase, UpdateStudentUseCase } from '../../../domain/usecases/students.usecases';
-import { StudentEntity } from '../../../domain/entities/student.entity';
 import { SidebarComponent } from '@shared/components/menus/sidebar/sidebar.component';
 
 @Component({
@@ -19,13 +18,14 @@ import { SidebarComponent } from '@shared/components/menus/sidebar/sidebar.compo
   styleUrls: ['./student-edit.component.scss'],
 })
 export class StudentEditComponent implements OnInit {
-  sidebarCollapsed: boolean = false;
+  sidebarCollapsed = false;
   studentForm!: FormGroup;
   guardianForm!: FormGroup;
-  isMinor: boolean = false;
+  isMinor = false;
   studentId: string | null = null;
   studentPhotoUrl: SafeUrl | null = null;
-  isLoading: boolean = false;
+  isLoading = false;
+  studentNotFound = false;
 
   constructor(
     private readonly fb: FormBuilder,
@@ -35,29 +35,19 @@ export class StudentEditComponent implements OnInit {
     private readonly getStudentsUseCase: GetStudentsUseCase,
     private readonly updateStudentUseCase: UpdateStudentUseCase,
     private readonly cdr: ChangeDetectorRef
-  ) {}
+  ) {
+    this.initForms(); // Inicialización inmediata
+  }
+
+  ngOnInit(): void {
+    this.loadStudentData();
+  }
 
   onSidebarToggle(collapsed: boolean): void {
     this.sidebarCollapsed = collapsed;
   }
 
-  private toSnakeCase(obj: any): any {
-    const newObj: any = {};
-    for (const key in obj) {
-      if (Object.prototype.hasOwnProperty.call(obj, key)) {
-        const snakeCaseKey = key.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`);
-        newObj[snakeCaseKey] = obj[key];
-      }
-    }
-    return newObj;
-  }
-
-  ngOnInit(): void {
-    this.initForms();
-    this.loadStudentData();
-  }
-
-  initForms(): void {
+  private initForms(): void {
     this.studentForm = this.fb.group({
       fullName: ['', Validators.required],
       documentId: ['', Validators.required],
@@ -78,41 +68,50 @@ export class StudentEditComponent implements OnInit {
 
   loadStudentData(): void {
     this.isLoading = true;
+    this.studentNotFound = false;
+    
     this.route.paramMap.pipe(
       switchMap(params => {
         const id = params.get('id');
-        if (id) {
-          this.studentId = id;
-          return this.getStudentsUseCase.getStudentById(id);
+        if (!id) {
+          this.router.navigate(['/admin/students']);
+          return of(null);
         }
-        this.router.navigate(['/admin/students']);
-        return of(null);
+        this.studentId = id;
+        return this.getStudentsUseCase.getStudentById(id).pipe(
+          catchError(error => {
+            console.error('Error loading student:', error);
+            this.studentNotFound = true;
+            return of(null);
+          })
+        );
       }),
-      filter((student): student is StudentEntity => student !== null),
       finalize(() => {
         this.isLoading = false;
         this.cdr.detectChanges();
       })
     ).subscribe(student => {
-      this.isMinor = student.isMinor;
+      if (!student) return;
+
+      this.isMinor = !!student.isMinor;
       this.applyGuardianValidators(this.isMinor);
 
       this.studentForm.patchValue({
-        fullName: student.fullName,
-        documentId: student.documentId,
-        dateOfBirth: student.dateOfBirth,
-        email: student.email,
-        phone: student.phone,
-        address: student.address,
+        fullName: student.fullName || '',
+        documentId: student.documentId || '',
+        dateOfBirth: student.dateOfBirth || '',
+        email: student.email || '',
+        phone: student.phone || '',
+        address: student.address || '',
       });
 
-      if (student.isMinor) {
+      if (this.isMinor) {
         this.guardianForm.patchValue({
-          fullName: student.guardianFullName,
-          documentId: student.guardianDocumentId,
-          phone: student.guardianPhone,
-          relationship: student.guardianRelationship,
-          email: student.guardianEmail,
+          fullName: student.guardianFullName || '',
+          documentId: student.guardianDocumentId || '',
+          phone: student.guardianPhone || '',
+          relationship: student.guardianRelationship || '',
+          email: student.guardianEmail || '',
         });
       }
 
@@ -124,15 +123,10 @@ export class StudentEditComponent implements OnInit {
 
   applyGuardianValidators(isMinor: boolean): void {
     const controls = ['fullName', 'documentId', 'phone', 'relationship', 'email'];
-    
-    controls.forEach(controlName => {
-      const control = this.guardianForm.get(controlName);
+    controls.forEach(name => {
+      const control = this.guardianForm.get(name);
       if (isMinor) {
-        if (controlName === 'email') {
-          control?.setValidators([Validators.required, Validators.email]);
-        } else {
-          control?.setValidators(Validators.required);
-        }
+        control?.setValidators(name === 'email' ? [Validators.required, Validators.email] : Validators.required);
       } else {
         control?.clearValidators();
       }
@@ -148,14 +142,23 @@ export class StudentEditComponent implements OnInit {
     }
 
     this.isLoading = true;
-    const studentData = this.toSnakeCase(this.studentForm.value);
-    const guardianData = this.isMinor ? this.toSnakeCase(this.guardianForm.value) : {};
-
-    // Combine data as expected by the backend
+    
+    // Preparar datos para el backend (formato snake_case manual o como espere tu repo)
     const updateData = {
-      ...studentData,
+      full_name: this.studentForm.value.fullName,
+      document_id: this.studentForm.value.documentId,
+      date_of_birth: this.studentForm.value.dateOfBirth,
+      email: this.studentForm.value.email,
+      phone: this.studentForm.value.phone,
+      address: this.studentForm.value.address,
       is_minor: this.isMinor,
-      ...guardianData
+      ...(this.isMinor ? {
+        guardian_full_name: this.guardianForm.value.fullName,
+        guardian_document_id: this.guardianForm.value.documentId,
+        guardian_phone: this.guardianForm.value.phone,
+        guardian_relationship: this.guardianForm.value.relationship,
+        guardian_email: this.guardianForm.value.email
+      } : {})
     };
 
     this.updateStudentUseCase.execute(this.studentId!, updateData)
