@@ -26,8 +26,8 @@ export class StudentsImplementationRepository implements StudentsRepository {
     );
   }
 
-  deleteStudent(id: string): Observable<void> {
-    return this.apiService.deleteStudent(id);
+  deleteStudent(id: string, permanent: boolean = false): Observable<void> {
+    return this.apiService.deleteStudent(id, permanent);
   }
 
   toggleStudentStatus(id: string, status: string): Observable<StudentEntity> {

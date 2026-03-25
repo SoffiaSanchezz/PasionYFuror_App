@@ -8,8 +8,8 @@ import { StudentEntity } from '../entities/student.entity';
 export class DeleteStudentUseCase {
   constructor(private studentsRepository: StudentsRepository) {}
 
-  execute(id: string): Observable<void> {
-    return this.studentsRepository.deleteStudent(id);
+  execute(id: string, permanent: boolean = false): Observable<void> {
+    return this.studentsRepository.deleteStudent(id, permanent);
   }
 }
 
