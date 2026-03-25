@@ -4,15 +4,16 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { finalize } from 'rxjs';
-import { Modal } from 'bootstrap';
-
-import { StudentsService } from '@shared/services/students/students.service';
-import { SidebarComponent } from '@shared/components/menus/sidebar/sidebar.component';
-import { StatCardComponent } from '@shared/components/cards/stat-card/stat-card.component';
-import { DataTableComponent, TableColumn, TableAction } from '@shared/components/tables/data-table/data-table.component';
-import { DeleteStudentUseCase, GetStudentsUseCase } from '../../../domain/usecases/students.usecases';
 import { IonicModule } from '@ionic/angular';
-import { StudentEntity } from '../../../domain/entities/student.entity';
+
+import Swal from 'sweetalert2';
+
+import { SidebarComponent } from 'src/app/shared/components/menus/sidebar/sidebar.component';
+import { StatCardComponent } from 'src/app/shared/components/cards/stat-card/stat-card.component';
+import { DataTableComponent, TableColumn, TableAction } from 'src/app/shared/components/tables/data-table/data-table.component';
+import { StudentEntity } from 'src/app/feature/admin/students/domain/entities/student.entity';
+import { DeleteStudentUseCase, GetStudentsUseCase } from 'src/app/feature/admin/students/domain/usecases/students.usecases';
+import { StudentsService } from 'src/app/shared/services/students/students.service';
 
 @Component({
   selector: 'app-student-list',
@@ -34,6 +35,7 @@ export class StudentListComponent implements OnInit {
   isLoading: boolean = true;
   selectedStudent: StudentEntity | null = null;
   selectedGuardianInfo: any = null;
+  isGuardianModalOpen = false;
 
   // Table Configuration
   studentColumns: TableColumn[] = [
@@ -46,10 +48,10 @@ export class StudentListComponent implements OnInit {
   ];
 
   activeActions: TableAction[] = [
-    { name: 'edit', icon: 'pencil-fill', color: 'primary', tooltip: 'Editar' },
-    { name: 'guardian', icon: 'shield-lock-fill', color: 'warning', tooltip: 'Acudiente' },
-    { name: 'toggle', icon: 'eye-slash-fill', color: 'danger', tooltip: 'Deshabilitar' },
-    { name: 'delete', icon: 'trash3-fill', color: 'danger', tooltip: 'Eliminar' }
+    { name: 'edit', icon: 'pencil-fill', color: 'primary', tooltip: 'Editar Estudiante' },
+    { name: 'guardian', icon: 'shield-lock-fill', color: 'success', tooltip: 'Ver Acudiente / Seguridad' },
+    { name: 'toggle', icon: 'eye-slash-fill', color: 'warning', tooltip: 'Desactivar Estudiante' },
+    { name: 'delete', icon: 'trash3-fill', color: 'danger', tooltip: 'Eliminar Permanente' }
   ];
 
   disabledActions: TableAction[] = [
@@ -90,7 +92,7 @@ export class StudentListComponent implements OnInit {
           this.activeStudents = students.filter(s => s.status === 'activo');
           this.disabledStudents = students.filter(s => s.status === 'inactivo');
         },
-        error: (error) => {
+        error: (error: any) => {
           console.error('Error al cargar estudiantes:', error);
         }
       });
@@ -139,7 +141,7 @@ export class StudentListComponent implements OnInit {
         this.toggleStudentStatus(row);
         break;
       case 'delete':
-        this.deleteStudent(row.id);
+        this.deleteStudent(row);
         break;
     }
   }
@@ -152,40 +154,88 @@ export class StudentListComponent implements OnInit {
     const newStatus = student.status === 'activo' ? 'inactivo' : 'activo';
     this.studentsService.toggleStudentStatus(student.id, newStatus).subscribe({
       next: () => this.loadStudents(),
-      error: (err) => console.error('Error al cambiar estado:', err)
+      error: (err: any) => console.error('Error al cambiar estado:', err)
     });
   }
 
-  deleteStudent(studentId: string): void {
-    if (confirm('¿Está seguro de que desea eliminar permanentemente a este estudiante?')) {
-      this.deleteStudentUseCase.execute(studentId).subscribe({
-        next: () => this.loadStudents(),
-        error: (err) => alert('Error al eliminar estudiante.')
-      });
-    }
+  deleteStudent(student: StudentEntity): void {
+    const isInactive = student.status === 'inactivo';
+    
+    Swal.fire({
+      title: isInactive ? '¿Eliminar permanentemente?' : '¿Desactivar estudiante?',
+      text: isInactive 
+        ? 'Este estudiante ya está inactivo. ¿Deseas borrarlo completamente de la base de datos?' 
+        : 'El estudiante pasará a la lista de inactivos.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#b11226',
+      cancelButtonColor: '#6c757d',
+      confirmButtonText: isInactive ? 'Sí, eliminar de la DB' : 'Sí, desactivar',
+      cancelButtonText: 'No, cancelar',
+      background: '#1a1a1a',
+      color: '#ffffff'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.isLoading = true;
+        this.cdr.detectChanges();
+        
+        this.deleteStudentUseCase.execute(student.id, isInactive).subscribe({
+          next: () => {
+            Swal.fire({
+              title: '¡Hecho!',
+              text: isInactive ? 'Estudiante eliminado permanentemente.' : 'Estudiante desactivado.',
+              icon: 'success',
+              timer: 2000,
+              showConfirmButton: false,
+              background: '#1a1a1a',
+              color: '#ffffff'
+            });
+            this.loadStudents();
+          },
+          error: (err: any) => {
+            this.isLoading = false;
+            this.cdr.detectChanges();
+            Swal.fire('Error', 'No se pudo completar la acción.', 'error');
+          }
+        });
+      }
+    });
   }
 
   showGuardianInfo(studentId: string): void {
     const student = [...this.activeStudents, ...this.disabledStudents].find(s => s.id === studentId);
-    if (student?.isMinor) {
+    if (!student) return;
+
+    this.selectedStudent = student;
+
+    if (student.isMinor) {
+      this.isLoading = true;
+      this.cdr.detectChanges();
       this.studentsService.getGuardianInfo(studentId).subscribe({
-        next: (info) => {
+        next: (info: any) => {
           this.selectedGuardianInfo = info;
-          this.openGuardianModal();
+          this.isLoading = false;
+          this.isGuardianModalOpen = true;
+          this.cdr.detectChanges();
         },
         error: () => {
           this.selectedGuardianInfo = null;
-          this.openGuardianModal();
+          this.isLoading = false;
+          this.isGuardianModalOpen = true;
+          this.cdr.detectChanges();
         }
       });
+    } else {
+      this.selectedGuardianInfo = null;
+      this.isGuardianModalOpen = true;
+      this.cdr.detectChanges();
     }
   }
 
-  private openGuardianModal(): void {
-    const el = document.getElementById('guardianInfoModal');
-    if (el) {
-      const m = Modal.getInstance(el) || new Modal(el);
-      m.show();
-    }
+  closeGuardianModal(): void {
+    this.isGuardianModalOpen = false;
+    this.selectedStudent = null;
+    this.selectedGuardianInfo = null;
+    this.cdr.detectChanges();
   }
 }
