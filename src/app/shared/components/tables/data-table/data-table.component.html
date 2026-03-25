@@ -18,7 +18,9 @@
             <!-- AVATAR + TEXT -->
             <div *ngIf="col.type === 'avatar-text'" class="avatar-info-cell">
               <div class="avatar-wrapper">
-                <img [src]="row.photoPath || 'assets/img/LogoPasionyFuror.png'" alt="Avatar">
+                <img [src]="row.photoPath || 'assets/img/LogoPasionyFuror.png'" 
+                     (error)="img.src = 'assets/img/LogoPasionyFuror.png'" #img
+                     alt="Avatar">
               </div>
               <span class="cell-text-bold">{{ row[col.key] }}</span>
             </div>
@@ -71,7 +73,9 @@
       <div class="card-header-mobile">
         <div class="user-meta">
           <div class="mobile-avatar-wrapper">
-            <img [src]="row.photoPath || 'assets/img/LogoPasionyFuror.png'" class="mobile-avatar">
+            <img [src]="row.photoPath || 'assets/img/LogoPasionyFuror.png'" 
+                 (error)="mImg.src = 'assets/img/LogoPasionyFuror.png'" #mImg
+                 class="mobile-avatar">
             <div class="status-indicator-mini" [ngClass]="row.status"></div>
           </div>
           <div class="name-id">
