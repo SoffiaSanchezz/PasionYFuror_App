@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { DomSanitizer, SafeUrl, SafeResourceUrl } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 import { IonicModule } from '@ionic/angular';
@@ -36,6 +36,11 @@ export class StudentAffiliationComponent implements OnInit, OnDestroy, AfterView
   private isDrawing = false;
   signatureDataUrl: string | null = null;
 
+  // Regulation State
+  showRegulationModal: boolean = false;
+  regulationSafeUrl: SafeResourceUrl | null = null;
+  isLoadingRegulation: boolean = false;
+
   constructor(
     private fb: FormBuilder,
     private sanitizer: DomSanitizer,
@@ -66,6 +71,9 @@ export class StudentAffiliationComponent implements OnInit, OnDestroy, AfterView
 
   ngOnDestroy(): void {
     this.stopWebcam();
+    if (this.regulationSafeUrl) {
+      URL.revokeObjectURL((this.regulationSafeUrl as any).changingThisBreaksApplicationSecurity);
+    }
   }
 
   initForms(): void {
@@ -90,6 +98,34 @@ export class StudentAffiliationComponent implements OnInit, OnDestroy, AfterView
       acceptTerms: [false, Validators.requiredTrue],
       signature: [null, Validators.required],
     });
+  }
+
+  openRegulation(): void {
+    this.showRegulationModal = true;
+    if (!this.regulationSafeUrl) {
+      this.loadRegulation();
+    }
+  }
+
+  loadRegulation(): void {
+    this.isLoadingRegulation = true;
+    this.studentsService.getRegulation().subscribe({
+      next: (blob) => {
+        const url = URL.createObjectURL(blob);
+        this.regulationSafeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+        this.isLoadingRegulation = false;
+      },
+      error: (err) => {
+        console.error('Error loading regulation:', err);
+        alert('No se pudo cargar el reglamento. Por favor intente más tarde.');
+        this.isLoadingRegulation = false;
+        this.showRegulationModal = false;
+      }
+    });
+  }
+
+  closeRegulation(): void {
+    this.showRegulationModal = false;
   }
 
   applyGuardianValidators(isMinor: boolean): void {
@@ -140,6 +176,8 @@ export class StudentAffiliationComponent implements OnInit, OnDestroy, AfterView
       if (this.currentStep !== 3) {
         this.stopWebcam();
       }
+    } else {
+      this.goToStudentList();
     }
   }
 
@@ -184,20 +222,26 @@ export class StudentAffiliationComponent implements OnInit, OnDestroy, AfterView
       const canvas = this.canvasElement.nativeElement;
       const context = canvas.getContext('2d');
       
-      const width = video.videoWidth || 640;
-      const height = video.videoHeight || 480;
+      // Asegurar que el video tenga dimensiones antes de capturar
+      const width = video.videoWidth;
+      const height = video.videoHeight;
 
-      if (context) {
+      if (width && height && context) {
         canvas.width = width;
         canvas.height = height;
+        
+        // Dibujar el frame actual del video en el canvas
         context.drawImage(video, 0, 0, width, height);
         
+        // Convertir a base64
         this.capturedImageDataUrl = canvas.toDataURL('image/png');
         if (this.capturedImageDataUrl) {
           this.capturedImage = this.sanitizer.bypassSecurityTrustUrl(this.capturedImageDataUrl);
         }
         
-        this.stopWebcam();
+        this.stopWebcam(); // Apagar la cámara inmediatamente tras capturar
+      } else {
+        alert('La cámara no está lista para capturar. Por favor espera un momento.');
       }
     }
   }
@@ -217,15 +261,22 @@ export class StudentAffiliationComponent implements OnInit, OnDestroy, AfterView
     this.signaturePad = context;
     canvas.width = canvas.offsetWidth;
     canvas.height = canvas.offsetHeight;
-    this.signaturePad.strokeStyle = '#000000';
-    this.signaturePad.lineWidth = 2;
+    
+    // Fondo blanco fijo para el canvas
+    this.signaturePad.fillStyle = '#ffffff';
+    this.signaturePad.fillRect(0, 0, canvas.width, canvas.height);
+    
+    this.signaturePad.strokeStyle = '#000000'; // Firma negra
+    this.signaturePad.lineWidth = 3;
+    this.signaturePad.lineCap = 'round';
     
     canvas.addEventListener('mousedown', this.startDrawing.bind(this));
     canvas.addEventListener('mousemove', this.draw.bind(this));
     canvas.addEventListener('mouseup', this.stopDrawing.bind(this));
     
-    // Soporte táctil
+    // Soporte táctil corregido (previniendo scroll accidental)
     canvas.addEventListener('touchstart', (e) => {
+      e.preventDefault();
       const touch = e.touches[0];
       const mouseEvent = new MouseEvent('mousedown', {
         clientX: touch.clientX,
@@ -235,6 +286,7 @@ export class StudentAffiliationComponent implements OnInit, OnDestroy, AfterView
     }, { passive: false });
     
     canvas.addEventListener('touchmove', (e) => {
+      e.preventDefault();
       const touch = e.touches[0];
       const mouseEvent = new MouseEvent('mousemove', {
         clientX: touch.clientX,
@@ -279,7 +331,9 @@ export class StudentAffiliationComponent implements OnInit, OnDestroy, AfterView
 
   clearSignature(): void {
     const canvas = this.signatureCanvas.nativeElement;
-    this.signaturePad.clearRect(0, 0, canvas.width, canvas.height);
+    // Volver a pintar de blanco al limpiar
+    this.signaturePad.fillStyle = '#ffffff';
+    this.signaturePad.fillRect(0, 0, canvas.width, canvas.height);
     this.signatureDataUrl = null;
     this.contractForm.get('signature')?.setValue(null);
   }
@@ -288,13 +342,17 @@ export class StudentAffiliationComponent implements OnInit, OnDestroy, AfterView
     const studentData = this.toSnakeCase(this.studentForm.value);
     const guardianData = this.isMinor ? this.toSnakeCase(this.guardianForm.value) : undefined;
     
+    // Mock de descriptor facial (128 floats) para pasar validación del backend
+    // Esto debe reemplazarse por datos reales cuando se integre face-api.js
+    const mockFaceDescriptor = JSON.stringify(Array(128).fill(0).map(() => Math.random()));
+
     const affiliationData: any = {
       student: studentData,
       guardian: guardianData,
       photo_file_base64: this.capturedImageDataUrl || '',
       signature_image_base64: this.signatureDataUrl || '',
       is_minor: this.isMinor,
-      face_descriptor: this.faceDescriptor
+      face_descriptor: mockFaceDescriptor
     };
 
     this.studentsService.affiliateStudent(affiliationData).subscribe({

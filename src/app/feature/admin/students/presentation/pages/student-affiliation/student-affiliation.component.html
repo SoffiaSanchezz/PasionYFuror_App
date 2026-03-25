@@ -319,8 +319,43 @@
           </div>
 
           <div class="contract-text-container" spellcheck="false" translate="no">
-            <h4>REGLAMENTO PARA PROCESOS DE FORMACIÓN FUROR Y PASIÓN ESCUELA DE DANZA</h4>
-            <p>Al firmar el presente reglamento reconozco el compromiso y disciplina que se requiere para cumplir el programa planteado, el cual conocí previamente y acepto en totalidad. Confirmo que leí y acepto las normas establecidas, así como doy mi autorización para el manejo de imagen y contenido audiovisual de manera pública.</p>
+            <div class="regulation-content">
+              <h3 class="reg-title">REGLAMENTO PARA PROCESOS DE FORMACIÓN<br>FUROR Y PASIÓN ESCUELA DE DANZA</h3>
+              
+              <section class="reg-section">
+                <h4>Aspectos generales:</h4>
+                <ol>
+                  <li>La Escuela de Artes Furor y Pasión es una institución de aprendizaje enfocada en la danza profesional... se distingue por manejar programas académicos basados en competencias y diferenciación por niveles y edad.</li>
+                  <li>Los ensayos se realizarán principalmente en el salón de la Calle 10 N 3a – 42. Cualquier cambio de horario o cancelación se realizará vía telefónica o por WhatsApp.</li>
+                  <li>La inasistencia de clase menor a un mes se contará como falla, mas no como suspensión. Se mantendrá la misma fecha de pago.</li>
+                  <li>El pago de la mensualidad se recibirá el mismo día del mes que inició clases.</li>
+                  <li>Las clases perdidas no generan reprogramación o reembolso del dinero.</li>
+                </ol>
+              </section>
+
+              <section class="reg-section">
+                <h4>COMPROMISO DE LOS ESTUDIANTES Y PADRES DE FAMILIA:</h4>
+                <ol>
+                  <li>Me comprometo a participar de las actividades organizadas por la escuela.</li>
+                  <li>Informar inmediatamente cualquier tipo de restricción médica o terapéutica.</li>
+                  <li>El compromiso con el proceso es de manera individual. No está sujeto a la presencia de parejas o grupos.</li>
+                  <li>El estudiante mayor de edad es su propio representante.</li>
+                  <li>Es obligatorio adquirir vestuario, zapatos o utensilios necesarios para competencia.</li>
+                </ol>
+              </section>
+
+              <section class="reg-section">
+                <h4>SANCIONES GRUPOS DE COMPETENCIA:</h4>
+                <ol>
+                  <li>Llegar más de 10 min tarde o sin ropa adecuada: multa de $4.000 y acondicionamiento físico. Faltar a más de 2 ensayos: multa de $30.000.</li>
+                  <li>No lograr técnicas o ejercicios mínimos impedirá la participación en el espectáculo.</li>
+                  <li>No cumplir órdenes del profesor durante eventos resultará en suspensión inmediata.</li>
+                  <li>Agredir verbalmente a un compañero o profesor: suspensión de 3 clases y multa de $30.000. Agresión física: expulsión permanente.</li>
+                </ol>
+              </section>
+
+              <p class="reg-footer">Al firmar, reconozco el compromiso y disciplina requeridos. Autorizo el manejo de mi imagen y contenido audiovisual para fines institucionales y publicitarios.</p>
+            </div>
           </div>
 
           <div class="signature-pad-container">
@@ -342,20 +377,30 @@
             <h3 class="section-title">Captura de Foto</h3>
           </div>
 
-          <div class="camera-container">
-            <div *ngIf="!capturedImage" class="camera-preview">
-              <video #videoElement autoplay playsinline muted></video>
+          <div class="camera-wrapper">
+            <div class="camera-container" [hidden]="capturedImage">
+              <video #videoElement autoplay playsinline muted class="video-preview"></video>
               <div class="camera-overlay">
                 <div class="camera-frame"></div>
               </div>
-              <button class="btn-capture" (click)="captureImage()" type="button">
-                <span>Capturar Foto</span>
-              </button>
+              <div class="camera-actions">
+                <button class="btn-capture" (click)="captureImage()" type="button">
+                  <i class="bi bi-camera-fill"></i>
+                  <span>Tomar Foto</span>
+                </button>
+              </div>
             </div>
-            <div *ngIf="capturedImage" class="camera-preview captured">
-              <img [src]="capturedImage" alt="Foto Capturada">
-              <button class="btn-retake" (click)="retakeImage()" type="button">Repetir Foto</button>
+            
+            <div class="camera-container captured" *ngIf="capturedImage">
+              <img [src]="capturedImage" alt="Foto Capturada" class="captured-preview">
+              <div class="camera-actions">
+                <button class="btn-retake" (click)="retakeImage()" type="button">
+                  <i class="bi bi-arrow-counterclockwise"></i>
+                  Repetir Foto
+                </button>
+              </div>
             </div>
+            <!-- Canvas oculto para procesamiento -->
             <canvas #canvasElement style="display:none;"></canvas>
           </div>
         </div>
@@ -392,11 +437,11 @@
 
     <!-- Card Footer -->
     <div class="card-footer" *ngIf="currentStep < 4">
-      <button class="btn-secondary" (click)="prevStep()" [disabled]="currentStep === 1" type="button">
+      <button class="btn-secondary" (click)="prevStep()" type="button">
         Anterior
       </button>
 
-      <button *ngIf="currentStep < 3" class="btn-primary" (click)="nextStep()" type="button">
+      <button *ngIf="currentStep < 3 && currentStep > 1" class="btn-primary" (click)="nextStep()" type="button">
         Siguiente
       </button>
 
