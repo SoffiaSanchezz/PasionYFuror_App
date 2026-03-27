@@ -68,4 +68,8 @@ export class StudentsService {
   getRegulation(): Observable<Blob> {
     return this.api.getBlob(`${this.endpoint}/regulation`);
   }
+
+  checkDocumentExists(documentId: string): Observable<{exists: boolean}> {
+    return this.api.get<{exists: boolean}>(`${this.endpoint}/check-document/${documentId}`);
+  }
 }
