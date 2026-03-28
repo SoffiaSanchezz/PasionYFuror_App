@@ -157,8 +157,11 @@
                   <input type="text" class="form-input" formControlName="fullName" placeholder="Ej: Juan Pérez García"
                     [class.is-invalid]="studentForm.get('fullName')?.invalid && studentForm.get('fullName')?.touched">
                 </div>
-                <span *ngIf="studentForm.get('fullName')?.invalid && studentForm.get('fullName')?.touched" class="error-message">
-                  Nombre completo es requerido
+                <span *ngIf="studentForm.get('fullName')?.errors?.['required'] && studentForm.get('fullName')?.touched" class="error-message">
+                  El nombre completo es requerido
+                </span>
+                <span *ngIf="studentForm.get('fullName')?.errors?.['minlength'] && studentForm.get('fullName')?.touched" class="error-message">
+                  El nombre debe tener al menos 3 caracteres
                 </span>
               </div>
 
@@ -173,6 +176,18 @@
                   <input type="text" class="form-input" formControlName="documentId" placeholder="Ej: 1234567890"
                     [class.is-invalid]="studentForm.get('documentId')?.invalid && studentForm.get('documentId')?.touched">
                 </div>
+                <span *ngIf="studentForm.get('documentId')?.errors?.['required'] && studentForm.get('documentId')?.touched" class="error-message">
+                  Documento es requerido
+                </span>
+                <span *ngIf="studentForm.get('documentId')?.errors?.['pattern'] && studentForm.get('documentId')?.touched" class="error-message">
+                  Solo se aceptan números
+                </span>
+                <span *ngIf="studentForm.get('documentId')?.errors?.['duplicateDocument']" class="error-message">
+                  Este documento ya está registrado en el sistema
+                </span>
+                <span *ngIf="studentForm.get('documentId')?.pending" class="text-info small">
+                  Verificando documento...
+                </span>
               </div>
 
               <div class="form-group">
@@ -185,8 +200,15 @@
                     <line x1="8" x2="8" y1="2" y2="6" />
                     <line x1="3" x2="21" y1="10" y2="10" />
                   </svg>
-                  <input type="date" class="form-input" formControlName="dateOfBirth">
+                  <input type="date" class="form-input" formControlName="dateOfBirth"
+                    [class.is-invalid]="studentForm.get('dateOfBirth')?.invalid && studentForm.get('dateOfBirth')?.touched">
                 </div>
+                <span *ngIf="studentForm.get('dateOfBirth')?.errors?.['required'] && studentForm.get('dateOfBirth')?.touched" class="error-message">
+                  Fecha de nacimiento requerida
+                </span>
+                <span *ngIf="studentForm.get('dateOfBirth')?.errors?.['futureDate'] && studentForm.get('dateOfBirth')?.touched" class="error-message">
+                  La fecha no puede ser futura
+                </span>
               </div>
 
               <div class="form-group">

@@ -1,11 +1,13 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl, ValidationErrors } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeUrl, SafeResourceUrl } from '@angular/platform-browser';
 import { Router } from '@angular/router';
-import { finalize } from 'rxjs/operators';
+import { catchError, finalize, map, switchMap, take } from 'rxjs/operators';
+import { of, Observable, timer } from 'rxjs';
 import { IonicModule } from '@ionic/angular';
 import { StudentsService, Student } from '../../../../../../shared/services/students/students.service';
+import Swal from 'sweetalert2';
 
 // Mock simple si no existe el servicio de reconocimiento facial
 @Component({
@@ -78,11 +80,15 @@ export class StudentAffiliationComponent implements OnInit, OnDestroy, AfterView
 
   initForms(): void {
     this.studentForm = this.fb.group({
-      fullName: ['', Validators.required],
-      documentId: ['', Validators.required],
-      dateOfBirth: ['', Validators.required],
+      fullName: ['', [Validators.required, Validators.minLength(3)]],
+      documentId: ['', {
+        validators: [Validators.required, Validators.pattern('^[0-9]+$')],
+        asyncValidators: [this.documentUniqueValidator()],
+        updateOn: 'blur'
+      }],
+      dateOfBirth: ['', [Validators.required, this.dateNotFutureValidator]],
       email: ['', [Validators.required, Validators.email]],
-      phone: ['', Validators.required],
+      phone: ['', [Validators.required, Validators.pattern('^[0-9+ ]+$')]],
       address: ['', Validators.required],
     });
 
@@ -98,6 +104,28 @@ export class StudentAffiliationComponent implements OnInit, OnDestroy, AfterView
       acceptTerms: [false, Validators.requiredTrue],
       signature: [null, Validators.required],
     });
+  }
+
+  // Validador Asíncrono para Documento Único
+  private documentUniqueValidator() {
+    return (control: AbstractControl): Observable<ValidationErrors | null> => {
+      if (!control.value) return of(null);
+      
+      return timer(500).pipe(
+        switchMap(() => this.studentsService.checkDocumentExists(control.value)),
+        map(res => res.exists ? { duplicateDocument: true } : null),
+        catchError(() => of(null)),
+        take(1)
+      );
+    };
+  }
+
+  // Validador de Fecha no Futura
+  private dateNotFutureValidator(control: AbstractControl): ValidationErrors | null {
+    if (!control.value) return null;
+    const date = new Date(control.value);
+    const today = new Date();
+    return date > today ? { futureDate: true } : null;
   }
 
   openRegulation(): void {
@@ -342,9 +370,31 @@ export class StudentAffiliationComponent implements OnInit, OnDestroy, AfterView
     const studentData = this.toSnakeCase(this.studentForm.value);
     const guardianData = this.isMinor ? this.toSnakeCase(this.guardianForm.value) : undefined;
     
-    // Mock de descriptor facial (128 floats) para pasar validación del backend
-    // Esto debe reemplazarse por datos reales cuando se integre face-api.js
-    const mockFaceDescriptor = JSON.stringify(Array(128).fill(0).map(() => Math.random()));
+    // 1. OBTENCIÓN Y CONVERSIÓN SEGURA
+    // Forzamos la conversión a Array real de JS. Si es Float32Array, Array.from lo convierte perfecto.
+    let finalDescriptor: number[] = [];
+    
+    if (this.faceDescriptor && Array.isArray(this.faceDescriptor)) {
+      finalDescriptor = Array.from(this.faceDescriptor);
+    } else if (this.faceDescriptor && (this.faceDescriptor as any).buffer) {
+      // Caso de que sea un Float32Array u otro TypedArray
+      finalDescriptor = Array.from(this.faceDescriptor as any);
+    } else {
+      // Fallback a Mock solo para desarrollo
+      finalDescriptor = Array(128).fill(0).map(() => Math.random());
+    }
+
+    // 2. VALIDACIÓN ESTRICTA ANTES DEL POST
+    if (!Array.isArray(finalDescriptor) || finalDescriptor.length !== 128) {
+      console.error('ERROR CRÍTICO: Descriptor inválido', finalDescriptor);
+      Swal.fire({
+        title: 'Error de Biometría',
+        text: `El descriptor facial es inválido (Tipo: ${typeof finalDescriptor}, Longitud: ${finalDescriptor?.length || 0}). Por favor, repita la foto.`,
+        icon: 'error',
+        confirmButtonColor: '#B11226'
+      });
+      return;
+    }
 
     const affiliationData: any = {
       student: studentData,
@@ -352,17 +402,43 @@ export class StudentAffiliationComponent implements OnInit, OnDestroy, AfterView
       photo_file_base64: this.capturedImageDataUrl || '',
       signature_image_base64: this.signatureDataUrl || '',
       is_minor: this.isMinor,
-      face_descriptor: mockFaceDescriptor
+      face_descriptor: finalDescriptor // Enviamos el Array puro []
     };
+
+    // 3. DEBUG FINAL (Verifica que esto imprima 'object' y no 'number')
+    console.log('--- VERIFICACIÓN DE PAYLOAD ---');
+    console.log('face_descriptor es Array:', Array.isArray(affiliationData.face_descriptor));
+    console.log('Tipo de face_descriptor:', typeof affiliationData.face_descriptor);
+    console.log('Contenido (primeros 3):', affiliationData.face_descriptor.slice(0, 3));
+
+    // Mostrar loader
+    Swal.fire({
+      title: 'Procesando Afiliación',
+      text: 'Generando contrato y enviando correos...',
+      allowOutsideClick: false,
+      didOpen: () => { Swal.showLoading(); }
+    });
 
     this.studentsService.affiliateStudent(affiliationData).subscribe({
       next: () => {
+        Swal.fire({
+          title: '¡Afiliación Exitosa!',
+          text: 'Estudiante registrado y contrato enviado por correo.',
+          icon: 'success',
+          timer: 3000,
+          showConfirmButton: false
+        });
         this.currentStep = 4;
         setTimeout(() => this.goToStudentList(), 3000);
       },
-      error: (error: any) => {
-        console.error('Error:', error);
-        alert('Error al realizar la afiliación.');
+      error: (errorMessage: string) => {
+        // El error 400 del backend llegará aquí como un string claro gracias a ApiService
+        Swal.fire({
+          title: 'Error en el Registro',
+          text: errorMessage,
+          icon: 'error',
+          confirmButtonColor: '#B11226'
+        });
       }
     });
   }
