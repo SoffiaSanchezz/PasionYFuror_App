@@ -11,7 +11,7 @@ const routes: Routes = [
     },
     {
         path: 'login',
-        loadChildren: () => import('../feature/auth/auth-feature.module').then(m => m.AuthFeatureModule),
+        loadChildren: () => import('../feature/auth/presentation/auth-feature.module').then(m => m.AuthFeatureModule),
     },
     {
         path: '**',
