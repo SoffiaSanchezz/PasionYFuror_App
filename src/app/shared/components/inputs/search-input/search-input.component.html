@@ -1,0 +1,15 @@
+<div class="search-box">
+  <div class="search-icon">
+    <i class="bi bi-search"></i>
+  </div>
+  <input 
+    type="text" 
+    [placeholder]="placeholder" 
+    [(ngModel)]="value" 
+    (input)="onInputChange()"
+    class="search-field"
+  >
+  <button class="clear-btn" *ngIf="value" (click)="clearSearch()">
+    <i class="bi bi-x"></i>
+  </button>
+</div>

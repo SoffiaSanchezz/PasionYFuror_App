@@ -31,6 +31,9 @@
       ],
       "@auth-core/*": [
         "src/app/feature/auth/core/*"
+      ],
+      "@environments/*": [
+        "src/environments/*"
       ]
     },
     "skipLibCheck": true,

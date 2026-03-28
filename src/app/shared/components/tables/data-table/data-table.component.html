@@ -1,0 +1,125 @@
+<div class="table-container shadow-premium">
+  <!-- VISTA DESKTOP (Tabla - Visible desde tablets hacia arriba) -->
+  <div class="table-responsive-wrapper d-none d-md-block">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th *ngFor="let col of columns" [class.sortable]="col.sortable">
+            {{ col.label }}
+          </th>
+          <th *ngIf="actions.length > 0" class="actions-header">Acciones</th>
+        </tr>
+      </thead>
+      
+      <tbody *ngIf="!isLoading && data.length > 0">
+        <tr *ngFor="let row of data" (click)="onRowClick(row)" class="table-row">
+          <td *ngFor="let col of columns">
+            
+            <!-- AVATAR + TEXT -->
+            <div *ngIf="col.type === 'avatar-text'" class="avatar-info-cell">
+              <div class="avatar-wrapper">
+                <img [src]="row.photoPath || 'assets/img/LogoPasionyFuror.png'" 
+                     (error)="img.src = 'assets/img/LogoPasionyFuror.png'" #img
+                     alt="Avatar">
+              </div>
+              <span class="cell-text-bold">{{ row[col.key] }}</span>
+            </div>
+
+            <!-- BADGE -->
+            <div *ngIf="col.type === 'badge'" class="badge-cell">
+              <span class="badge-custom">{{ row[col.key] }}</span>
+            </div>
+
+            <!-- DATE -->
+            <div *ngIf="col.type === 'date'" class="date-cell text-muted">
+              {{ row[col.key] | date:'dd/MM/yyyy' }}
+            </div>
+
+            <!-- STATUS BADGE -->
+            <div *ngIf="col.type === 'status'" class="status-cell">
+              <span class="status-badge" [ngClass]="row[col.key]">
+                <span class="status-dot"></span>
+                {{ row[col.key] }}
+              </span>
+            </div>
+
+            <!-- DEFAULT TEXT -->
+            <div *ngIf="!col.type || col.type === 'text'" class="text-cell">
+              {{ row[col.key] || '---' }}
+            </div>
+
+          </td>
+
+          <!-- ACTIONS -->
+          <td *ngIf="actions.length > 0" class="actions-cell">
+            <div class="actions-wrapper">
+              <button *ngFor="let action of actions" 
+                      class="btn-action" 
+                      [ngClass]="action.color" 
+                      [title]="action.tooltip"
+                      (click)="onAction(action.name, row, $event)">
+                <i class="bi" [ngClass]="'bi-' + action.icon"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- VISTA MÓVIL (Tarjetas - Solo visible en móviles) -->
+  <div class="mobile-cards-view d-md-none" *ngIf="!isLoading && data.length > 0">
+    <div class="student-mobile-card" *ngFor="let row of data" (click)="onRowClick(row)">
+      <div class="card-header-mobile">
+        <div class="user-meta">
+          <div class="mobile-avatar-wrapper">
+            <img [src]="row.photoPath || 'assets/img/LogoPasionyFuror.png'" 
+                 (error)="mImg.src = 'assets/img/LogoPasionyFuror.png'" #mImg
+                 class="mobile-avatar">
+            <div class="status-indicator-mini" [ngClass]="row.status"></div>
+          </div>
+          <div class="name-id">
+            <span class="m-name">{{ row.fullName }}</span>
+            <span class="m-doc">{{ row.documentId }}</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card-body-mobile">
+        <div class="info-line">
+          <i class="bi bi-envelope"></i>
+          <span>{{ row.email || 'Sin correo electrónico' }}</span>
+        </div>
+        <div class="info-line">
+          <i class="bi bi-telephone"></i>
+          <span>{{ row.phone }}</span>
+        </div>
+        <div class="info-line" *ngIf="row.isMinor">
+          <i class="bi bi-shield-check"></i>
+          <span class="text-warning">Menor de Edad</span>
+        </div>
+      </div>
+
+      <div class="card-actions-mobile">
+        <button *ngFor="let action of actions" 
+                class="m-btn-action" 
+                [ngClass]="action.color"
+                (click)="onAction(action.name, row, $event)">
+          <i class="bi" [ngClass]="'bi-' + action.icon"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOADING STATE -->
+  <div *ngIf="isLoading" class="table-state-wrapper loading">
+    <ion-spinner name="crescent" color="danger"></ion-spinner>
+    <p>Cargando datos...</p>
+  </div>
+
+  <!-- EMPTY STATE -->
+  <div *ngIf="!isLoading && data.length === 0" class="table-state-wrapper empty">
+    <i class="bi bi-inbox empty-icon"></i>
+    <p>{{ emptyMessage }}</p>
+  </div>
+</div>

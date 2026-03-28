@@ -22,36 +22,58 @@ export class SessionProviderService {
      * Get authentication token from storage
      */
     getInformationToken(): string | null {
-        return localStorage.getItem(this.TOKEN_KEY);
+        try {
+            return localStorage.getItem(this.TOKEN_KEY);
+        } catch (e) {
+            console.warn('Storage access blocked:', e);
+            return null;
+        }
     }
 
     /**
      * Set authentication token in storage
      */
     setInformationToken(token: string): void {
-        localStorage.setItem(this.TOKEN_KEY, token);
+        try {
+            localStorage.setItem(this.TOKEN_KEY, token);
+        } catch (e) {
+            console.error('Failed to save token to storage:', e);
+        }
     }
 
     /**
      * Remove authentication token from storage
      */
     removeInformationToken(): void {
-        localStorage.removeItem(this.TOKEN_KEY);
+        try {
+            localStorage.removeItem(this.TOKEN_KEY);
+        } catch (e) {
+            console.error('Failed to remove token from storage:', e);
+        }
     }
 
     /**
      * Get user information from storage
      */
     getUserInfo<T = UserInfo>(): T | null {
-        const userInfo = localStorage.getItem(this.USER_KEY);
-        return userInfo ? JSON.parse(userInfo) : null;
+        try {
+            const userInfo = localStorage.getItem(this.USER_KEY);
+            return userInfo ? JSON.parse(userInfo) : null;
+        } catch (e) {
+            console.warn('Storage access blocked:', e);
+            return null;
+        }
     }
 
     /**
      * Set user information in storage
      */
     setUserInfo(userInfo: UserInfo | Record<string, unknown>): void {
-        localStorage.setItem(this.USER_KEY, JSON.stringify(userInfo));
+        try {
+            localStorage.setItem(this.USER_KEY, JSON.stringify(userInfo));
+        } catch (e) {
+            console.error('Failed to save user info to storage:', e);
+        }
     }
 
     /**
@@ -74,7 +96,11 @@ export class SessionProviderService {
      * Remove user information from storage
      */
     removeUserInfo(): void {
-        localStorage.removeItem(this.USER_KEY);
+        try {
+            localStorage.removeItem(this.USER_KEY);
+        } catch (e) {
+            console.error('Failed to remove user info from storage:', e);
+        }
     }
 
     /**

@@ -1,0 +1,135 @@
+<div class="page-wrapper" [class.sidebar-collapsed]="sidebarCollapsed">
+  <app-sidebar [collapsed]="sidebarCollapsed" (collapsedChange)="onSidebarToggle($event)"></app-sidebar>
+
+  <main class="main-content">
+    <div class="form-container dashboard-container">
+      <header class="page-header">
+        <div class="header-content">
+          <div class="title-section">
+            <button class="btn-back" (click)="goBack()">
+              <i class="bi bi-arrow-left"></i>
+            </button>
+            <div class="title-text">
+              <h1>{{ isEditMode ? 'Editar' : 'Añadir' }} Horario</h1>
+              <p class="subtitle">{{ isEditMode ? 'Modifica los detalles de la clase' : 'Registra una nueva clase en el sistema' }}</p>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="content-card shadow-lg">
+        <div class="card-body">
+          <div *ngIf="isLoading" class="text-center py-5">
+            <ion-spinner name="crescent" color="danger"></ion-spinner>
+            <p class="mt-2 text-muted">Cargando datos...</p>
+          </div>
+
+          <form *ngIf="!isLoading" [formGroup]="scheduleForm" (ngSubmit)="onSubmit()" class="custom-form">
+            <div class="row g-4">
+              <!-- Clase / Actividad -->
+              <div class="col-md-6">
+                <div class="form-group-custom">
+                  <label class="form-label">Nombre de la Clase / Actividad</label>
+                  <div class="input-wrapper">
+                    <i class="bi bi-journal-text"></i>
+                    <input type="text" formControlName="name" placeholder="Ej: Salsa Nivel 1"
+                      [class.is-invalid]="scheduleForm.get('name')?.invalid && scheduleForm.get('name')?.touched">
+                  </div>
+                  <div *ngIf="scheduleForm.get('name')?.invalid && scheduleForm.get('name')?.touched" class="error-msg">
+                    El nombre es obligatorio (mín. 3 caracteres)
+                  </div>
+                </div>
+              </div>
+
+              <!-- Instructor -->
+              <div class="col-md-6">
+                <div class="form-group-custom">
+                  <label class="form-label">Instructor / Profesor</label>
+                  <div class="input-wrapper">
+                    <i class="bi bi-person-badge"></i>
+                    <input type="text" formControlName="teacherName" placeholder="Nombre del profesor"
+                      [class.is-invalid]="scheduleForm.get('teacherName')?.invalid && scheduleForm.get('teacherName')?.touched">
+                  </div>
+                  <div *ngIf="scheduleForm.get('teacherName')?.invalid && scheduleForm.get('teacherName')?.touched" class="error-msg">
+                    El nombre del instructor es obligatorio
+                  </div>
+                </div>
+              </div>
+
+              <!-- Día -->
+              <div class="col-md-4">
+                <div class="form-group-custom">
+                  <label class="form-label">Día de la semana</label>
+                  <div class="input-wrapper">
+                    <i class="bi bi-calendar-event"></i>
+                    <select formControlName="day" [class.is-invalid]="scheduleForm.get('day')?.invalid && scheduleForm.get('day')?.touched">
+                      <option value="" disabled>Seleccione un día</option>
+                      <option *ngFor="let day of days" [value]="day">{{ day }}</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Hora Inicio -->
+              <div class="col-md-4">
+                <div class="form-group-custom">
+                  <label class="form-label">Hora de Inicio</label>
+                  <div class="input-wrapper">
+                    <i class="bi bi-clock"></i>
+                    <input type="time" formControlName="startTime"
+                      [class.is-invalid]="scheduleForm.get('startTime')?.invalid && scheduleForm.get('startTime')?.touched">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Hora Fin -->
+              <div class="col-md-4">
+                <div class="form-group-custom">
+                  <label class="form-label">Hora de Fin</label>
+                  <div class="input-wrapper">
+                    <i class="bi bi-clock-fill"></i>
+                    <input type="time" formControlName="endTime"
+                      [class.is-invalid]="scheduleForm.get('endTime')?.invalid && scheduleForm.get('endTime')?.touched">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Estado -->
+              <div class="col-md-6" *ngIf="isEditMode">
+                <div class="form-group-custom">
+                  <label class="form-label">Estado</label>
+                  <div class="d-flex gap-3 mt-2">
+                    <div class="form-check custom-radio">
+                      <input class="form-check-input" type="radio" value="activo" formControlName="status" id="statusActive">
+                      <label class="form-check-label" for="statusActive">Activo</label>
+                    </div>
+                    <div class="form-check custom-radio">
+                      <input class="form-check-input" type="radio" value="inactivo" formControlName="status" id="statusInactive">
+                      <label class="form-check-label" for="statusInactive">Inactivo</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-footer mt-5 d-flex justify-content-end gap-3">
+              <button type="button" class="btn-action btn-secondary-custom" (click)="goBack()">
+                Cancelar
+              </button>
+              <button type="submit" class="btn-action btn-primary-custom" [disabled]="isSaving || scheduleForm.invalid">
+                <span *ngIf="!isSaving">
+                  <i class="bi" [class]="isEditMode ? 'bi-check-circle' : 'bi-plus-circle'"></i>
+                  {{ isEditMode ? 'Actualizar' : 'Crear' }} Horario
+                </span>
+                <span *ngIf="isSaving">
+                  <ion-spinner name="crescent" size="small"></ion-spinner>
+                  Procesando...
+                </span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

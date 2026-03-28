@@ -1,0 +1,476 @@
+<div class="affiliation-wrapper">
+  <div class="affiliation-card">
+    <!-- Card Header -->
+    <div class="card-header">
+      <div class="header-content">
+        <div class="header-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <line x1="19" x2="19" y1="8" y2="14" />
+            <line x1="22" x2="16" y1="11" y2="11" />
+          </svg>
+        </div>
+        <div class="header-text">
+          <h1 class="page-title">Formulario de Afiliación</h1>
+          <p class="page-subtitle">Complete los pasos para registrar un nuevo estudiante</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stepper -->
+    <div class="stepper-container">
+      <div class="stepper">
+        <div class="step" [class.active]="currentStep === 1" [class.completed]="currentStep > 1">
+          <div class="step-indicator">
+            <div class="step-number">
+              <span *ngIf="currentStep <= 1">1</span>
+              <svg *ngIf="currentStep > 1" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 6 9 17l-5-5" />
+              </svg>
+            </div>
+            <span class="step-label">Tipo</span>
+          </div>
+        </div>
+
+        <div class="step-connector" [class.completed]="currentStep > 1"></div>
+
+        <div class="step" [class.active]="currentStep === 2" [class.completed]="currentStep > 2">
+          <div class="step-indicator">
+            <div class="step-number">
+              <span *ngIf="currentStep <= 2">2</span>
+              <svg *ngIf="currentStep > 2" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 6 9 17l-5-5" />
+              </svg>
+            </div>
+            <span class="step-label">Datos</span>
+          </div>
+        </div>
+
+        <div class="step-connector" [class.completed]="currentStep > 2"></div>
+
+        <div class="step" [class.active]="currentStep === 3" [class.completed]="currentStep > 3">
+          <div class="step-indicator">
+            <div class="step-number">
+              <span *ngIf="currentStep <= 3">3</span>
+              <svg *ngIf="currentStep > 3" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 6 9 17l-5-5" />
+              </svg>
+            </div>
+            <span class="step-label">Contrato</span>
+          </div>
+        </div>
+
+        <div class="step-connector" [class.completed]="currentStep > 3"></div>
+
+        <div class="step" [class.active]="currentStep === 4" [class.completed]="currentStep > 4">
+          <div class="step-indicator">
+            <div class="step-number">4</div>
+            <span class="step-label">Confirmar</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-body">
+      <!-- Step 1: Tipo de Contrato -->
+      <div *ngIf="currentStep === 1" class="step-content fade-in">
+        <div class="step-header">
+          <h2 class="step-title">¿Quién se afiliará?</h2>
+          <p class="step-description">Selecciona el tipo de afiliación según la edad del estudiante</p>
+        </div>
+
+        <div class="age-options">
+          <button class="age-option-card" (click)="selectAgeOption(false)" type="button">
+            <div class="age-option-icon adult">
+              <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                <circle cx="9" cy="7" r="4" />
+                <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+              </svg>
+            </div>
+            <div class="age-option-content">
+              <span class="age-option-title">Mayor de Edad</span>
+              <span class="age-option-desc">Afiliación personal sin acudiente</span>
+            </div>
+            <div class="age-option-arrow">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m9 18 6-6-6-6" />
+              </svg>
+            </div>
+          </button>
+
+          <button class="age-option-card" (click)="selectAgeOption(true)" type="button">
+            <div class="age-option-icon minor">
+              <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <circle cx="12" cy="10" r="3" />
+                <path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662" />
+              </svg>
+            </div>
+            <div class="age-option-content">
+              <span class="age-option-title">Menor de Edad</span>
+              <span class="age-option-desc">Requiere datos del acudiente</span>
+            </div>
+            <div class="age-option-arrow">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m9 18 6-6-6-6" />
+              </svg>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 2: Formulario de Datos -->
+      <div *ngIf="currentStep === 2" class="step-content fade-in">
+        <form [formGroup]="studentForm">
+          <div class="form-section">
+            <div class="section-header">
+              <div class="section-icon student">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                  <circle cx="9" cy="7" r="4" />
+                </svg>
+              </div>
+              <h3 class="section-title">Datos del Estudiante</h3>
+            </div>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label">Nombre Completo <span class="required">*</span></label>
+                <div class="input-wrapper">
+                  <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
+                  </svg>
+                  <input type="text" class="form-input" formControlName="fullName" placeholder="Ej: Juan Pérez García"
+                    [class.is-invalid]="studentForm.get('fullName')?.invalid && studentForm.get('fullName')?.touched">
+                </div>
+                <span *ngIf="studentForm.get('fullName')?.errors?.['required'] && studentForm.get('fullName')?.touched" class="error-message">
+                  El nombre completo es requerido
+                </span>
+                <span *ngIf="studentForm.get('fullName')?.errors?.['minlength'] && studentForm.get('fullName')?.touched" class="error-message">
+                  El nombre debe tener al menos 3 caracteres
+                </span>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Documento de Identidad <span class="required">*</span></label>
+                <div class="input-wrapper">
+                  <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect width="20" height="14" x="2" y="5" rx="2" />
+                    <line x1="2" x2="22" y1="10" y2="10" />
+                  </svg>
+                  <input type="text" class="form-input" formControlName="documentId" placeholder="Ej: 1234567890"
+                    [class.is-invalid]="studentForm.get('documentId')?.invalid && studentForm.get('documentId')?.touched">
+                </div>
+                <span *ngIf="studentForm.get('documentId')?.errors?.['required'] && studentForm.get('documentId')?.touched" class="error-message">
+                  Documento es requerido
+                </span>
+                <span *ngIf="studentForm.get('documentId')?.errors?.['pattern'] && studentForm.get('documentId')?.touched" class="error-message">
+                  Solo se aceptan números
+                </span>
+                <span *ngIf="studentForm.get('documentId')?.errors?.['duplicateDocument']" class="error-message">
+                  Este documento ya está registrado en el sistema
+                </span>
+                <span *ngIf="studentForm.get('documentId')?.pending" class="text-info small">
+                  Verificando documento...
+                </span>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Fecha de Nacimiento <span class="required">*</span></label>
+                <div class="input-wrapper">
+                  <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
+                    <line x1="16" x2="16" y1="2" y2="6" />
+                    <line x1="8" x2="8" y1="2" y2="6" />
+                    <line x1="3" x2="21" y1="10" y2="10" />
+                  </svg>
+                  <input type="date" class="form-input" formControlName="dateOfBirth"
+                    [class.is-invalid]="studentForm.get('dateOfBirth')?.invalid && studentForm.get('dateOfBirth')?.touched">
+                </div>
+                <span *ngIf="studentForm.get('dateOfBirth')?.errors?.['required'] && studentForm.get('dateOfBirth')?.touched" class="error-message">
+                  Fecha de nacimiento requerida
+                </span>
+                <span *ngIf="studentForm.get('dateOfBirth')?.errors?.['futureDate'] && studentForm.get('dateOfBirth')?.touched" class="error-message">
+                  La fecha no puede ser futura
+                </span>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Correo Electrónico <span class="required">*</span></label>
+                <div class="input-wrapper">
+                  <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect width="20" height="16" x="2" y="4" rx="2" />
+                    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+                  </svg>
+                  <input type="email" class="form-input" formControlName="email" placeholder="correo@ejemplo.com">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Teléfono <span class="required">*</span></label>
+                <div class="input-wrapper">
+                  <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+                  </svg>
+                  <input type="tel" class="form-input" formControlName="phone" placeholder="Ej: 300 123 4567">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Dirección <span class="required">*</span></label>
+                <div class="input-wrapper">
+                  <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+                    <circle cx="12" cy="10" r="3" />
+                  </svg>
+                  <input type="text" class="form-input" formControlName="address" placeholder="Ej: Calle 123 #45-67">
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+
+        <!-- Guardian Form (si es menor) -->
+        <form *ngIf="isMinor" [formGroup]="guardianForm">
+          <div class="form-section guardian">
+            <div class="section-header">
+              <div class="section-icon guardian">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18 21a8 8 0 0 0-16 0" />
+                  <circle cx="12" cy="7" r="4" />
+                  <path d="M22 20c0-3.37-2-6.5-4-8a5 5 0 0 0-.45-8.3" />
+                </svg>
+              </div>
+              <h3 class="section-title">Datos del Acudiente</h3>
+            </div>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label">Nombre Completo <span class="required">*</span></label>
+                <div class="input-wrapper">
+                  <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
+                  </svg>
+                  <input type="text" class="form-input" formControlName="fullName" placeholder="Nombre acudiente">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Documento <span class="required">*</span></label>
+                <div class="input-wrapper">
+                  <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect width="20" height="14" x="2" y="5" rx="2" />
+                  </svg>
+                  <input type="text" class="form-input" formControlName="documentId" placeholder="Documento acudiente">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Teléfono <span class="required">*</span></label>
+                <div class="input-wrapper">
+                  <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+                  </svg>
+                  <input type="tel" class="form-input" formControlName="phone" placeholder="Teléfono contacto">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Parentesco <span class="required">*</span></label>
+                <div class="input-wrapper">
+                  <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 21.5c.3 0 .6-.1.9-.2l4.5-2.2a1 1 0 0 0 .6-.9V5.7c0-.3-.1-.6-.2-.9l-4.5-2.2a1 1 0 0 0-1.2 0l-4.5 2.2c-.1.2-.2.5-.2.9v13.4c0 .3.1.6.2.9l4.5 2.2c.3.1.6.2.9.2Z" />
+                  </svg>
+                  <input type="text" class="form-input" formControlName="relationship" placeholder="Padre, Madre, etc.">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Correo Acudiente <span class="required">*</span></label>
+                <div class="input-wrapper">
+                  <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect width="20" height="16" x="2" y="4" rx="2" />
+                    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+                  </svg>
+                  <input type="email" class="form-input" formControlName="email" placeholder="email@acudiente.com">
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Step 3: Contrato y Foto -->
+      <div *ngIf="currentStep === 3" class="step-content fade-in">
+        <div class="form-section">
+          <div class="section-header">
+            <div class="section-icon contract">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                <polyline points="14 2 14 8 20 8" />
+              </svg>
+            </div>
+            <h3 class="section-title">Contrato de Afiliación</h3>
+          </div>
+
+          <div class="contract-text-container" spellcheck="false" translate="no">
+            <div class="regulation-content">
+              <h3 class="reg-title">REGLAMENTO PARA PROCESOS DE FORMACIÓN<br>FUROR Y PASIÓN ESCUELA DE DANZA</h3>
+              
+              <section class="reg-section">
+                <h4>Aspectos generales:</h4>
+                <ol>
+                  <li>La Escuela de Artes Furor y Pasión es una institución de aprendizaje enfocada en la danza profesional... se distingue por manejar programas académicos basados en competencias y diferenciación por niveles y edad.</li>
+                  <li>Los ensayos se realizarán principalmente en el salón de la Calle 10 N 3a – 42. Cualquier cambio de horario o cancelación se realizará vía telefónica o por WhatsApp.</li>
+                  <li>La inasistencia de clase menor a un mes se contará como falla, mas no como suspensión. Se mantendrá la misma fecha de pago.</li>
+                  <li>El pago de la mensualidad se recibirá el mismo día del mes que inició clases.</li>
+                  <li>Las clases perdidas no generan reprogramación o reembolso del dinero.</li>
+                </ol>
+              </section>
+
+              <section class="reg-section">
+                <h4>COMPROMISO DE LOS ESTUDIANTES Y PADRES DE FAMILIA:</h4>
+                <ol>
+                  <li>Me comprometo a participar de las actividades organizadas por la escuela.</li>
+                  <li>Informar inmediatamente cualquier tipo de restricción médica o terapéutica.</li>
+                  <li>El compromiso con el proceso es de manera individual. No está sujeto a la presencia de parejas o grupos.</li>
+                  <li>El estudiante mayor de edad es su propio representante.</li>
+                  <li>Es obligatorio adquirir vestuario, zapatos o utensilios necesarios para competencia.</li>
+                </ol>
+              </section>
+
+              <section class="reg-section">
+                <h4>SANCIONES GRUPOS DE COMPETENCIA:</h4>
+                <ol>
+                  <li>Llegar más de 10 min tarde o sin ropa adecuada: multa de $4.000 y acondicionamiento físico. Faltar a más de 2 ensayos: multa de $30.000.</li>
+                  <li>No lograr técnicas o ejercicios mínimos impedirá la participación en el espectáculo.</li>
+                  <li>No cumplir órdenes del profesor durante eventos resultará en suspensión inmediata.</li>
+                  <li>Agredir verbalmente a un compañero o profesor: suspensión de 3 clases y multa de $30.000. Agresión física: expulsión permanente.</li>
+                </ol>
+              </section>
+
+              <p class="reg-footer">Al firmar, reconozco el compromiso y disciplina requeridos. Autorizo el manejo de mi imagen y contenido audiovisual para fines institucionales y publicitarios.</p>
+            </div>
+          </div>
+
+          <div class="signature-pad-container">
+            <h4 class="signature-title">Firma del Estudiante/Acudiente</h4>
+            <canvas #signatureCanvas class="signature-canvas"></canvas>
+            <button type="button" class="btn-clear-signature" (click)="clearSignature()">Limpiar Firma</button>
+          </div>
+        </div>
+
+        <div class="form-section camera-section">
+          <div class="section-header">
+            <div class="section-icon camera">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" />
+                <circle cx="12" cy="13" r="3" />
+              </svg>
+            </div>
+            <h3 class="section-title">Captura de Foto</h3>
+          </div>
+
+          <div class="camera-wrapper">
+            <div class="camera-container" [hidden]="capturedImage">
+              <video #videoElement autoplay playsinline muted class="video-preview"></video>
+              <div class="camera-overlay">
+                <div class="camera-frame"></div>
+              </div>
+              <div class="camera-actions">
+                <button class="btn-capture" (click)="captureImage()" type="button">
+                  <i class="bi bi-camera-fill"></i>
+                  <span>Tomar Foto</span>
+                </button>
+              </div>
+            </div>
+            
+            <div class="camera-container captured" *ngIf="capturedImage">
+              <img [src]="capturedImage" alt="Foto Capturada" class="captured-preview">
+              <div class="camera-actions">
+                <button class="btn-retake" (click)="retakeImage()" type="button">
+                  <i class="bi bi-arrow-counterclockwise"></i>
+                  Repetir Foto
+                </button>
+              </div>
+            </div>
+            <!-- Canvas oculto para procesamiento -->
+            <canvas #canvasElement style="display:none;"></canvas>
+          </div>
+        </div>
+
+        <form [formGroup]="contractForm">
+          <div class="terms-checkbox">
+            <label class="checkbox-container">
+              <input type="checkbox" formControlName="acceptTerms">
+              <span class="checkmark"></span>
+              <span class="checkbox-label">He leído y acepto los términos y condiciones.</span>
+            </label>
+          </div>
+        </form>
+      </div>
+
+      <!-- Step 4: Confirmación -->
+      <div *ngIf="currentStep === 4" class="step-content fade-in">
+        <div class="success-container">
+          <div class="success-animation">
+            <div class="success-circle">
+              <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                <path d="m9 11 3 3L22 4" />
+              </svg>
+            </div>
+          </div>
+          <h2 class="success-title">¡Afiliación Exitosa!</h2>
+          <p class="success-message">El proceso se ha completado correctamente. Redirigiendo...</p>
+          <button class="btn-primary" (click)="goToStudentList()">Volver a la Lista</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card Footer -->
+    <div class="card-footer" *ngIf="currentStep < 4">
+      <button class="btn-secondary" (click)="prevStep()" type="button">
+        Anterior
+      </button>
+
+      <button *ngIf="currentStep < 3 && currentStep > 1" class="btn-primary" (click)="nextStep()" type="button">
+        Siguiente
+      </button>
+
+      <button *ngIf="currentStep === 3" class="btn-accent" (click)="nextStep()"
+        [disabled]="contractForm.invalid || !capturedImage" type="button">
+        Finalizar y Enviar
+      </button>
+    </div>
+  </div>
+</div>

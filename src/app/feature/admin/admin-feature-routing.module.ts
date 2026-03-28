@@ -8,6 +8,14 @@ const routes: Routes = [
     component: MainDashboardComponent
   },
   {
+    path: 'students',
+    loadChildren: () => import('./students/students-feature.module').then(m => m.StudentsFeatureModule)
+  },
+  {
+    path: 'schedules',
+    loadChildren: () => import('./schedules/schedules-feature.module').then(m => m.SchedulesFeatureModule)
+  },
+  {
     path: '',
     redirectTo: 'dashboard',
     pathMatch: 'full'

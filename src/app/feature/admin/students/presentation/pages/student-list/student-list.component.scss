@@ -1,0 +1,264 @@
+/* ===== STUDENT PAGE PRO LAYOUT ===== */
+$sidebar-width: 280px;
+$sidebar-collapsed-width: 80px;
+$transition-speed: 0.3s;
+$transition-curve: cubic-bezier(0.4, 0, 0.2, 1);
+
+.student-page-container {
+  display: flex; // Layout Flexbox para alinear sidebar y contenido
+  width: 100%;
+  min-height: 100vh;
+  background: var(--bg-primary);
+  overflow: hidden;
+
+  /* Espaciador dinámico para el sidebar fijo */
+  .sidebar-spacer {
+    width: $sidebar-width;
+    flex-shrink: 0; // No se encoge
+    transition: width $transition-speed $transition-curve;
+
+    &.collapsed {
+      width: $sidebar-collapsed-width;
+    }
+
+    @media (max-width: 767px) {
+      display: none; // El sidebar es diferente en móviles
+    }
+  }
+
+  /* Contenido Principal */
+  .main-content {
+    flex: 1; // Toma todo el espacio restante
+    min-width: 0; // Permite que el contenido se encoja correctamente (importante para tablas)
+    --background: transparent;
+    display: flex;
+    flex-direction: column;
+
+    .content-wrapper {
+      padding: 2.5rem;
+      width: 100%;
+      max-width: 100%; // Asegura que no se corte por max-width rígidos
+      margin: 0;
+      
+      @media (max-width: 768px) {
+        padding: 1.5rem;
+        /* IMPORTANTE: Añade espacio para que el bottom-nav no tape el contenido */
+        padding-bottom: 100px !important; 
+      }
+    }
+  }
+}
+
+/* Page Header */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+  }
+
+  .header-info {
+    .title {
+      font-family: var(--font-bebas);
+      font-size: 3.5rem;
+      color: var(--text-primary);
+      margin: 0;
+      letter-spacing: 2px;
+      line-height: 1;
+
+      @media (max-width: 768px) {
+        font-size: 2.5rem;
+      }
+    }
+    .subtitle {
+      font-family: var(--font-urbanist);
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      margin-top: 0.5rem;
+    }
+  }
+
+  .btn-add {
+    background: linear-gradient(135deg, #b11226 0%, #d32f2f 100%);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 0.9rem 2.2rem;
+    border-radius: 50px; /* Bordes tipo píldora */
+    font-family: var(--font-oswald);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    box-shadow: 0 10px 25px rgba(177, 18, 38, 0.3);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    cursor: pointer;
+
+    @media (max-width: 600px) {
+      width: 100%;
+      justify-content: center;
+    }
+
+    i {
+      font-size: 1.3rem;
+      transition: transform 0.4s;
+    }
+
+    &:hover {
+      transform: translateY(-5px) scale(1.03);
+      box-shadow: 0 15px 35px rgba(177, 18, 38, 0.45);
+      background: linear-gradient(135deg, #d32f2f 0%, #f44336 100%);
+      
+      i {
+        transform: rotate(90deg);
+      }
+    }
+
+    &:active {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(177, 18, 38, 0.4);
+    }
+  }
+}
+
+/* Stats Summary */
+.stats-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+/* Filters Bar */
+.filter-bar {
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 2rem;
+  margin-bottom: 2.5rem;
+  align-items: center;
+
+  @media (max-width: 1100px) { 
+    grid-template-columns: 1fr; 
+    gap: 1rem;
+  }
+
+  .search-box {
+    position: relative;
+    background: var(--bg-card);
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    padding: 0 1.2rem;
+    display: flex;
+    align-items: center;
+    height: 56px;
+
+    i { color: var(--text-muted); font-size: 1.2rem; }
+    input {
+      background: transparent;
+      border: none;
+      color: white;
+      width: 100%;
+      padding: 0 1rem;
+      font-family: var(--font-urbanist);
+      font-size: 1rem;
+      &:focus { outline: none; }
+    }
+  }
+
+  .custom-segment {
+    --background: var(--bg-secondary);
+    border-radius: 12px;
+    padding: 5px;
+    
+    @media (max-width: 768px) {
+      width: 100%;
+    }
+
+    ion-segment-button {
+      --indicator-color: var(--accent-primary);
+      --color: var(--text-muted);
+      --color-checked: white;
+      font-family: var(--font-oswald);
+      letter-spacing: 1px;
+    }
+  }
+}
+
+/* Table View Wrapper */
+.table-view {
+  animation: fadeIn 0.6s ease-out;
+  margin-top: 1rem;
+  width: 100%;
+  overflow: hidden; // Previene desbordes internos
+}
+
+/* Glass Modal */
+.glass-modal {
+  background: rgba(20, 20, 20, 0.8) !important;
+  backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 24px !important;
+  color: white;
+
+  .modal-header { border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+  
+  .student-ref {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 1rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    label { font-size: 0.7rem; color: var(--accent-primary); font-weight: 800; }
+    p { margin: 0; font-family: var(--font-oswald); font-size: 1.2rem; }
+  }
+
+  .guardian-details {
+    display: grid;
+    gap: 1.2rem;
+    .info-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      i { font-size: 1.4rem; color: var(--text-muted); }
+      label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; }
+      p { margin: 0; font-weight: 600; }
+    }
+  }
+
+  .no-guardian-content {
+    padding: 1rem 0;
+    .info-alert {
+      background: rgba(52, 152, 219, 0.1);
+      border: 1px solid rgba(52, 152, 219, 0.2);
+      border-radius: 16px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 1rem;
+
+      i { font-size: 2.5rem; color: #3498db; }
+      p { margin: 0; font-family: var(--font-urbanist); font-size: 1rem; color: rgba(255,255,255,0.8); }
+      strong { color: #3498db; }
+
+      &.warning {
+        background: rgba(231, 76, 60, 0.1);
+        border-color: rgba(231, 76, 60, 0.2);
+        i { color: #e74c3c; }
+      }
+    }
+  }
+}
+
+@keyframes fadeIn { 
+  from { opacity: 0; transform: translateY(20px); } 
+  to { opacity: 1; transform: translateY(0); } 
+}

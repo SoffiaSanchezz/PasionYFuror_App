@@ -1,0 +1,103 @@
+<div class="records-container">
+  <div class="records-content">
+    <!-- Header Section -->
+    <div class="records-header d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+      <div class="d-flex align-items-center gap-3">
+        <div class="header-icon">
+          <i class="bi bi-clipboard-data-fill"></i>
+        </div>
+        <div>
+          <h1 class="page-title mb-0">Registros de Asistencia</h1>
+          <p class="page-subtitle mb-0">Historial completo de asistencias registradas</p>
+        </div>
+      </div>
+      <button class="btn btn-action" routerLink="/admin/schedules/register-attendance">
+        <i class="bi bi-person-plus-fill me-2"></i>Registrar Nueva Asistencia
+      </button>
+    </div>
+
+    <!-- Main Card -->
+    <div class="card records-card shadow-lg">
+      <div class="card-body p-0">
+        <!-- Loading State -->
+        <div *ngIf="isLoading" class="text-center py-5">
+          <ion-spinner name="crescent" color="danger"></ion-spinner>
+          <p class="mt-2 text-muted">Cargando registros...</p>
+        </div>
+
+        <!-- Table -->
+        <div class="table-responsive" *ngIf="!isLoading">
+          <table class="table table-records align-middle mb-0 text-dark">
+            <thead>
+              <tr>
+                <th class="text-dark">
+                  <i class="bi bi-person me-2 text-dark"></i>Estudiante
+                </th>
+                <th class="text-dark">
+                  <i class="bi bi-book me-2 text-dark"></i>Clase
+                </th>
+                <th class="text-dark">
+                  <i class="bi bi-clock me-2 text-dark"></i>Hora de Llegada
+                </th>
+                <th class="text-dark">
+                  <i class="bi bi-check-circle me-2 text-dark"></i>Estado
+                </th>
+                <th class="text-dark">
+                  <i class="bi bi-journal-text me-2 text-dark"></i>Notas
+                </th>
+              </tr>
+            </thead>
+            <tbody *ngIf="(attendanceRecords$ | async) as records">
+              <tr *ngFor="let record of records; let i = index" class="record-row"
+                [style.animation-delay]="(i * 0.05) + 's'">
+                <td>
+                  <div class="d-flex align-items-center gap-2">
+                    <div class="student-avatar">
+                      {{ record.studentName?.charAt(0) || '?' }}
+                    </div>
+                    <span class="student-name">{{ record.studentName }}</span>
+                  </div>
+                </td>
+                <td>
+                  <span class="class-name">{{ record.classScheduleName }}</span>
+                </td>
+                <td>
+                  <span class="arrival-time">{{ record.arrivalTime | date:'medium' }}</span>
+                </td>
+                <td>
+                  <span class="status-badge" [class.status-presente]="record.status === 'presente'"
+                    [class.status-tarde]="record.status === 'tarde'"
+                    [class.status-ausente]="record.status === 'ausente'">
+                    <i class="bi me-1" [class.bi-check-circle-fill]="record.status === 'presente'"
+                      [class.bi-clock-fill]="record.status === 'tarde'"
+                      [class.bi-x-circle-fill]="record.status === 'ausente'"></i>
+                    {{ record.status | uppercase }}
+                  </span>
+                </td>
+                <td>
+                  <span class="notes-text">{{ record.notes || 'N/A' }}</span>
+                </td>
+              </tr>
+
+              <!-- Empty State -->
+              <tr *ngIf="records.length === 0">
+                <td colspan="5" class="empty-state">
+                  <div class="empty-content">
+                    <div class="empty-icon">
+                      <i class="bi bi-inbox"></i>
+                    </div>
+                    <h5>No hay registros</h5>
+                    <p>No hay registros de asistencia para mostrar.</p>
+                    <button class="btn btn-action-sm" routerLink="/admin/schedules/register-attendance">
+                      <i class="bi bi-plus-circle me-2"></i>Registrar primera asistencia
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
