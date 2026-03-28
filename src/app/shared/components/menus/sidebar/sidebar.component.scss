@@ -1,0 +1,271 @@
+/* ========================================
+    SIDEBAR STYLES (DESKTOP)
+   ======================================== */
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100vh;
+  width: 280px;
+  background-image: linear-gradient(to bottom, rgba(15, 15, 15, 0.85), rgba(15, 15, 15, 0.95)), url('/assets/img/corregidofondoescuela2025.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1000;
+}
+
+.sidebar.collapsed { width: 80px; }
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.logo .text-text {
+  font-family: 'Rock Salt', cursive;
+  font-size: 1.1rem;
+  letter-spacing: 1px;
+}
+
+.logo-img { height: 40px; width: auto; transition: 0.3s; }
+
+.toggle-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem;
+  cursor: pointer;
+  color: #fff;
+  transition: 0.2s;
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding: 1.5rem 0.75rem;
+}
+
+.sidebar-nav ul { list-style: none; padding: 0; }
+
+.sidebar-nav a {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  font-family: 'Urbanist', sans-serif;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  margin-bottom: 0.5rem;
+
+  .nav-label {
+    transition: all 0.3s ease;
+  }
+}
+
+.sidebar-nav a:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  transform: translateX(8px);
+  
+  .nav-label {
+    font-family: 'Rock Salt', cursive;
+    font-size: 0.9rem;
+    letter-spacing: 0px;
+    font-weight: 400;
+    color: var(--ion-color-primary, #e85d4c);
+  }
+
+  i {
+    color: var(--ion-color-primary, #e85d4c);
+    transform: scale(1.2) rotate(-5deg);
+  }
+}
+
+.sidebar-nav a.active {
+  background: var(--ion-color-primary, #e85d4c);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(232, 93, 76, 0.3);
+  
+  .nav-label {
+    font-family: 'Rock Salt', cursive;
+    font-size: 0.9rem;
+    color: #fff;
+  }
+}
+
+.sidebar-footer {
+  padding: 1.25rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: 0.3s;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .avatar {
+    width: 42px;
+    height: 42px;
+    background: linear-gradient(135deg, var(--ion-color-primary, #e85d4c), #ff8a75);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(232, 93, 76, 0.3);
+    
+    i {
+      font-size: 1.4rem;
+      color: #fff;
+    }
+  }
+
+  .user-details {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    .user-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.1rem;
+      color: #fff;
+      line-height: 1.2;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    .user-role {
+      font-family: 'Urbanist', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--ion-color-primary, #e85d4c);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 2px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+
+      &::before {
+        content: '';
+        width: 6px;
+        height: 6px;
+        background: var(--ion-color-primary, #e85d4c);
+        border-radius: 50%;
+        box-shadow: 0 0 8px var(--ion-color-primary, #e85d4c);
+      }
+    }
+  }
+}
+
+.logout-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.85rem;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 12px;
+  color: #ef4444;
+  font-family: 'Urbanist', sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: 0.2s;
+
+  &:hover {
+    background: #ef4444;
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+  }
+}
+
+/* ========================================
+   BOTTOM NAVIGATION (MOBILE)
+   ======================================== */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(15, 15, 15, 0.9);
+  backdrop-filter: blur(15px);
+  padding: 0.75rem 1rem calc(0.75rem + env(safe-area-inset-bottom));
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 1000;
+  border-radius: 24px 24px 0 0;
+}
+
+.bottom-nav-container {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.bottom-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: rgba(255, 255, 255, 0.5);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  flex: 1;
+}
+
+.nav-icon-wrapper {
+  padding: 0.5rem 1.25rem;
+  border-radius: 20px;
+  transition: all 0.3s ease;
+  margin-bottom: 4px;
+}
+
+.bottom-nav-item i { font-size: 1.4rem; }
+.nav-text { font-size: 0.7rem; font-weight: 600; font-family: 'Urbanist', sans-serif; }
+
+.bottom-nav-item.active {
+  color: #fff;
+}
+
+.bottom-nav-item.active .nav-icon-wrapper {
+  background: var(--ion-color-primary, #e85d4c);
+  color: #fff;
+  transform: translateY(-5px);
+  box-shadow: 0 4px 12px rgba(232, 93, 76, 0.4);
+}
+
+/* ========================================
+   RESPONSIVE LOGIC
+   ======================================== */
+@media (max-width: 767px) {
+  .sidebar { display: none !important; }
+}
+
+@media (min-width: 768px) {
+  .bottom-nav { display: none !important; }
+}

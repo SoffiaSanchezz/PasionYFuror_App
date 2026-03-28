@@ -1,0 +1,42 @@
+<ion-card class="student-card" [class.selected]="isSelected" (click)="selectCard()">
+  <div class="card-header">
+    <div class="photo-container">
+      <img [src]="student.photoPath || 'assets/img/LogoPasionyFuror.png'" alt="Student Photo">
+      <div class="status-indicator" [class.active]="student.status === 'activo'"></div>
+    </div>
+    <div class="name-container">
+      <h3>{{ student.fullName }}</h3>
+      <p>{{ student.documentId }}</p>
+    </div>
+  </div>
+
+  <ion-card-content>
+    <div class="info-row">
+      <ion-icon name="mail-outline"></ion-icon>
+      <span>{{ student.email || 'Sin correo' }}</span>
+    </div>
+    <div class="info-row">
+      <ion-icon name="call-outline"></ion-icon>
+      <span>{{ student.phone }}</span>
+    </div>
+    <div class="info-row" *ngIf="student.isMinor">
+      <ion-icon name="people-outline" color="warning"></ion-icon>
+      <span>Menor de edad</span>
+    </div>
+  </ion-card-content>
+
+  <div class="card-actions" *ngIf="isSelected">
+    <ion-button fill="clear" color="primary" (click)="edit($event)">
+      <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+    </ion-button>
+    <ion-button fill="clear" color="warning" (click)="showGuardian($event)" *ngIf="student.isMinor">
+      <ion-icon slot="icon-only" name="shield-checkmark-outline"></ion-icon>
+    </ion-button>
+    <ion-button fill="clear" [color]="student.status === 'activo' ? 'medium' : 'success'" (click)="toggleStatus($event)">
+      <ion-icon slot="icon-only" [name]="student.status === 'activo' ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+    </ion-button>
+    <ion-button fill="clear" color="danger" (click)="delete($event)">
+      <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+    </ion-button>
+  </div>
+</ion-card>

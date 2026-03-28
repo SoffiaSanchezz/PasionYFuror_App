@@ -1,0 +1,85 @@
+.student-card {
+  margin: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: visible;
+
+  &.selected {
+    box-shadow: 0 0 10px rgba(var(--ion-color-primary-rgb), 0.5);
+    border: 1px solid var(--ion-color-primary);
+  }
+
+  .card-header {
+    display: flex;
+    padding: 15px;
+    align-items: center;
+
+    .photo-container {
+      position: relative;
+      width: 60px;
+      height: 60px;
+      margin-right: 15px;
+
+      img {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+
+      .status-indicator {
+        position: absolute;
+        bottom: 2px;
+        right: 2px;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background-color: var(--ion-color-medium);
+        border: 2px solid white;
+
+        &.active {
+          background-color: var(--ion-color-success);
+        }
+      }
+    }
+
+    .name-container {
+      h3 {
+        margin: 0;
+        font-size: 1.1rem;
+        font-weight: bold;
+      }
+
+      p {
+        margin: 5px 0 0;
+        font-size: 0.9rem;
+        color: var(--ion-color-step-600);
+      }
+    }
+  }
+
+  ion-card-content {
+    padding-top: 0;
+
+    .info-row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 5px;
+      color: var(--ion-color-step-600);
+      font-size: 0.9rem;
+
+      ion-icon {
+        margin-right: 8px;
+        font-size: 1.1rem;
+      }
+    }
+  }
+
+  .card-actions {
+    display: flex;
+    justify-content: space-around;
+    border-top: 1px solid var(--ion-color-step-150);
+    padding: 5px;
+  }
+}

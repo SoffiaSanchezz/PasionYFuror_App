@@ -1,6 +1,7 @@
 import { Observable } from 'rxjs';
-import { UserEntity } from '../entities/user.entity';
+import { LoginResponseEntity } from '../entities/login-response.entity';
+import { LoginRequestEntity } from '../entities/login-information.entity';
 
 export abstract class AuthRepository {
-  abstract login(credentials: any): Observable<UserEntity>;
+  abstract authenticateUser(credentials: LoginRequestEntity): Observable<LoginResponseEntity>;
 }

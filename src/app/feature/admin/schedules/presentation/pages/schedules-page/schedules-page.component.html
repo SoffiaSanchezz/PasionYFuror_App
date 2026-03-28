@@ -1,0 +1,90 @@
+<div class="page-wrapper" [class.sidebar-collapsed]="sidebarCollapsed">
+    <!-- SIDEBAR -->
+    <app-sidebar [collapsed]="sidebarCollapsed" (collapsedChange)="onSidebarToggle($event)"></app-sidebar>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+        <div class="schedules-container dashboard-container">
+            <!-- Header Section -->
+            <header class="page-header">
+                <div class="header-content">
+                    <div class="title-section">
+                        <div class="title-text">
+                            <h1>Gestión de Horarios</h1>
+                            <p class="subtitle">Administra los horarios de clases y actividades</p>
+                        </div>
+                    </div>
+
+                    <div class="header-actions">
+                        <button class="btn-action btn-primary-custom" (click)="goToNewSchedule()">
+                            <i class="bi bi-calendar-plus"></i>
+                            <span>Añadir Horario</span>
+                        </button>
+                        <button class="btn-action btn-secondary-custom" (click)="goToAttendanceRecords()">
+                            <i class="bi bi-list-check"></i>
+                            <span>Ver Registros</span>
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Stats Cards -->
+            <section class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon blue">
+                        <i class="bi bi-calendar-week"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-value">{{ stats.activeSchedules }}</span>
+                        <span class="stat-label">Horarios Activos</span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon green">
+                        <i class="bi bi-check-circle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-value">{{ stats.attendancesToday }}</span>
+                        <span class="stat-label">Asistencias Hoy</span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon gold">
+                        <i class="bi bi-people"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-value">{{ stats.classesThisWeek }}</span>
+                        <span class="stat-label">Clases esta Semana</span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon red">
+                        <i class="bi bi-clock-history"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-value">{{ stats.progressToday }}</span>
+                        <span class="stat-label" [title]="stats.dayStatusLabel">{{ stats.dayStatusLabel }}</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Main Content Card -->
+            <section class="content-card">
+                <div class="card-body">
+                    <div *ngIf="isLoading" class="text-center py-5">
+                        <ion-spinner name="crescent" color="danger"></ion-spinner>
+                        <p class="mt-2 text-muted">Cargando horarios...</p>
+                    </div>
+                    <app-schedule-list-table *ngIf="!isLoading" 
+                        [schedules]="schedules$ | async"
+                        (edit)="onEditSchedule($event)"
+                        (delete)="onDeleteSchedule($event)">
+                    </app-schedule-list-table>
+                </div>
+            </section>
+        </div>
+    </main>
+</div>

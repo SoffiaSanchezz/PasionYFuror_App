@@ -1,0 +1,268 @@
+/* ===== STUDENT EDIT PAGE PRO LAYOUT ===== */
+$sidebar-width: 280px;
+$sidebar-collapsed-width: 80px;
+$transition-speed: 0.3s;
+$transition-curve: cubic-bezier(0.4, 0, 0.2, 1);
+
+.student-page-container {
+  display: block;
+  width: 100%;
+  min-height: 100vh;
+  background: linear-gradient(180deg, rgba(13, 13, 15, 0.8) 0%, rgba(13, 13, 15, 0.9) 100%), 
+              url('/assets/img/corregidofondoescuela2025.jpg') no-repeat center center fixed;
+  background-size: cover;
+
+  .main-content {
+    --background: transparent;
+    display: block;
+    margin-left: $sidebar-width;
+    width: auto;
+    transition: margin-left $transition-speed $transition-curve;
+
+    &.sidebar-collapsed { 
+      margin-left: $sidebar-collapsed-width; 
+    }
+
+    @media (max-width: 767px) { 
+      margin-left: 0 !important;
+      padding-bottom: 80px;
+    }
+
+    .content-wrapper {
+      padding: 2rem;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      
+      @media (max-width: 768px) { 
+        padding: 1rem; 
+      }
+    }
+  }
+}
+
+.affiliation-card {
+  width: 100%;
+  max-width: 900px;
+  background: var(--bg-secondary);
+  border-radius: 20px;
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+
+  .card-header {
+    padding: 2rem;
+    background: linear-gradient(135deg, rgba(177, 18, 38, 0.1) 0%, transparent 100%);
+    border-bottom: 1px solid var(--border-color);
+
+    .header-content {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+
+      .header-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 14px;
+        background: var(--accent-primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.8rem;
+        box-shadow: 0 0 15px rgba(177, 18, 38, 0.3);
+      }
+
+      .header-text {
+        .page-title {
+          font-family: var(--font-bebas);
+          font-size: 2.2rem;
+          color: white;
+          margin: 0;
+          letter-spacing: 1px;
+        }
+        .page-subtitle {
+          font-family: var(--font-urbanist);
+          color: var(--text-muted);
+          margin: 0;
+        }
+      }
+    }
+  }
+
+  .card-body {
+    padding: 2.5rem;
+    @media (max-width: 768px) { padding: 1.5rem; }
+  }
+
+  .card-footer {
+    padding: 1.5rem 2.5rem;
+    background: rgba(255, 255, 255, 0.02);
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      padding: 1.5rem;
+      button { width: 100%; }
+    }
+  }
+}
+
+/* Form Styles */
+.form-section {
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+
+  &.guardian {
+    background: linear-gradient(135deg, rgba(177, 18, 38, 0.03) 0%, transparent 100%);
+    border-color: rgba(177, 18, 38, 0.2);
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+
+    .section-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+
+      &.student { background: rgba(227, 178, 60, 0.1); color: #e3b23c; }
+      &.guardian { background: rgba(177, 18, 38, 0.1); color: var(--accent-primary); }
+    }
+
+    .section-title {
+      font-family: var(--font-oswald);
+      font-size: 1.25rem;
+      margin: 0;
+      color: white;
+      text-transform: uppercase;
+    }
+  }
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  @media (max-width: 768px) { grid-template-columns: 1fr; }
+}
+
+.photo-preview-section {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+
+  .avatar-wrapper {
+    text-align: center;
+    img {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--accent-primary);
+      box-shadow: 0 0 20px rgba(177, 18, 38, 0.2);
+    }
+    .avatar-label {
+      margin-top: 0.5rem;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+  }
+}
+
+.form-group {
+  .form-label {
+    display: block;
+    font-family: var(--font-urbanist);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    .required { color: var(--accent-primary); margin-left: 2px; }
+  }
+
+  .input-wrapper {
+    position: relative;
+    .input-icon {
+      position: absolute;
+      left: 1rem; top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      transition: color 0.3s;
+    }
+    .form-input {
+      width: 100%;
+      height: 50px;
+      padding: 0 1rem 0 3rem;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      color: white;
+      font-family: var(--font-urbanist);
+      transition: all 0.3s;
+      &:focus {
+        border-color: var(--accent-primary);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(177, 18, 38, 0.1);
+        & + .input-icon { color: var(--accent-primary); }
+      }
+      &.is-invalid { border-color: #ef4444; }
+    }
+  }
+
+  .error-message {
+    font-size: 0.75rem;
+    color: #ef4444;
+    margin-top: 0.4rem;
+    display: block;
+  }
+}
+
+.btn-primary, .btn-secondary {
+  padding: 0.8rem 1.5rem;
+  border-radius: 10px;
+  font-family: var(--font-oswald);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.btn-primary {
+  background: var(--accent-primary);
+  color: white;
+  &:hover { filter: brightness(1.1); transform: translateY(-2px); box-shadow: 0 5px 15px rgba(177, 18, 38, 0.3); }
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-muted);
+  border: 1px solid var(--border-color);
+  &:hover { background: rgba(255, 255, 255, 0.1); color: white; }
+}

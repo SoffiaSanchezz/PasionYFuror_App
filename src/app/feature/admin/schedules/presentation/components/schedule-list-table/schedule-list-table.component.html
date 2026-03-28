@@ -1,0 +1,57 @@
+<div class="table-responsive custom-table-wrapper">
+  <table class="table table-hover align-middle">
+    <thead>
+      <tr>
+        <th>Clase / Actividad</th>
+        <th>Instructor</th>
+        <th>Día</th>
+        <th>Horario</th>
+        <th>Estado</th>
+        <th class="text-end">Acciones</th>
+      </tr>
+    </thead>
+    <tbody *ngIf="schedules && schedules.length > 0; else emptyState">
+      <tr *ngFor="let item of schedules" class="animate-in">
+        <td>
+          <div class="d-flex align-items-center">
+            <div class="class-badge">{{ item.name.substring(0,2) | uppercase }}</div>
+            <span class="fw-bold">{{ item.name }}</span>
+          </div>
+        </td>
+        <td>{{ item.teacherName }}</td>
+        <td><span class="day-pill">{{ item.day }}</span></td>
+        <td>
+          <div class="time-range">
+            <i class="bi bi-clock me-1"></i>
+            {{ item.startTime }} - {{ item.endTime }}
+          </div>
+        </td>
+        <td>
+          <span class="status-indicator" [ngClass]="item.status">
+            {{ item.status | titlecase }}
+          </span>
+        </td>
+        <td class="text-end">
+          <button class="btn-icon edit" title="Editar" (click)="onEdit(item)">
+            <i class="bi bi-pencil"></i>
+          </button>
+          <button class="btn-icon delete" title="Eliminar" (click)="onDelete(item.id)">
+            <i class="bi bi-trash"></i>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+    <ng-template #emptyState>
+      <tbody>
+        <tr>
+          <td colspan="6" class="text-center py-5">
+            <div class="empty-content">
+              <i class="bi bi-calendar-x fs-1 opacity-25"></i>
+              <p class="mt-2 text-muted">No hay horarios registrados</p>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </ng-template>
+  </table>
+</div>

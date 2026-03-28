@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AuthRepository } from '../../core/repositories/auth.repository';
-import { UserEntity } from '../../core/entities/user.entity';
+import { LoginResponseEntity } from '../../core/entities/login-response.entity';
+import { LoginRequestEntity } from '../../core/entities/login-information.entity';
 import { ApiService } from '@shared/services/api/api.service';
 
 @Injectable({
@@ -12,8 +13,7 @@ export class AuthImplementationRepository extends AuthRepository {
     super();
   }
 
-  login(credentials: any): Observable<UserEntity> {
-    // Aquí podrías usar mappers si la respuesta de la API no coincide con UserEntity
-    return this.api.post<UserEntity>('auth/login', credentials);
+  authenticateUser(credentials: LoginRequestEntity): Observable<LoginResponseEntity> {
+    return this.api.post<LoginResponseEntity>('auth/login', credentials);
   }
 }

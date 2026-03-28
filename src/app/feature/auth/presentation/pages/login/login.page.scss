@@ -1,0 +1,126 @@
+/* Custom styles not covered by Bootstrap */
+
+.loader-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1050;
+}
+
+.login-container {
+    background-image: url('../../../../../../assets/img/corregidofondoescuela2025.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+    /* The flexbox, min-height, padding, and overflow are now handled by Bootstrap classes in HTML */
+}
+
+.login-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.4); /* Semi-transparent black overlay */
+    z-index: 0; /* Place behind login card */
+}
+
+/* Ensure the card is above the background overlay */
+.card {
+    z-index: 1;
+}
+
+/* Original custom font styles and specific colors not covered by Bootstrap */
+.card-title {
+    font-family: var(--font-rock-salt); /* Assuming --font-rock-salt is defined elsewhere */
+    font-weight: bold;
+    color: var(--neutral-black); /* Assuming --neutral-black is defined elsewhere */
+}
+
+.card-subtitle {
+    font-family: var(--font-rock-salt); /* Assuming --font-rock-salt is defined elsewhere */
+    color: rgba(0, 0, 0, 0.65);
+}
+
+.form-label {
+    font-family: var(--font-urbanist); /* Assuming --font-urbanist is defined elsewhere */
+    font-weight: 600;
+    color: rgba(0, 0, 0, 0.8);
+}
+
+/* Custom styling for inputs if needed, overriding Bootstrap defaults */
+.form-control {
+    font-family: var(--font-urbanist); /* Ensure custom font is applied to form controls */
+    padding: 0.9rem 1rem;
+    font-size: 1rem;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    background-color: #f9fafb;
+    transition: all 0.2s ease;
+    color: var(--neutral-black);
+}
+
+.form-control:focus {
+    background-color: #ffffff;
+    border-color: var(--primary-dark); /* Assuming --primary-dark is defined elsewhere */
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.08);
+}
+
+.form-control::placeholder {
+    color: #9ca3af;
+}
+
+/* Custom styling for invalid feedback if needed, overriding Bootstrap defaults */
+.invalid-feedback {
+    font-family: var(--font-urbanist); /* Ensure custom font is applied */
+    font-size: 0.8rem;
+    color: var(--primary-dark); /* Assuming --primary-dark is defined elsewhere */
+    margin-top: 0.4rem;
+}
+
+/* Custom styling for buttons, overriding Bootstrap defaults */
+.btn-primary {
+    background: var(--primary-dark) !important;
+    border-color: var(--primary-dark) !important;
+    color: var(--neutral-white) !important;
+    font-family: var(--font-urbanist) !important;
+    font-weight: 600 !important;
+    transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+    background: var(--primary-red) !important; /* Assuming --primary-red is defined elsewhere */
+    border-color: var(--primary-red) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+/* Responsive adjustments not fully covered by Bootstrap or specific overrides */
+ @media (max-width: 480px) {
+    /* If the card padding needs specific adjustment for small screens,
+       and Bootstrap's p-sm-X isn't sufficient, you can add it here.
+       Currently, p-4 p-md-5 in HTML handles this for card. */
+    /* .card { padding: 1.75rem; } */
+
+    .card-title {
+        font-size: 1.5rem;
+    }
+
+    /* flex-direction and text-align for login-header are handled by Bootstrap's
+       flex-column and text-center on .login-header-content if needed at responsive breakpoints.
+       E.g., d-flex flex-column flex-md-row */
+}

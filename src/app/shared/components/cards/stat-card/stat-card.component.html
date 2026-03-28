@@ -1,0 +1,12 @@
+<div class="stat-card" [ngClass]="colorClass">
+    <div class="stat-icon" [ngClass]="colorClass">
+        <i class="bi" [ngClass]="icon"></i>
+    </div>
+    <div class="stat-info">
+        <span class="stat-label">{{ label }}</span>
+        <span class="stat-value">{{ value }}</span>
+        <span class="stat-change" [ngClass]="changeType" *ngIf="change">
+            <i class="bi" [ngClass]="changeIcon"></i> {{ change }}
+        </span>
+    </div>
+</div>

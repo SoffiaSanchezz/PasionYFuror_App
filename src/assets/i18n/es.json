@@ -1,0 +1,56 @@
+{
+  "auth": {
+    "login": {
+      "title": "Iniciar Sesión",
+      "subtitle": "Bienvenido de nuevo a la Casa de los Artistas.",
+      "email": "Correo Electrónico",
+      "email_placeholder": "tu.correo@ejemplo.com",
+      "password": "Contraseña",
+      "password_placeholder": "••••••••",
+      "submit": "Entrar",
+      "loading": "Cargando...",
+      "errors": {
+        "email_required": "El correo es obligatorio.",
+        "email_invalid": "Por favor, introduce un correo válido.",
+        "password_required": "La contraseña es obligatoria.",
+        "invalid_credentials": "Contraseña incorrecta. Por favor, verifica tus credenciales.",
+        "user_not_found": "Usuario no encontrado. Por favor, verifica tu correo electrónico.",
+        "invalid_data": "Datos inválidos. Por favor verifica la información.",
+        "unexpected": "Ocurrió un error inesperado. Por favor, inténtalo de nuevo más tarde."
+      }
+    }
+  },
+  "dashboard": {
+    "title": "DASHBOARD PASION Y FUROR",
+    "welcome": "Bienvenido de nuevo, {{name}}",
+    "search": "Buscar estudiantes, clases...",
+    "stats": {
+      "students": "Estudiantes",
+      "classes_today": "Clases Hoy",
+      "revenue": "Ingresos",
+      "attendance": "Asistencia"
+    },
+    "sections": {
+      "today_classes": "Clases de Hoy",
+      "recent_activity": "Actividad Reciente",
+      "quick_actions": "Acciones Rápidas",
+      "calendar": "Calendario"
+    },
+    "actions": {
+      "view_all": "Ver todas",
+      "new_student": "Nuevo Estudiante",
+      "new_class": "Nueva Clase",
+      "register_payment": "Registrar Pago",
+      "generate_report": "Generar Reporte"
+    },
+    "messages": {
+      "coming_soon": "Próximamente: Vista de calendario"
+    }
+  },
+  "common": {
+    "error": "Error",
+    "success": "Éxito",
+    "cancel": "Cancelar",
+    "save": "Guardar"
+  }
+}

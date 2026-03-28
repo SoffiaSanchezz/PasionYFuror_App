@@ -1,0 +1,158 @@
+.records-container {
+  padding: 2rem;
+  background: var(--bg-primary);
+  min-height: 100vh;
+}
+
+.header-icon {
+  width: 48px;
+  height: 48px;
+  background: rgba(177, 18, 38, 0.1);
+  color: var(--accent-primary);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
+.page-title {
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 1px;
+  color: var(--text-primary);
+}
+
+.page-subtitle {
+  font-family: 'Urbanist', sans-serif;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.btn-action {
+  background: var(--accent-primary);
+  color: white;
+  font-family: 'Oswald', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 0.6rem 1.5rem;
+  border-radius: 8px;
+  transition: all 0.3s;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(177, 18, 38, 0.3);
+    color: white;
+  }
+}
+
+.records-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.table-records {
+  background: white;
+  
+  thead th {
+    background: #f8f9fa;
+    color: #495057;
+    font-family: 'Oswald', sans-serif;
+    font-weight: 500;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    padding: 1rem;
+    border-bottom: 2px solid #dee2e6;
+  }
+  
+  tbody td {
+    padding: 1rem;
+    border-bottom: 1px solid #eee;
+  }
+}
+
+.student-avatar {
+  width: 32px;
+  height: 32px;
+  background: #e9ecef;
+  color: #495057;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 0.8rem;
+}
+
+.student-name {
+  font-weight: 600;
+  color: #212529;
+}
+
+.status-badge {
+  padding: 0.4rem 0.8rem;
+  border-radius: 50px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  
+  &.status-presente {
+    background: rgba(40, 167, 69, 0.1);
+    color: #28a745;
+  }
+  
+  &.status-tarde {
+    background: rgba(255, 193, 7, 0.1);
+    color: #ffc107;
+  }
+  
+  &.status-ausente {
+    background: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+  }
+}
+
+.empty-state {
+  padding: 4rem 2rem !important;
+  text-align: center;
+  
+  .empty-icon {
+    font-size: 3rem;
+    color: #dee2e6;
+    margin-bottom: 1rem;
+  }
+  
+  h5 {
+    color: #495057;
+    font-weight: 600;
+  }
+  
+  p {
+    color: #6c757d;
+    margin-bottom: 1.5rem;
+  }
+}
+
+.btn-action-sm {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  color: #495057;
+  font-size: 0.85rem;
+  padding: 0.5rem 1rem;
+  
+  &:hover {
+    background: #e9ecef;
+  }
+}
+
+.record-row {
+  opacity: 0;
+  animation: slideIn 0.3s ease-out forwards;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-10px); }
+  to { opacity: 1; transform: translateX(0); }
+}
