@@ -1,0 +1,56 @@
+{
+  "auth": {
+    "login": {
+      "title": "Login",
+      "subtitle": "Welcome back to the House of Artists.",
+      "email": "Email Address",
+      "email_placeholder": "your.email@example.com",
+      "password": "Password",
+      "password_placeholder": "••••••••",
+      "submit": "Enter",
+      "loading": "Loading...",
+      "errors": {
+        "email_required": "Email is required.",
+        "email_invalid": "Please enter a valid email.",
+        "password_required": "Password is required.",
+        "invalid_credentials": "Incorrect password. Please verify your credentials.",
+        "user_not_found": "User not found. Please verify your email.",
+        "invalid_data": "Invalid data. Please check the information.",
+        "unexpected": "An unexpected error occurred. Please try again later."
+      }
+    }
+  },
+  "dashboard": {
+    "title": "PASION Y FUROR DASHBOARD",
+    "welcome": "Welcome back, {{name}}",
+    "search": "Search students, classes...",
+    "stats": {
+      "students": "Students",
+      "classes_today": "Classes Today",
+      "revenue": "Revenue",
+      "attendance": "Attendance"
+    },
+    "sections": {
+      "today_classes": "Today's Classes",
+      "recent_activity": "Recent Activity",
+      "quick_actions": "Quick Actions",
+      "calendar": "Calendar"
+    },
+    "actions": {
+      "view_all": "View all",
+      "new_student": "New Student",
+      "new_class": "New Class",
+      "register_payment": "Register Payment",
+      "generate_report": "Generate Report"
+    },
+    "messages": {
+      "coming_soon": "Coming soon: Calendar view"
+    }
+  },
+  "common": {
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "save": "Save"
+  }
+}

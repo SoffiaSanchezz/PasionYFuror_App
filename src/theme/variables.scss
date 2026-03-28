@@ -1,11 +1,17 @@
 /* Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&family=Bebas+Neue&family=Rock+Salt&family=Urbanist:wght@400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Bebas+Neue&family=Rock+Salt&family=Urbanist:wght@600&display=swap');
 
 /**
  * Global Design System - Pasion y Furor Theme
  * ----------------------------------------------------------------------------
  */
 :root {
+  /* Fonts */
+  --font-oswald: 'Oswald', sans-serif;
+  --font-bebas: 'Bebas Neue', sans-serif;
+  --font-rock-salt: 'Rock Salt', cursive;
+  --font-urbanist: 'Urbanist', sans-serif;
+
   /* 1. Core Colors (Admin Dashboard Theme) */
   --background: #0a0a0b;
   --foreground: #fafafa;
