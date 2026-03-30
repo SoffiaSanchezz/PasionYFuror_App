@@ -5,13 +5,13 @@ import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 
-// Routing
-import { AuthFeatureRoutingModule } from './auth-feature-routing.module';
+// Routing - Asumiendo que el routing sigue en la carpeta padre
+import { AuthFeatureRoutingModule } from '../auth-feature-routing.module';
 
-// Core
-import { AuthRepository } from './core/repositories/auth.repository';
-import { AuthImplementationRepository } from './data/repositories/auth-implementation.repository';
-import { AuthInteractor } from './core/interactor/auth.interactor';
+// Core - Subimos un nivel para encontrar core y data
+import { AuthRepository } from '../core/repositories/auth.repository';
+import { AuthImplementationRepository } from '../data/repositories/auth-implementation.repository';
+import { AuthInteractor } from '../core/interactor/auth.interactor';
 
 @NgModule({
     declarations: [],

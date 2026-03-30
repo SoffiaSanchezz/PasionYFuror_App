@@ -3,11 +3,11 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 import { IonicModule } from '@ionic/angular';
+import { SidebarComponent } from '@shared/components/menus/sidebar/sidebar.component';
 import Swal from 'sweetalert2';
 
-import { SidebarComponent } from '@shared/components/menus/sidebar/sidebar.component';
-import { ActivityEntity } from '../../domain/entities/activity.entity';
-import { GetActivitiesUseCase, DeleteActivityUseCase } from '../../domain/usecases/activities.usecases';
+import { ActivityEntity } from '../../../domain/entities/activity.entity';
+import { GetActivitiesUseCase, DeleteActivityUseCase } from '../../../domain/usecases/activities.usecases';
 import { environment } from '@environments/environment';
 
 @Component({
@@ -21,7 +21,7 @@ export class ActivitiesListPageComponent implements OnInit {
   sidebarCollapsed = false;
   activities: ActivityEntity[] = [];
   isLoading = false;
-  baseUrl = environment.apiUrl.replace('/api', '');
+  baseUrl = environment.apiUrl + '/uploads';
 
   // Stats
   totalActivities = 0;
@@ -51,11 +51,11 @@ export class ActivitiesListPageComponent implements OnInit {
         this.cdr.detectChanges();
       }))
       .subscribe({
-        next: (data) => {
+        next: (data: ActivityEntity[]) => {
           this.activities = data;
           this.calculateStats();
         },
-        error: (err) => {
+        error: (err: any) => {
           console.error('Error al cargar actividades', err);
           Swal.fire('Error', 'No se pudieron cargar las actividades', 'error');
         }
@@ -64,18 +64,21 @@ export class ActivitiesListPageComponent implements OnInit {
 
   calculateStats(): void {
     const now = new Date();
+    // Usamos el mes y año local para "ahora"
     const currentMonth = now.getMonth();
     const currentYear = now.getFullYear();
 
     this.totalActivities = this.activities.length;
     
     this.upcomingActivities = this.activities.filter(a => {
-      const eventDate = new Date(a.eventDate);
-      return eventDate >= now;
+      // Para próximos, comparamos el valor absoluto del tiempo
+      const eventDate = new Date(a.eventDate + 'T00:00:00'); 
+      return eventDate.getTime() >= new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
     }).length;
 
     this.thisMonthActivities = this.activities.filter(a => {
-      const eventDate = new Date(a.eventDate);
+      const eventDate = new Date(a.eventDate + 'T00:00:00');
+      // Comparamos mes y año local (al añadir T00:00:00 se interpreta como local en la mayoría de navegadores)
       return eventDate.getMonth() === currentMonth && eventDate.getFullYear() === currentYear;
     }).length;
   }
@@ -110,13 +113,13 @@ export class ActivitiesListPageComponent implements OnInit {
             Swal.fire('Eliminado', 'La actividad ha sido borrada.', 'success');
             this.loadActivities();
           },
-          error: (err) => Swal.fire('Error', 'No se pudo eliminar la actividad', 'error')
+          error: (err: any) => Swal.fire('Error', 'No se pudo eliminar la actividad', 'error')
         });
       }
     });
   }
 
   onImageError(event: any): void {
-    event.target.src = 'assets/img/placeholder-event.jpg';
+    event.target.src = 'assets/img/LogoPasionyFuror.png';
   }
 }
