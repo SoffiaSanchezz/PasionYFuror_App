@@ -26,11 +26,12 @@ export class SidebarComponent implements OnInit {
   userName: string = '';
   userRole: string = '';
 
+  // IMPORTANTE: Rutas ABSOLUTAS con '/' al inicio para evitar errores de contexto
   navItems: NavItem[] = [
     { icon: 'grid-fill', label: 'Inicio', route: '/admin/dashboard' },
     { icon: 'people-fill', label: 'Estudiantes', route: '/admin/students' },
     { icon: 'calendar-event-fill', label: 'Horarios', route: '/admin/schedules' },
-    { icon: 'activity', label: 'Actividades', route: '/admin/activities' },
+    { icon: 'calendar-heart-fill', label: 'Actividades', route: '/admin/activities' },
     { icon: 'credit-card-fill', label: 'Pagos', route: '/admin/payments' },
   ];
 
@@ -52,6 +53,11 @@ export class SidebarComponent implements OnInit {
   setActiveItem(item: NavItem): void {
     this.navItems.forEach(i => i.active = false);
     item.active = true;
+    
+    // Solución al foco: liberamos el foco antes de que Ionic oculte la página actual
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
   }
 
   logout(): void {

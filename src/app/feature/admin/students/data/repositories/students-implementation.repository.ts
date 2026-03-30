@@ -53,7 +53,7 @@ export class StudentsImplementationRepository implements StudentsRepository {
   }
 
   private toEntity(model: Student): StudentEntity {
-    const baseUrl = environment.apiUrl.replace('/api', ''); // Ajustar según estructura de carpetas del back
+    const baseUrl = environment.apiUrl + '/uploads'; // Ajustado para que apunte a la ruta estática del back
     
     return {
       id: model.id,

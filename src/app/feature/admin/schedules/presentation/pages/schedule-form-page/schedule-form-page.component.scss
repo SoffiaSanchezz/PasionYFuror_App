@@ -1,3 +1,5 @@
+@use '../schedules-page/schedules-page.component.scss';
+
 .form-container {
     padding: 2rem;
     min-height: 100vh;
@@ -99,6 +101,3 @@
         cursor: pointer;
     }
 }
-
-/* Reutilizando estilos de la página principal para consistencia */
-@import '../schedules-page/schedules-page.component.scss';
