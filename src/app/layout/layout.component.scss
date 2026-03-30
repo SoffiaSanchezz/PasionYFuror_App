@@ -1,0 +1,17 @@
+.page-wrapper {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* El main-content es el contenedor principal que envuelve las vistas */
+.main-content {
+  flex: 1;
+  width: 100%;
+}
+
+/* Responsive: En móviles añadimos espacio para la navegación inferior si aplica */
+@media (max-width: 767px) {
+  .main-content {
+    padding-bottom: 80px; /* Espacio para la bottom-nav */
+  }
+}

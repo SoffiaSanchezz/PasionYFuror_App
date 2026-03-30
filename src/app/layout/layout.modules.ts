@@ -2,10 +2,11 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
-import { HttpClient, HttpClientModule, provideHttpClient, withFetch, HTTP_INTERCEPTORS, withInterceptorsFromDi } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS, provideHttpClient, withFetch, withInterceptorsFromDi } from '@angular/common/http';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
-import { TRANSLATE_HTTP_LOADER_CONFIG, TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { TRANSLATE_HTTP_LOADER_CONFIG } from '@ngx-translate/http-loader';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { provideLottieOptions } from 'ngx-lottie';
 import player from 'lottie-web';
 
@@ -34,7 +35,6 @@ export function playerFactory() {
 }
 
 @NgModule({
-    declarations: [LayoutComponent],
     imports: [
         BrowserModule,
         BrowserAnimationsModule,
@@ -42,7 +42,7 @@ export function playerFactory() {
         HttpClientModule,
         IonicModule.forRoot({
             navAnimation: customNavAnimation,
-            mode: 'md' // Forzamos modo Material Design para consistencia, o puedes quitarlo
+            mode: 'md'
         }),
         LayoutRoutingModule,
         ServiceProviderModule,
@@ -52,6 +52,7 @@ export function playerFactory() {
                 useFactory: createTranslateLoader,
             },
         }),
+        LayoutComponent // Import standalone component instead of declaring it
     ],
     providers: [
         ApiService,
