@@ -1,105 +1,109 @@
-<div class="page-wrapper" [class.sidebar-collapsed]="sidebarCollapsed">
-  <app-sidebar [collapsed]="sidebarCollapsed" (collapsedChange)="onSidebarToggle($any($event))"></app-sidebar>
+<div class="activities-layout">
+  <!-- SIDEBAR (Fijo) -->
+  <app-sidebar [collapsed]="sidebarCollapsed" (collapsedChange)="onSidebarToggle($event)"></app-sidebar>
 
-  <div class="main-content">
-    <div class="activities-container dashboard-container">
+  <!-- ESPACIADOR (Ocupa el espacio del sidebar en el flujo flex) -->
+  <aside class="sidebar-spacer" [class.collapsed]="sidebarCollapsed"></aside>
 
-      <!-- Header -->
-      <div class="page-header">
-        <div class="header-content">
-          <div class="title-section">
-            <div class="title-icon">
-              <i class="bi bi-calendar-event"></i>
-            </div>
-            <div class="title-text">
-              <h1>Gestión de Actividades</h1>
-              <p class="subtitle">Organiza y comunica los eventos de la academia</p>
-            </div>
+  <div class="activities-container">
+    <!-- Header -->
+    <div class="page-header">
+      <div class="header-content">
+        <div class="title-section">
+          <div class="title-icon"><i class="bi bi-calendar-event"></i></div>
+          <div class="title-text">
+            <h1>Gestión de Actividades</h1>
+            <p class="subtitle">Organiza y comunica los eventos de la academia</p>
           </div>
-
-          <div class="header-actions">
-            <button class="btn-action btn-primary-custom" (click)="goToNewActivity()">
-              <i class="bi bi-plus-lg"></i>
-              Nueva Actividad
-            </button>
-          </div>
+        </div>
+        <div class="header-actions">
+          <button class="btn-action btn-primary-custom" (click)="goToNewActivity()">
+            <i class="bi bi-plus-lg"></i> Nueva Actividad
+          </button>
         </div>
       </div>
+    </div>
 
-      <!-- Stats Bar -->
-      <section class="stats-grid mb-4">
-        <div class="stat-card">
-          <div class="stat-icon blue"><i class="bi bi-calendar-check"></i></div>
-          <div class="stat-info">
-            <span class="stat-value">{{ totalActivities }}</span>
-            <span class="stat-label">Total Actividades</span>
-          </div>
+    <!-- Stats Grid -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon red"><i class="bi bi-calendar-check"></i></div>
+        <div class="stat-info">
+          <span class="stat-value">{{ totalActivities }}</span>
+          <span class="stat-label">Total Eventos</span>
         </div>
-        <div class="stat-card">
-          <div class="stat-icon green"><i class="bi bi-calendar-plus"></i></div>
-          <div class="stat-info">
-            <span class="stat-value">{{ upcomingActivities }}</span>
-            <span class="stat-label">Próximas</span>
-          </div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon amber"><i class="bi bi-calendar-month"></i></div>
-          <div class="stat-info">
-            <span class="stat-value">{{ thisMonthActivities }}</span>
-            <span class="stat-label">Este Mes</span>
-          </div>
-        </div>
-      </section>
-
-      <!-- Loading State -->
-      <div *ngIf="isLoading" class="text-center py-5">
-        <ion-spinner name="crescent" color="danger"></ion-spinner>
-        <p class="mt-2 text-muted">Cargando actividades...</p>
       </div>
+      <div class="stat-card">
+        <div class="stat-icon gold"><i class="bi bi-star"></i></div>
+        <div class="stat-info">
+          <span class="stat-value">{{ upcomingActivities }}</span>
+          <span class="stat-label">Próximos</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon blue"><i class="bi bi-calendar-date"></i></div>
+        <div class="stat-info">
+          <span class="stat-value">{{ thisMonthActivities }}</span>
+          <span class="stat-label">Este Mes</span>
+        </div>
+      </div>
+    </div>
 
-      <!-- Activities Grid -->
-      <div class="row g-4" *ngIf="!isLoading && activities.length > 0">
-        <div class="col-12 col-md-6 col-xl-4" *ngFor="let activity of activities">
-          <div class="activity-card animate-in">
-            <div class="card-image">
-              <img [src]="activity.imagePath ? (baseUrl + '/' + activity.imagePath) : 'assets/img/placeholder-event.jpg'" 
-                   alt="Activity Image" (error)="onImageError($event)">
-              <div class="date-badge">
-                <span class="day">{{ activity.eventDate | date:'dd' }}</span>
-                <span class="month">{{ activity.eventDate | date:'MMM' | uppercase }}</span>
+    <!-- Loading State -->
+    <div class="loading-state" *ngIf="isLoading">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Cargando actividades...</p>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state-card" *ngIf="!isLoading && activities.length === 0">
+      <i class="bi bi-calendar-x"></i>
+      <h3>No hay actividades programadas</h3>
+      <p>Comienza creando tu primer evento o clase abierta.</p>
+      <button class="btn-action btn-primary-custom" (click)="goToNewActivity()">
+        Crear ahora
+      </button>
+    </div>
+
+    <!-- Activities Grid -->
+    <div class="row g-4" *ngIf="!isLoading && activities.length > 0">
+      <div class="col-12 col-md-6 col-lg-4" *ngFor="let activity of activities">
+        <div class="activity-card">
+        <div class="card-image">
+        <img [src]="activity.imagePath ? baseUrl + '/' + activity.imagePath : 'assets/img/LogoPasionyFuror.png'" 
+             (error)="onImageError($event)" 
+             [alt]="activity.title">            <div class="date-badge">
+              <span class="day">{{ activity.eventDate | date:'dd' }}</span>
+              <span class="month">{{ activity.eventDate | date:'MMM' }}</span>
+            </div>
+          </div>
+          <div class="card-content">
+            <div class="card-header-actions">
+              <h3 class="activity-title">{{ activity.title }}</h3>
+              <button class="btn-dots" (click)="editActivity(activity.id)">
+                <i class="bi bi-pencil-square"></i>
+              </button>
+            </div>
+            <p class="activity-desc">{{ activity.description }}</p>
+            <div class="activity-meta">
+              <div class="meta-item">
+                <i class="bi bi-clock"></i> {{ activity.eventTime }}
+              </div>
+              <div class="meta-item">
+                <i class="bi bi-people"></i> {{ activity.invitedEmails.length }} Inv.
               </div>
             </div>
-            <div class="card-content">
-              <div class="card-header-actions">
-                <h3 class="activity-title" [title]="activity.title">{{ activity.title }}</h3>
-                <div class="dropdown">
-                  <button class="btn-dots" type="button" data-bs-toggle="dropdown">
-                    <i class="bi bi-three-dots-vertical"></i>
-                  </button>
-                  <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end shadow">
-                    <li><a class="dropdown-item" (click)="editActivity(activity.id)"><i class="bi bi-pencil me-2"></i>Editar</a></li>
-                    <li><a class="dropdown-item text-danger" (click)="deleteActivity(activity.id)"><i class="bi bi-trash me-2"></i>Eliminar</a></li>
-                  </ul>
-                </div>
-              </div>
-              <p class="activity-desc">{{ activity.description || 'Sin descripción disponible.' }}</p>
-              <div class="activity-meta">
-                <div class="meta-item"><i class="bi bi-clock"></i> {{ activity.eventTime }}</div>
-                <div class="meta-item"><i class="bi bi-people"></i> {{ activity.invitedEmails.length }} Invitados</div>
-              </div>
+            <div class="card-footer-actions mt-3 d-flex justify-content-end gap-2">
+              <button class="btn-action btn-secondary-custom btn-sm" (click)="deleteActivity(activity.id)">
+                <i class="bi bi-trash"></i>
+              </button>
+              <button class="btn-action btn-primary-custom btn-sm" (click)="editActivity(activity.id)">
+                <i class="bi bi-pencil-square me-1"></i> Editar
+              </button>
             </div>
           </div>
         </div>
       </div>
-
-      <!-- Empty State -->
-      <div class="empty-state-card" *ngIf="!isLoading && activities.length === 0">
-        <i class="bi bi-calendar-x"></i>
-        <h3>No hay actividades</h3>
-        <p>Comienza creando una nueva actividad para la academia.</p>
-        <button class="btn-action btn-primary-custom mt-3" (click)="goToNewActivity()">Crear Primera Actividad</button>
-      </div>
-
     </div>
   </div>
 </div>

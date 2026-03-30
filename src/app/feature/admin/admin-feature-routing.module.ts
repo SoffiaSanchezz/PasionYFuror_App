@@ -16,6 +16,10 @@ const routes: Routes = [
     loadChildren: () => import('./schedules/schedules-feature.module').then(m => m.SchedulesFeatureModule)
   },
   {
+    path: 'activities',
+    loadChildren: () => import('./activities/activities-feature.module').then(m => m.ActivitiesFeatureModule)
+  },
+  {
     path: '',
     redirectTo: 'dashboard',
     pathMatch: 'full'

@@ -3,18 +3,22 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { finalize } from 'rxjs/operators';
+import { IonicModule } from '@ionic/angular';
 import Swal from 'sweetalert2';
 
-import { GetActivityByIdUseCase, CreateActivityUseCase, UpdateActivityUseCase } from '../../domain/usecases/activities.usecases';
+import { GetActivityByIdUseCase, CreateActivityUseCase, UpdateActivityUseCase } from '../../../domain/usecases/activities.usecases';
+import { SidebarComponent } from '@shared/components/menus/sidebar/sidebar.component';
+import { environment } from '@environments/environment';
 
 @Component({
   selector: 'app-activity-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, SidebarComponent, IonicModule],
   templateUrl: './activity-form.component.html',
   styleUrls: ['./activity-form.component.scss']
 })
 export class ActivityFormComponent implements OnInit {
+  sidebarCollapsed = false;
   activityForm!: FormGroup;
   isEditMode = false;
   activityId: string | null = null;
@@ -62,7 +66,7 @@ export class ActivityFormComponent implements OnInit {
         this.cdr.detectChanges();
       }))
       .subscribe({
-        next: (activity) => {
+        next: (activity: any) => {
           this.activityForm.patchValue({
             title: activity.title,
             description: activity.description,
@@ -71,8 +75,8 @@ export class ActivityFormComponent implements OnInit {
             invitedEmails: activity.invitedEmails || []
           });
           if (activity.imagePath) {
-            // El backend sirve las imágenes desde la raíz /uploads
-            this.imageUrl = `${window.location.origin.replace('4200', '5000')}/${activity.imagePath}`;
+            // Usar la URL base del entorno para consistencia
+            this.imageUrl = `${environment.apiUrl}/uploads/${activity.imagePath}`;
           }
         },
         error: () => {
@@ -142,11 +146,15 @@ export class ActivityFormComponent implements OnInit {
           Swal.fire('¡Éxito!', `Actividad ${this.isEditMode ? 'actualizada' : 'creada'} correctamente`, 'success');
           this.onCancel();
         },
-        error: (err) => Swal.fire('Error', 'No se pudo guardar la actividad', 'error')
+        error: (err: any) => Swal.fire('Error', 'No se pudo guardar la actividad', 'error')
       });
   }
 
   onCancel(): void {
     this.router.navigate(['/admin/activities']);
+  }
+
+  onSidebarToggle(collapsed: boolean): void {
+    this.sidebarCollapsed = collapsed;
   }
 }

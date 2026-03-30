@@ -1,3 +1,8 @@
-<ion-app>
-  <ion-router-outlet></ion-router-outlet>
-</ion-app>
+<div class="page-wrapper">
+  
+  <main [class.main-content]="isAdminRoute()">
+    <!-- Las vistas de actividades y otras rutas cargan aquí -->
+    <ion-router-outlet></ion-router-outlet>
+  </main>
+
+</div>
