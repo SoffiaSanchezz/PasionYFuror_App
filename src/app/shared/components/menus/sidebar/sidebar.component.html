@@ -3,7 +3,7 @@
   <div class="sidebar-header">
     <div class="logo">
       <img *ngIf="collapsed" src="assets/img/LogoPasionyFuror.png" alt="Logo" class="logo-img" width="48" height="48">
-      <span *ngIf="!collapsed" class="text-center text-text text-white">Pasion y Furor</span>
+      <span *ngIf="!collapsed" class="text-center text-text text-white">Furor Y Pasion</span>
     </div>
     <button class="toggle-btn" (click)="toggleSidebar()">
       <i class="bi" [class]="collapsed ? 'bi-chevron-right' : 'bi-chevron-left'"></i>
@@ -41,7 +41,7 @@
 </aside>
 
 <!-- BOTTOM NAVIGATION (Móvil) -->
-<nav class="bottom-nav d-md-none">
+<nav class="bottom-nav d-md-none" [class.hidden]="isHidden">
   <div class="bottom-nav-container">
     <a *ngFor="let item of navItems" 
        [routerLink]="item.route" 

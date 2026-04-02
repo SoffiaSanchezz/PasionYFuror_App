@@ -20,6 +20,10 @@ const routes: Routes = [
     loadChildren: () => import('./activities/activities-feature.module').then(m => m.ActivitiesFeatureModule)
   },
   {
+    path: 'payments',
+    loadChildren: () => import('./payments/payments-feature.module').then(m => m.PaymentsFeatureModule)
+  },
+  {
     path: '',
     redirectTo: 'dashboard',
     pathMatch: 'full'

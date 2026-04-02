@@ -89,7 +89,7 @@ export class StudentAffiliationComponent implements OnInit, OnDestroy, AfterView
         asyncValidators: [this.documentUniqueValidator()],
         updateOn: 'blur'
       }],
-      dateOfBirth: ['', [Validators.required, this.dateNotFutureValidator]],
+      dateOfBirth: ['', [Validators.required, this.dateValidation.bind(this)]],
       email: ['', [Validators.required, Validators.email]],
       phone: ['', [Validators.required, Validators.pattern('^[0-9+ ]+$')]],
       address: ['', Validators.required],
@@ -109,6 +109,42 @@ export class StudentAffiliationComponent implements OnInit, OnDestroy, AfterView
     });
   }
 
+  // Bloquear caracteres no numéricos
+  onlyNumbers(event: KeyboardEvent): void {
+    const pattern = /[0-9]/;
+    if (!pattern.test(event.key)) {
+      event.preventDefault();
+    }
+  }
+
+  // Validador de Fecha mejorado
+  private dateValidation(control: AbstractControl): ValidationErrors | null {
+    if (!control.value) return null;
+    
+    const birthDate = new Date(control.value);
+    const today = new Date();
+    
+    // 1. Evitar fechas futuras
+    if (birthDate > today) {
+      return { futureDate: true };
+    }
+
+    // 2. Validar consistencia con el tipo de afiliación seleccionado
+    const age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+    const realAge = (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) ? age - 1 : age;
+
+    if (this.isMinor && realAge >= 18) {
+      return { adultSelectionError: true }; // Se marcó menor pero tiene 18+
+    }
+    
+    if (!this.isMinor && realAge < 18) {
+      return { minorSelectionError: true }; // Se marcó mayor pero tiene < 18
+    }
+
+    return null;
+  }
+
   // Validador Asíncrono para Documento Único
   private documentUniqueValidator() {
     return (control: AbstractControl): Observable<ValidationErrors | null> => {
@@ -121,14 +157,6 @@ export class StudentAffiliationComponent implements OnInit, OnDestroy, AfterView
         take(1)
       );
     };
-  }
-
-  // Validador de Fecha no Futura
-  private dateNotFutureValidator(control: AbstractControl): ValidationErrors | null {
-    if (!control.value) return null;
-    const date = new Date(control.value);
-    const today = new Date();
-    return date > today ? { futureDate: true } : null;
   }
 
   openRegulation(): void {
