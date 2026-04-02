@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { SessionProviderService } from '@shared/services/session/session-provider.service';
@@ -25,6 +25,10 @@ export class SidebarComponent implements OnInit {
 
   userName: string = '';
   userRole: string = '';
+  
+  // Propiedades para el scroll dinámico en móvil
+  isHidden = false;
+  private lastScrollTop = 0;
 
   // IMPORTANTE: Rutas ABSOLUTAS con '/' al inicio para evitar errores de contexto
   navItems: NavItem[] = [
@@ -43,6 +47,28 @@ export class SidebarComponent implements OnInit {
   ngOnInit(): void {
     this.userName = this.sessionProvider.getUserName();
     this.userRole = this.sessionProvider.getUserRole();
+  }
+
+  @HostListener('document:scroll', ['$event'])
+  onWindowScroll() {
+    // Detectamos el scroll tanto en el documento como en cualquier contenedor que esté scrolleando
+    const st = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+    
+    // Solo aplicar en móvil (pantallas menores a 768px)
+    if (window.innerWidth < 768) {
+      const threshold = 10; // Evita que se oculte por movimientos accidentales de pocos píxeles
+      
+      if (Math.abs(st - this.lastScrollTop) > threshold) {
+        if (st > this.lastScrollTop && st > 50) {
+          // Scroll hacia abajo - Ocultar
+          this.isHidden = true;
+        } else {
+          // Scroll hacia arriba o inicio - Mostrar
+          this.isHidden = false;
+        }
+        this.lastScrollTop = st;
+      }
+    }
   }
 
   toggleSidebar(): void {

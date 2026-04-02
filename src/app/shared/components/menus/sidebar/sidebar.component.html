@@ -41,7 +41,7 @@
 </aside>
 
 <!-- BOTTOM NAVIGATION (Móvil) -->
-<nav class="bottom-nav d-md-none">
+<nav class="bottom-nav d-md-none" [class.hidden]="isHidden">
   <div class="bottom-nav-container">
     <a *ngFor="let item of navItems" 
        [routerLink]="item.route" 
