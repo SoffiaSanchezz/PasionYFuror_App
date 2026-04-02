@@ -5,218 +5,226 @@
   <!-- MAIN CONTENT -->
   <ion-content class="main-content" [class.sidebar-collapsed]="sidebarCollapsed">
     <div class="dashboard-wrapper">
-      <div class="form-page">
-        <!-- Header -->
-        <div class="form-header">
-          <div class="header-content">
-            <div class="header-icon">
-              <i class="bi bi-currency-dollar"></i>
+      <div class="affiliation-wrapper">
+        <div class="affiliation-card" [class.wide-card]="isEditMode">
+          <!-- Card Header -->
+          <div class="card-header">
+            <div class="header-content">
+              <div class="header-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="1" x2="12" y2="23" />
+                  <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                </svg>
+              </div>
+              <div class="header-text">
+                <h1 class="page-title">{{ isEditMode ? 'Detalle de Pago' : 'Nuevo Pago' }}</h1>
+                <p class="page-subtitle">{{ isEditMode ? 'Gestión de abonos y seguimiento del plan' : 'Registra un nuevo abono o pago de plan' }}</p>
+              </div>
             </div>
-            <div class="header-text">
-              <h1 class="form-title">{{ isEditMode ? 'Detalle de Pago' : 'Nuevo Pago' }}</h1>
-              <p class="form-subtitle">
-                {{ isEditMode ? 'Gestión de abonos y seguimiento del plan' : 'Registra un nuevo abono o pago de plan' }}
-              </p>
-            </div>
+            <button type="button" class="btn-back-link" (click)="onCancel()">
+              <i class="bi bi-arrow-left"></i>
+              <span>Volver</span>
+            </button>
           </div>
-          <button type="button" class="btn-back" (click)="onCancel()">
-            <i class="bi bi-arrow-left"></i>
-            <span>Volver</span>
-          </button>
-        </div>
 
-        <div class="form-layout-grid">
-          <!-- Left Column: Main Form -->
-          <div class="form-main-column">
-            <div class="form-card">
-              <form [formGroup]="paymentForm" (ngSubmit)="onSubmit()">
-                <!-- Section: Información del Estudiante -->
-                <div class="form-section">
-                  <div class="section-header">
-                    <div class="section-icon blue">
-                      <i class="bi bi-person-fill"></i>
+          <div class="card-body">
+            <div class="form-layout-grid" [class.single-col]="!isEditMode">
+              <!-- Left Column: Main Form -->
+              <div class="form-main-column">
+                <form [formGroup]="paymentForm" (ngSubmit)="onSubmit()">
+                  <!-- Section: Información del Estudiante -->
+                  <div class="form-section">
+                    <div class="section-header">
+                      <div class="section-icon student">
+                        <i class="bi bi-person-fill"></i>
+                      </div>
+                      <h3 class="section-title">Información del Estudiante</h3>
                     </div>
-                    <h3 class="section-title">Información del Estudiante</h3>
-                  </div>
 
-                  <div class="form-group">
-                    <label for="studentId" class="form-label">Estudiante <span class="label-required">*</span></label>
-                    <div class="input-wrapper">
-                      <i class="bi bi-person input-icon"></i>
-                      <select id="studentId" formControlName="studentId" class="form-input form-select">
-                        <option value="">Seleccione un estudiante</option>
-                        <option *ngFor="let student of (students$ | async)" [value]="student.id">{{ student.full_name }}</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Section: Detalles del Plan -->
-                <div class="form-section">
-                  <div class="section-header">
-                    <div class="section-icon gold">
-                      <i class="bi bi-calendar-check"></i>
-                    </div>
-                    <h3 class="section-title">Detalles del Plan</h3>
-                  </div>
-
-                  <div class="form-grid">
                     <div class="form-group">
-                      <label for="planAcquired" class="form-label">Plan <span class="label-required">*</span></label>
+                      <label class="form-label">Estudiante <span class="required">*</span></label>
                       <div class="input-wrapper">
-                        <i class="bi bi-bookmark input-icon"></i>
-                        <select id="planAcquired" formControlName="planAcquired" class="form-input form-select">
-                          <option value="">Seleccione un plan</option>
-                          <option *ngFor="let plan of planTypes" [value]="plan">{{ plan }}</option>
+                        <i class="bi bi-person input-icon"></i>
+                        <select id="studentId" formControlName="studentId" class="form-input form-select">
+                          <option value="">Seleccione un estudiante</option>
+                          <option *ngFor="let student of (students$ | async)" [value]="student.id">{{ student.full_name }}</option>
                         </select>
                       </div>
                     </div>
+                  </div>
 
-                    <div class="form-group">
-                      <label for="totalValue" class="form-label">Valor Total <span class="label-required">*</span></label>
-                      <div class="input-wrapper">
-                        <i class="bi bi-cash input-icon"></i>
-                        <input type="number" id="totalValue" formControlName="totalValue" class="form-input">
+                  <!-- Section: Detalles del Plan -->
+                  <div class="form-section">
+                    <div class="section-header">
+                      <div class="section-icon gold">
+                        <i class="bi bi-calendar-check"></i>
+                      </div>
+                      <h3 class="section-title">Detalles del Plan</h3>
+                    </div>
+
+                    <div class="form-grid">
+                      <div class="form-group">
+                        <label class="form-label">Plan <span class="required">*</span></label>
+                        <div class="input-wrapper">
+                          <i class="bi bi-bookmark input-icon"></i>
+                          <select id="planAcquired" formControlName="planAcquired" class="form-input form-select">
+                            <option value="">Seleccione un plan</option>
+                            <option *ngFor="let plan of planTypes" [value]="plan">{{ plan }}</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div class="form-group">
+                        <label class="form-label">Valor Total <span class="required">*</span></label>
+                        <div class="input-wrapper">
+                          <i class="bi bi-cash input-icon"></i>
+                          <input type="number" id="totalValue" formControlName="totalValue" class="form-input" placeholder="0.00">
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="form-grid">
+                      <div class="form-group">
+                        <label class="form-label">Fecha Inicio <span class="required">*</span></label>
+                        <div class="input-wrapper">
+                          <i class="bi bi-calendar-event input-icon"></i>
+                          <input type="date" id="startDate" formControlName="startDate" class="form-input">
+                        </div>
+                      </div>
+
+                      <div class="form-group">
+                        <label class="form-label">Fecha Fin (Vencimiento)</label>
+                        <div class="input-wrapper">
+                          <i class="bi bi-calendar-check input-icon"></i>
+                          <input type="date" id="endDate" formControlName="endDate" class="form-input readonly-input" readonly>
+                        </div>
                       </div>
                     </div>
                   </div>
 
-                  <div class="form-grid">
-                    <div class="form-group">
-                      <label for="startDate" class="form-label">Fecha Inicio <span class="label-required">*</span></label>
-                      <div class="input-wrapper">
-                        <i class="bi bi-calendar-event input-icon"></i>
-                        <input type="date" id="startDate" formControlName="startDate" class="form-input">
+                  <!-- Section: Pago Inicial (Solo creación) -->
+                  <div class="form-section" *ngIf="!isEditMode">
+                    <div class="section-header">
+                      <div class="section-icon green">
+                        <i class="bi bi-wallet2"></i>
+                      </div>
+                      <h3 class="section-title">Primer Abono</h3>
+                    </div>
+                    <div class="form-grid">
+                      <div class="form-group">
+                        <label class="form-label">Monto a Pagar <span class="required">*</span></label>
+                        <div class="input-wrapper">
+                          <i class="bi bi-wallet2 input-icon"></i>
+                          <input type="number" id="amountPaid" formControlName="amountPaid" class="form-input" placeholder="0.00">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label class="form-label">Método <span class="required">*</span></label>
+                        <div class="input-wrapper">
+                          <i class="bi bi-credit-card input-icon"></i>
+                          <select id="paymentMethod" formControlName="paymentMethod" class="form-input form-select">
+                            <option *ngFor="let method of paymentMethods" [value]="method">{{ method }}</option>
+                          </select>
+                        </div>
                       </div>
                     </div>
-
                     <div class="form-group">
-                      <label for="endDate" class="form-label">Fecha Fin (Vencimiento)</label>
+                      <label class="form-label">Número de Recibo <span class="required">*</span></label>
                       <div class="input-wrapper">
-                        <i class="bi bi-calendar-check input-icon"></i>
-                        <input type="date" id="endDate" formControlName="endDate" class="form-input readonly-input" readonly>
+                        <i class="bi bi-hash input-icon"></i>
+                        <input type="text" id="receiptId" formControlName="receiptId" class="form-input" placeholder="Ej: REC-001">
                       </div>
                     </div>
                   </div>
-                </div>
 
-                <!-- Section: Pago Inicial (Solo creación) -->
-                <div class="form-section" *ngIf="!isEditMode">
+                  <!-- Summary (Solo Edit Mode) -->
+                  <div class="payment-summary-box" *ngIf="isEditMode && currentPayment">
+                    <div class="summary-item">
+                      <span class="summary-label">Total Plan</span>
+                      <span class="summary-value">{{ currentPayment.totalValue | currency }}</span>
+                    </div>
+                    <div class="summary-item highlight">
+                      <span class="summary-label">Total Abonado</span>
+                      <span class="summary-value text-success">{{ currentPayment.amountPaid | currency }}</span>
+                    </div>
+                    <div class="summary-item important">
+                      <span class="summary-label">Saldo Pendiente</span>
+                      <span class="summary-value text-danger">{{ currentPayment.pendingBalance | currency }}</span>
+                    </div>
+                  </div>
+
+                  <div class="form-actions-footer">
+                    <button type="button" class="btn-secondary-custom" (click)="onCancel()" [disabled]="isSaving">
+                      Cancelar
+                    </button>
+                    <button type="submit" class="btn-primary-custom" [disabled]="paymentForm.invalid || isSaving">
+                      <i class="bi" [ngClass]="isSaving ? 'bi-hourglass-split' : 'bi-check-circle'"></i>
+                      <span>{{ isSaving ? 'Guardando...' : (isEditMode ? 'Actualizar Información' : 'Registrar Pago') }}</span>
+                    </button>
+                  </div>
+                </form>
+              </div>
+
+              <!-- Right Column: Installments (Solo Edit Mode) -->
+              <div class="form-side-column" *ngIf="isEditMode">
+                <!-- Registrar Nuevo Abono -->
+                <div class="form-section side-form" *ngIf="currentPayment && currentPayment.pendingBalance > 0">
                   <div class="section-header">
-                    <div class="section-icon green">
-                      <i class="bi bi-wallet2"></i>
-                    </div>
-                    <h3 class="section-title">Primer Abono</h3>
+                    <h3 class="section-title">Registrar Nuevo Abono</h3>
                   </div>
-                  <div class="form-grid">
+                  <form [formGroup]="installmentForm" (ngSubmit)="addInstallment()">
                     <div class="form-group">
-                      <label for="amountPaid" class="form-label">Monto a Pagar <span class="label-required">*</span></label>
+                      <label class="form-label">Monto Abono</label>
                       <div class="input-wrapper">
-                        <i class="bi bi-wallet2 input-icon"></i>
-                        <input type="number" id="amountPaid" formControlName="amountPaid" class="form-input">
+                        <input type="number" formControlName="amount" class="form-input" placeholder="0.00">
                       </div>
                     </div>
                     <div class="form-group">
-                      <label for="paymentMethod" class="form-label">Método <span class="label-required">*</span></label>
+                      <label class="form-label">Método</label>
                       <div class="input-wrapper">
-                        <i class="bi bi-credit-card input-icon"></i>
-                        <select id="paymentMethod" formControlName="paymentMethod" class="form-input form-select">
+                        <select formControlName="paymentMethod" class="form-input form-select">
                           <option *ngFor="let method of paymentMethods" [value]="method">{{ method }}</option>
                         </select>
                       </div>
                     </div>
+                    <div class="form-group">
+                      <label class="form-label">Nro Recibo</label>
+                      <div class="input-wrapper">
+                        <input type="text" formControlName="receiptId" class="form-input" placeholder="REC-XXX">
+                      </div>
+                    </div>
+                    <button type="submit" class="btn-primary-custom w-100" [disabled]="isAddingInstallment || installmentForm.invalid">
+                      <i class="bi bi-plus-lg"></i>
+                      <span>{{ isAddingInstallment ? 'Procesando...' : 'Añadir Abono' }}</span>
+                    </button>
+                  </form>
+                </div>
+
+                <!-- Historial de Abonos -->
+                <div class="form-section installments-history">
+                  <div class="section-header">
+                    <h3 class="section-title">Historial de Abonos</h3>
                   </div>
-                  <div class="form-group">
-                    <label for="receiptId" class="form-label">Número de Recibo <span class="label-required">*</span></label>
-                    <div class="input-wrapper">
-                      <i class="bi bi-hash input-icon"></i>
-                      <input type="text" id="receiptId" formControlName="receiptId" class="form-input">
+                  <div class="history-list">
+                    <div class="history-item" *ngFor="let inst of currentPayment?.installments">
+                      <div class="history-icon">
+                        <i class="bi bi-arrow-down-circle"></i>
+                      </div>
+                      <div class="history-details">
+                        <div class="history-main">
+                          <span class="history-amount">{{ inst.amount | currency }}</span>
+                          <span class="history-date">{{ inst.date | date:'dd/MM/yyyy' }}</span>
+                        </div>
+                        <div class="history-meta">
+                          <span>{{ inst.paymentMethod }}</span> • <span>#{{ inst.receiptId }}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="empty-history" *ngIf="!currentPayment?.installments?.length">
+                      <p>No hay abonos registrados aún.</p>
                     </div>
                   </div>
-                </div>
-
-                <!-- Summary (Solo Edit Mode) -->
-                <div class="payment-summary-box" *ngIf="isEditMode && currentPayment">
-                  <div class="summary-item">
-                    <span class="summary-label">Total Plan</span>
-                    <span class="summary-value">{{ currentPayment.totalValue | currency }}</span>
-                  </div>
-                  <div class="summary-item highlight">
-                    <span class="summary-label">Total Abonado</span>
-                    <span class="summary-value text-success">{{ currentPayment.amountPaid | currency }}</span>
-                  </div>
-                  <div class="summary-item important">
-                    <span class="summary-label">Saldo Pendiente</span>
-                    <span class="summary-value text-danger">{{ currentPayment.pendingBalance | currency }}</span>
-                  </div>
-                </div>
-
-                <div class="form-actions">
-                  <button type="button" class="btn btn-cancel" (click)="onCancel()" [disabled]="isSaving">
-                    <span>Cancelar</span>
-                  </button>
-                  <button type="submit" class="btn btn-submit" [disabled]="paymentForm.invalid || isSaving">
-                    <i class="bi" [ngClass]="isSaving ? 'bi-hourglass-split' : 'bi-check-circle'"></i>
-                    <span>{{ isSaving ? 'Guardando...' : (isEditMode ? 'Actualizar Información' : 'Registrar Pago') }}</span>
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-
-          <!-- Right Column: Installments (Solo Edit Mode) -->
-          <div class="form-side-column" *ngIf="isEditMode">
-            <!-- Registrar Nuevo Abono -->
-            <div class="side-card" *ngIf="currentPayment && currentPayment.pendingBalance > 0">
-              <div class="side-card-header">
-                <h3 class="side-card-title">Registrar Nuevo Abono</h3>
-              </div>
-              <form [formGroup]="installmentForm" (ngSubmit)="addInstallment()">
-                <div class="form-group">
-                  <label class="form-label">Monto Abono</label>
-                  <div class="input-wrapper">
-                    <input type="number" formControlName="amount" class="form-input" placeholder="0.00">
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="form-label">Método</label>
-                  <select formControlName="paymentMethod" class="form-input form-select">
-                    <option *ngFor="let method of paymentMethods" [value]="method">{{ method }}</option>
-                  </select>
-                </div>
-                <div class="form-group">
-                  <label class="form-label">Nro Recibo</label>
-                  <input type="text" formControlName="receiptId" class="form-input" placeholder="REC-XXX">
-                </div>
-                <button type="submit" class="btn btn-submit w-100" [disabled]="isAddingInstallment || installmentForm.invalid">
-                  <i class="bi bi-plus-lg"></i>
-                  <span>{{ isAddingInstallment ? 'Procesando...' : 'Añadir Abono' }}</span>
-                </button>
-              </form>
-            </div>
-
-            <!-- Historial de Abonos -->
-            <div class="side-card installments-history">
-              <div class="side-card-header">
-                <h3 class="side-card-title">Historial de Abonos</h3>
-              </div>
-              <div class="history-list">
-                <div class="history-item" *ngFor="let inst of currentPayment?.installments">
-                  <div class="history-icon">
-                    <i class="bi bi-arrow-down-circle"></i>
-                  </div>
-                  <div class="history-details">
-                    <div class="history-main">
-                      <span class="history-amount">{{ inst.amount | currency }}</span>
-                      <span class="history-date">{{ inst.date | date:'dd/MM/yyyy' }}</span>
-                    </div>
-                    <div class="history-meta">
-                      <span>{{ inst.paymentMethod }}</span> • <span>#{{ inst.receiptId }}</span>
-                    </div>
-                  </div>
-                </div>
-                <div class="empty-history" *ngIf="!currentPayment?.installments?.length">
-                  <p>No hay abonos registrados aún.</p>
                 </div>
               </div>
             </div>
