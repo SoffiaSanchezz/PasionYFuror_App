@@ -6,6 +6,8 @@ import { Router } from '@angular/router';
 import { catchError, finalize, map, switchMap, take } from 'rxjs/operators';
 import { of, Observable, timer } from 'rxjs';
 import { IonicModule } from '@ionic/angular';
+import { Capacitor } from '@capacitor/core';
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { StudentsService, Student } from '../../../../../../shared/services/students/students.service';
 import Swal from 'sweetalert2';
 
@@ -33,6 +35,7 @@ export class StudentAffiliationComponent implements OnInit, OnDestroy, AfterView
   capturedImage: SafeUrl | null = null;
   capturedImageDataUrl: string | null = null;
   faceDescriptor: string | null = null;
+  isNative = Capacitor.isNativePlatform();
 
   private signaturePad!: CanvasRenderingContext2D;
   private isDrawing = false;
@@ -216,6 +219,10 @@ export class StudentAffiliationComponent implements OnInit, OnDestroy, AfterView
   }
 
   async startWebcam(): Promise<void> {
+    if (Capacitor.isNativePlatform()) {
+      await this.captureWithCapacitor();
+      return;
+    }
     try {
       this.videoStream = await navigator.mediaDevices.getUserMedia({ 
         video: { width: { ideal: 1280 }, height: { ideal: 720 } } 
@@ -223,6 +230,25 @@ export class StudentAffiliationComponent implements OnInit, OnDestroy, AfterView
       this.assignStreamToVideo();
     } catch (err) {
       console.error('Error accessing webcam:', err);
+      alert('No se pudo acceder a la cámara.');
+    }
+  }
+
+  private async captureWithCapacitor(): Promise<void> {
+    try {
+      const photo = await Camera.getPhoto({
+        quality: 90,
+        allowEditing: false,
+        resultType: CameraResultType.DataUrl,
+        source: CameraSource.Camera,
+      });
+
+      if (photo.dataUrl) {
+        this.capturedImageDataUrl = photo.dataUrl;
+        this.capturedImage = this.sanitizer.bypassSecurityTrustUrl(photo.dataUrl);
+      }
+    } catch (err) {
+      console.error('Error con Capacitor Camera:', err);
       alert('No se pudo acceder a la cámara.');
     }
   }
@@ -245,29 +271,27 @@ export class StudentAffiliationComponent implements OnInit, OnDestroy, AfterView
   }
 
   captureImage(): void {
+    if (Capacitor.isNativePlatform()) {
+      this.captureWithCapacitor();
+      return;
+    }
     if (this.videoElement && this.canvasElement) {
       const video = this.videoElement.nativeElement;
       const canvas = this.canvasElement.nativeElement;
       const context = canvas.getContext('2d');
       
-      // Asegurar que el video tenga dimensiones antes de capturar
       const width = video.videoWidth;
       const height = video.videoHeight;
 
       if (width && height && context) {
         canvas.width = width;
         canvas.height = height;
-        
-        // Dibujar el frame actual del video en el canvas
         context.drawImage(video, 0, 0, width, height);
-        
-        // Convertir a base64
         this.capturedImageDataUrl = canvas.toDataURL('image/png');
         if (this.capturedImageDataUrl) {
           this.capturedImage = this.sanitizer.bypassSecurityTrustUrl(this.capturedImageDataUrl);
         }
-        
-        this.stopWebcam(); // Apagar la cámara inmediatamente tras capturar
+        this.stopWebcam();
       } else {
         alert('La cámara no está lista para capturar. Por favor espera un momento.');
       }

@@ -400,19 +400,34 @@
           </div>
 
           <div class="camera-wrapper">
-            <div class="camera-container" [hidden]="capturedImage">
-              <video #videoElement autoplay playsinline muted class="video-preview"></video>
-              <div class="camera-overlay">
-                <div class="camera-frame"></div>
+            <!-- Vista web: video en tiempo real -->
+            <ng-container *ngIf="!isNative">
+              <div class="camera-container" [hidden]="capturedImage">
+                <video #videoElement autoplay playsinline muted class="video-preview"></video>
+                <div class="camera-overlay">
+                  <div class="camera-frame"></div>
+                </div>
+                <div class="camera-actions">
+                  <button class="btn-capture" (click)="captureImage()" type="button">
+                    <i class="bi bi-camera-fill"></i>
+                    <span>Tomar Foto</span>
+                  </button>
+                </div>
               </div>
-              <div class="camera-actions">
-                <button class="btn-capture" (click)="captureImage()" type="button">
-                  <i class="bi bi-camera-fill"></i>
-                  <span>Tomar Foto</span>
-                </button>
+            </ng-container>
+
+            <!-- Vista móvil: botón que abre la cámara nativa -->
+            <ng-container *ngIf="isNative && !capturedImage">
+              <div class="camera-container mobile-capture">
+                <div class="camera-actions">
+                  <button class="btn-capture" (click)="captureImage()" type="button">
+                    <i class="bi bi-camera-fill"></i>
+                    <span>Tomar Foto</span>
+                  </button>
+                </div>
               </div>
-            </div>
-            
+            </ng-container>
+
             <div class="camera-container captured" *ngIf="capturedImage">
               <img [src]="capturedImage" alt="Foto Capturada" class="captured-preview">
               <div class="camera-actions">
@@ -422,7 +437,7 @@
                 </button>
               </div>
             </div>
-            <!-- Canvas oculto para procesamiento -->
+            <!-- Canvas oculto para procesamiento web -->
             <canvas #canvasElement style="display:none;"></canvas>
           </div>
         </div>
