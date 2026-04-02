@@ -212,12 +212,18 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background: rgba(15, 15, 15, 0.9);
-  backdrop-filter: blur(15px);
+  background: rgba(15, 15, 15, 0.95);
+  backdrop-filter: blur(20px);
   padding: 0.75rem 1rem calc(0.75rem + env(safe-area-inset-bottom));
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  z-index: 1000;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  z-index: 9999; /* Z-index muy alto para asegurar visibilidad */
   border-radius: 24px 24px 0 0;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform; /* Optimización para móviles */
+
+  &.hidden {
+    transform: translateY(calc(100% + 10px)) !important; /* Aseguramos que se oculte completamente */
+  }
 }
 
 .bottom-nav-container {

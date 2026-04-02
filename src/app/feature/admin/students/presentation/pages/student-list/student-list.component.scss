@@ -41,7 +41,7 @@ $transition-curve: cubic-bezier(0.4, 0, 0.2, 1);
       margin: 0;
       
       @media (max-width: 768px) {
-        padding: 1.5rem;
+        padding: 4rem 1.5rem 100px 1.5rem; // Aumentado padding superior para móviles
         /* IMPORTANTE: Añade espacio para que el bottom-nav no tape el contenido */
         padding-bottom: 100px !important; 
       }
@@ -58,13 +58,40 @@ $transition-curve: cubic-bezier(0.4, 0, 0.2, 1);
   padding-bottom: 1.5rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 
-  @media (max-width: 600px) {
+  @media (max-width: 768px) {
     flex-direction: column;
-    align-items: flex-start;
-    gap: 1.5rem;
+    align-items: center; // Centrado general para móvil
+    text-align: center;  // Centrado de texto
+    gap: 2rem;
   }
 
   .header-info {
+    @media (max-width: 768px) {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .mobile-header-icon {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, #b11226 0%, #8b0e1e 100%); // Rojo sólido premium
+      border-radius: 12px; // Forma de recuadro
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.8rem;
+      margin-bottom: 1.2rem;
+      box-shadow: 0 8px 25px rgba(177, 18, 38, 0.4);
+      border: 2px solid rgba(255, 255, 255, 0.1); // Borde para definir el recuadro
+
+      @media (max-width: 768px) {
+        margin-left: auto;
+        margin-right: auto;
+      }
+    }
+
     .title {
       font-family: var(--font-bebas);
       font-size: 3.5rem;

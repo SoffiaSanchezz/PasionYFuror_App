@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl, ValidationErrors } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
@@ -49,11 +49,11 @@ export class StudentEditComponent implements OnInit {
 
   private initForms(): void {
     this.studentForm = this.fb.group({
-      fullName: ['', Validators.required],
-      documentId: ['', Validators.required],
-      dateOfBirth: ['', Validators.required],
+      fullName: ['', [Validators.required, Validators.minLength(3)]],
+      documentId: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
+      dateOfBirth: ['', [Validators.required, this.dateValidation.bind(this)]],
       email: ['', [Validators.required, Validators.email]],
-      phone: ['', Validators.required],
+      phone: ['', [Validators.required, Validators.pattern('^[0-9+ ]+$')]],
       address: ['', Validators.required],
     });
 
@@ -64,6 +64,37 @@ export class StudentEditComponent implements OnInit {
       relationship: [''],
       email: ['', [Validators.email]],
     });
+  }
+
+  // Bloquear caracteres no numéricos
+  onlyNumbers(event: KeyboardEvent): void {
+    const pattern = /[0-9]/;
+    if (!pattern.test(event.key)) {
+      event.preventDefault();
+    }
+  }
+
+  // Validador de Fecha mejorado
+  private dateValidation(control: AbstractControl): ValidationErrors | null {
+    if (!control.value) return null;
+
+    const birthDate = new Date(control.value);
+    const today = new Date();
+
+    // 1. Evitar fechas futuras
+    if (birthDate > today) {
+      return { futureDate: true };
+    }
+
+    // 2. Determinar si es menor automáticamente
+    const age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+    const realAge = (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) ? age - 1 : age;
+
+    this.isMinor = realAge < 18;
+    this.applyGuardianValidators(this.isMinor);
+
+    return null;
   }
 
   loadStudentData(): void {
