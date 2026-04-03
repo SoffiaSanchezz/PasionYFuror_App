@@ -20,15 +20,27 @@
       }
     }
   },
+  "nav": {
+    "dashboard": "Inicio",
+    "students": "Estudiantes",
+    "schedules": "Horarios",
+    "activities": "Actividades",
+    "payments": "Pagos",
+    "logout": "Cerrar Sesión"
+  },
   "dashboard": {
-    "title": "DASHBOARD PASION Y FUROR",
+    "title": "DASHBOARD FUROR Y PASION",
     "welcome": "Bienvenido de nuevo, {{name}}",
     "search": "Buscar estudiantes, clases...",
     "stats": {
       "students": "Estudiantes",
       "classes_today": "Clases Hoy",
       "revenue": "Ingresos",
-      "attendance": "Asistencia"
+      "attendance": "Asistencia",
+      "total_enrolled": "Total inscritos",
+      "scheduled": "Programadas",
+      "total_collected": "Total recaudado",
+      "pending": "Pendiente implementar"
     },
     "sections": {
       "today_classes": "Clases de Hoy",
@@ -38,19 +50,337 @@
     },
     "actions": {
       "view_all": "Ver todas",
+      "view_students": "Ver estudiantes",
       "new_student": "Nuevo Estudiante",
-      "new_class": "Nueva Clase",
+      "manage_classes": "Gestionar Clases",
       "register_payment": "Registrar Pago",
-      "generate_report": "Generar Reporte"
+      "view_students_list": "Ver Estudiantes"
     },
-    "messages": {
-      "coming_soon": "Próximamente: Vista de calendario"
+    "calendar": {
+      "synced": "Datos sincronizados con actividades reales"
+    },
+    "classes": {
+      "no_classes": "No hay clases programadas para hoy"
+    },
+    "activity": {
+      "no_activity": "Sin actividad reciente",
+      "new_student": "Nuevo estudiante: {{name}}"
+    },
+    "notifications": {
+      "title": "Notificaciones",
+      "mark_all_read": "Marcar todas como leídas",
+      "empty": "No tienes notificaciones",
+      "view_all": "Ver todas"
+    }
+  },
+  "students": {
+    "title": "GESTIÓN DE ESTUDIANTES",
+    "subtitle": "Panel de administración académica y control de afiliados",
+    "new_student": "Nuevo Estudiante",
+    "search_placeholder": "Buscar por nombre, Identificacion o email...",
+    "tabs": {
+      "active": "ACTIVOS",
+      "inactive": "INACTIVOS"
+    },
+    "stats": {
+      "active": "Activos",
+      "inactive": "Inactivos",
+      "total": "Total Base"
+    },
+    "loading": "Sincronizando estudiantes...",
+    "empty_active": "No se encontraron estudiantes activos",
+    "empty_disabled": "No se encontraron estudiantes deshabilitados",
+    "guardian_modal": {
+      "title": "INFO. ACUDIENTE",
+      "student_label": "ESTUDIANTE",
+      "name": "Nombre",
+      "phone": "Teléfono",
+      "email": "Email",
+      "relationship": "Vínculo",
+      "adult_message": "Este estudiante es <strong>mayor de edad</strong>, no tiene acudiente registrado.",
+      "no_guardian": "No se pudo cargar la información del acudiente."
+    },
+    "affiliation": {
+      "title": "Formulario de Afiliación",
+      "subtitle": "Complete los pasos para registrar un nuevo estudiante",
+      "steps": {
+        "type": "Tipo",
+        "data": "Datos",
+        "contract": "Contrato",
+        "confirm": "Confirmar"
+      },
+      "step1": {
+        "title": "¿Quién se afiliará?",
+        "description": "Selecciona el tipo de afiliación según la edad del estudiante",
+        "adult": "Mayor de Edad",
+        "adult_desc": "Afiliación personal sin acudiente",
+        "minor": "Menor de Edad",
+        "minor_desc": "Requiere datos del acudiente"
+      },
+      "step2": {
+        "student_section": "Datos del Estudiante",
+        "guardian_section": "Datos del Acudiente",
+        "full_name": "Nombre Completo",
+        "document_id": "Documento de Identidad",
+        "date_of_birth": "Fecha de Nacimiento",
+        "email": "Correo Electrónico",
+        "phone": "Teléfono",
+        "address": "Dirección",
+        "relationship": "Parentesco",
+        "placeholders": {
+          "full_name": "Ej: Juan Pérez García",
+          "document_id": "Ej: 1234567890",
+          "email": "correo@ejemplo.com",
+          "phone": "Ej: 300 123 4567",
+          "address": "Ej: Calle 123 #45-67",
+          "relationship": "Padre, Madre, etc.",
+          "guardian_email": "email@acudiente.com"
+        },
+        "errors": {
+          "name_required": "El nombre completo es requerido",
+          "name_min": "El nombre debe tener al menos 3 caracteres",
+          "document_required": "Documento es requerido",
+          "document_numbers_only": "Solo se aceptan números",
+          "document_duplicate": "Este documento ya está registrado en el sistema",
+          "document_checking": "Verificando documento...",
+          "dob_required": "Fecha de nacimiento requerida",
+          "dob_future": "La fecha no puede ser futura",
+          "adult_selection_error": "Seleccionaste 'Menor de edad', pero la fecha indica que es adulto",
+          "minor_selection_error": "Seleccionaste 'Mayor de edad', pero la fecha indica que es menor",
+          "phone_required": "Teléfono es requerido",
+          "address_required": "Dirección es requerida"
+        }
+      },
+      "step3": {
+        "contract_title": "Contrato de Afiliación",
+        "signature_title": "Firma del Estudiante/Acudiente",
+        "clear_signature": "Limpiar Firma",
+        "photo_title": "Captura de Foto",
+        "take_photo": "Tomar Foto",
+        "retake_photo": "Repetir Foto",
+        "accept_terms": "He leído y acepto los términos y condiciones."
+      },
+      "step4": {
+        "success_title": "¡Afiliación Exitosa!",
+        "success_message": "El proceso se ha completado correctamente. Redirigiendo...",
+        "back_to_list": "Volver a la Lista"
+      },
+      "buttons": {
+        "previous": "Anterior",
+        "next": "Siguiente",
+        "finish": "Finalizar y Enviar"
+      }
+    },
+    "edit": {
+      "title": "Editar Estudiante",
+      "subtitle": "Modifica los datos del estudiante existente",
+      "loading": "Cargando información...",
+      "not_found": "El estudiante no existe o no se pudo cargar.",
+      "back_to_list": "Volver a la lista",
+      "student_section": "Datos del Estudiante",
+      "guardian_section": "Datos del Acudiente",
+      "cancel": "Cancelar",
+      "update": "Actualizar Estudiante",
+      "current_photo": "Foto Actual",
+      "no_photo": "Sin Foto",
+      "errors": {
+        "name_required": "Nombre completo es requerido",
+        "name_min": "El nombre debe tener al menos 3 caracteres",
+        "document_required": "Documento es requerido",
+        "numbers_only": "Solo se aceptan números",
+        "dob_required": "Fecha de nacimiento es requerida",
+        "dob_future": "La fecha no puede ser futura",
+        "email_required": "Correo es requerido",
+        "email_invalid": "Formato de correo inválido",
+        "phone_required": "Teléfono es requerido",
+        "address_required": "Dirección es requerida"
+      }
+    }
+  },
+  "activities": {
+    "title": "Gestión de Actividades",
+    "subtitle": "Organiza y comunica los eventos de la academia",
+    "new_activity": "Nueva Actividad",
+    "stats": {
+      "total": "Total Eventos",
+      "upcoming": "Próximos",
+      "this_month": "Este Mes"
+    },
+    "loading": "Cargando actividades...",
+    "empty_title": "No hay actividades programadas",
+    "empty_desc": "Comienza creando tu primer evento o clase abierta.",
+    "create_now": "Crear ahora",
+    "guests": "Inv.",
+    "edit": "Editar",
+    "form": {
+      "new_title": "Nueva Actividad",
+      "edit_title": "Editar Actividad",
+      "subtitle": "Completa la información del evento",
+      "title_label": "Título de la Actividad",
+      "title_placeholder": "Ej: Clase Abierta de Flamenco",
+      "title_error": "El título es requerido (mín. 5 caracteres)",
+      "image_label": "Imagen del Evento",
+      "image_upload": "Click para subir imagen",
+      "description_label": "Descripción",
+      "description_placeholder": "Detalles del evento...",
+      "date_label": "Fecha",
+      "time_label": "Hora",
+      "invite_label": "Invitar por Email",
+      "invite_placeholder": "correo@ejemplo.com",
+      "cancel": "Cancelar",
+      "save": "Guardar",
+      "saving": "Guardando...",
+      "update": "Actualizar",
+      "create": "Crear Actividad"
+    }
+  },
+  "payments": {
+    "title": "Gestión de Pagos",
+    "subtitle": "Administra los pagos y estados de planes de los estudiantes",
+    "new_payment": "Registrar Nuevo Pago",
+    "stats": {
+      "active": "Planes Activos",
+      "expiring_soon": "Próximos a Vencer",
+      "expired": "Planes Vencidos"
+    },
+    "filters": {
+      "student": "Estudiante",
+      "all_students": "Todos los Estudiantes",
+      "plan_status": "Estado del Plan",
+      "all_statuses": "Todos los Estados",
+      "payment_method": "Método de Pago",
+      "all_methods": "Todos los Métodos"
+    },
+    "table": {
+      "student": "Estudiante",
+      "plan": "Plan",
+      "total": "Total",
+      "paid": "Abonado",
+      "balance": "Saldo",
+      "payment_status": "Estado Pago",
+      "method": "Método",
+      "expiry": "Vencimiento",
+      "plan_status": "Estado Plan",
+      "actions": "Acciones"
+    },
+    "status": {
+      "completed": "Completo",
+      "partial": "Parcial",
+      "active": "Activo",
+      "expiring_soon": "Por Vencer",
+      "expired": "Vencido"
+    },
+    "loading": "Cargando registros de pagos...",
+    "empty_title": "No se encontraron registros",
+    "empty_desc": "Intenta ajustar los filtros o registra un nuevo pago.",
+    "form": {
+      "new_title": "Nuevo Pago",
+      "edit_title": "Detalle de Pago",
+      "new_subtitle": "Registra un nuevo abono o pago de plan",
+      "edit_subtitle": "Gestión de abonos y seguimiento del plan",
+      "back": "Volver",
+      "student_section": "Información del Estudiante",
+      "student_label": "Estudiante",
+      "student_placeholder": "Seleccione un estudiante",
+      "plan_section": "Detalles del Plan",
+      "plan_label": "Plan",
+      "plan_placeholder": "Seleccione un plan",
+      "total_value": "Valor Total",
+      "start_date": "Fecha Inicio",
+      "end_date": "Fecha Fin (Vencimiento)",
+      "payment_section": "Primer Abono",
+      "amount_label": "Monto a Pagar",
+      "method_label": "Método",
+      "receipt_label": "Número de Recibo",
+      "receipt_placeholder": "Ej: REC-001",
+      "summary": {
+        "total": "Total Plan",
+        "paid": "Total Abonado",
+        "balance": "Saldo Pendiente"
+      },
+      "installment_section": "Registrar Nuevo Abono",
+      "installment_amount": "Monto Abono",
+      "installment_method": "Método",
+      "installment_receipt": "Nro Recibo",
+      "add_installment": "Añadir Abono",
+      "processing": "Procesando...",
+      "history_section": "Historial de Abonos",
+      "no_history": "No hay abonos registrados aún.",
+      "cancel": "Cancelar",
+      "save": "Guardando...",
+      "register": "Registrar Pago",
+      "update": "Actualizar Información"
+    }
+  },
+  "schedules": {
+    "title": "Gestión de Horarios",
+    "subtitle": "Administra los horarios de clases y actividades",
+    "add_schedule": "Añadir Horario",
+    "view_records": "Ver Registros",
+    "stats": {
+      "active": "Horarios Activos",
+      "attendance_today": "Asistencias Hoy",
+      "classes_week": "Clases esta Semana"
+    },
+    "loading": "Cargando horarios...",
+    "table": {
+      "class": "Clase / Actividad",
+      "instructor": "Instructor",
+      "day": "Día",
+      "schedule": "Horario",
+      "status": "Estado",
+      "actions": "Acciones",
+      "empty": "No hay horarios registrados"
+    },
+    "form": {
+      "add_title": "Añadir Horario",
+      "edit_title": "Editar Horario",
+      "add_subtitle": "Complete los datos para registrar un nuevo horario",
+      "edit_subtitle": "Modifica los detalles de la clase existente",
+      "loading": "Cargando datos...",
+      "class_section": "Información de la Clase",
+      "class_name": "Nombre de la Clase / Actividad",
+      "class_name_placeholder": "Ej: Salsa Nivel 1",
+      "class_name_error": "El nombre es requerido (mín. 3 caracteres)",
+      "instructor": "Instructor / Profesor",
+      "instructor_placeholder": "Nombre del profesor",
+      "instructor_error": "El nombre del instructor es obligatorio",
+      "schedule_section": "Programación de Horario",
+      "day_label": "Día de la semana",
+      "day_placeholder": "Seleccione un día",
+      "start_time": "Hora de Inicio",
+      "end_time": "Hora de Fin",
+      "status_label": "Estado del Horario",
+      "status_active": "Activo",
+      "status_inactive": "Inactivo",
+      "cancel": "Cancelar",
+      "save_changes": "Guardar Cambios",
+      "create": "Crear Horario"
+    },
+    "attendance": {
+      "title": "Registros de Asistencia",
+      "subtitle": "Historial completo de asistencias registradas",
+      "register_new": "Registrar Nueva Asistencia",
+      "loading": "Cargando registros...",
+      "table": {
+        "student": "Estudiante",
+        "class": "Clase",
+        "arrival": "Hora de Llegada",
+        "status": "Estado",
+        "notes": "Notas"
+      },
+      "empty_title": "No hay registros",
+      "empty_desc": "No hay registros de asistencia para mostrar.",
+      "register_first": "Registrar primera asistencia"
     }
   },
   "common": {
     "error": "Error",
     "success": "Éxito",
     "cancel": "Cancelar",
-    "save": "Guardar"
+    "save": "Guardar",
+    "loading": "Cargando...",
+    "na": "N/A",
+    "required": "requerido"
   }
 }

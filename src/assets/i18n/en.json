@@ -20,15 +20,27 @@
       }
     }
   },
+  "nav": {
+    "dashboard": "Home",
+    "students": "Students",
+    "schedules": "Schedules",
+    "activities": "Activities",
+    "payments": "Payments",
+    "logout": "Log Out"
+  },
   "dashboard": {
-    "title": "PASION Y FUROR DASHBOARD",
+    "title": "FUROR Y PASION DASHBOARD",
     "welcome": "Welcome back, {{name}}",
     "search": "Search students, classes...",
     "stats": {
       "students": "Students",
       "classes_today": "Classes Today",
       "revenue": "Revenue",
-      "attendance": "Attendance"
+      "attendance": "Attendance",
+      "total_enrolled": "Total enrolled",
+      "scheduled": "Scheduled",
+      "total_collected": "Total collected",
+      "pending": "Pending implementation"
     },
     "sections": {
       "today_classes": "Today's Classes",
@@ -38,19 +50,337 @@
     },
     "actions": {
       "view_all": "View all",
+      "view_students": "View students",
       "new_student": "New Student",
-      "new_class": "New Class",
+      "manage_classes": "Manage Classes",
       "register_payment": "Register Payment",
-      "generate_report": "Generate Report"
+      "view_students_list": "View Students"
     },
-    "messages": {
-      "coming_soon": "Coming soon: Calendar view"
+    "calendar": {
+      "synced": "Data synced with real activities"
+    },
+    "classes": {
+      "no_classes": "No classes scheduled for today"
+    },
+    "activity": {
+      "no_activity": "No recent activity",
+      "new_student": "New student: {{name}}"
+    },
+    "notifications": {
+      "title": "Notifications",
+      "mark_all_read": "Mark all as read",
+      "empty": "No notifications",
+      "view_all": "View all"
+    }
+  },
+  "students": {
+    "title": "STUDENT MANAGEMENT",
+    "subtitle": "Academic administration panel and affiliate control",
+    "new_student": "New Student",
+    "search_placeholder": "Search by name, ID or email...",
+    "tabs": {
+      "active": "ACTIVE",
+      "inactive": "INACTIVE"
+    },
+    "stats": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "total": "Total Base"
+    },
+    "loading": "Syncing students...",
+    "empty_active": "No active students found",
+    "empty_disabled": "No disabled students found",
+    "guardian_modal": {
+      "title": "GUARDIAN INFO",
+      "student_label": "STUDENT",
+      "name": "Name",
+      "phone": "Phone",
+      "email": "Email",
+      "relationship": "Relationship",
+      "adult_message": "This student is an <strong>adult</strong>, no guardian registered.",
+      "no_guardian": "Could not load guardian information."
+    },
+    "affiliation": {
+      "title": "Affiliation Form",
+      "subtitle": "Complete the steps to register a new student",
+      "steps": {
+        "type": "Type",
+        "data": "Data",
+        "contract": "Contract",
+        "confirm": "Confirm"
+      },
+      "step1": {
+        "title": "Who will be affiliated?",
+        "description": "Select the affiliation type based on the student's age",
+        "adult": "Adult",
+        "adult_desc": "Personal affiliation without guardian",
+        "minor": "Minor",
+        "minor_desc": "Requires guardian information"
+      },
+      "step2": {
+        "student_section": "Student Data",
+        "guardian_section": "Guardian Data",
+        "full_name": "Full Name",
+        "document_id": "Identity Document",
+        "date_of_birth": "Date of Birth",
+        "email": "Email Address",
+        "phone": "Phone",
+        "address": "Address",
+        "relationship": "Relationship",
+        "placeholders": {
+          "full_name": "e.g. John Smith",
+          "document_id": "e.g. 1234567890",
+          "email": "email@example.com",
+          "phone": "e.g. 300 123 4567",
+          "address": "e.g. 123 Main St",
+          "relationship": "Father, Mother, etc.",
+          "guardian_email": "guardian@example.com"
+        },
+        "errors": {
+          "name_required": "Full name is required",
+          "name_min": "Name must be at least 3 characters",
+          "document_required": "Document is required",
+          "document_numbers_only": "Numbers only",
+          "document_duplicate": "This document is already registered",
+          "document_checking": "Checking document...",
+          "dob_required": "Date of birth is required",
+          "dob_future": "Date cannot be in the future",
+          "adult_selection_error": "You selected 'Minor' but the date indicates an adult",
+          "minor_selection_error": "You selected 'Adult' but the date indicates a minor",
+          "phone_required": "Phone is required",
+          "address_required": "Address is required"
+        }
+      },
+      "step3": {
+        "contract_title": "Affiliation Contract",
+        "signature_title": "Student/Guardian Signature",
+        "clear_signature": "Clear Signature",
+        "photo_title": "Photo Capture",
+        "take_photo": "Take Photo",
+        "retake_photo": "Retake Photo",
+        "accept_terms": "I have read and accept the terms and conditions."
+      },
+      "step4": {
+        "success_title": "Affiliation Successful!",
+        "success_message": "The process has been completed successfully. Redirecting...",
+        "back_to_list": "Back to List"
+      },
+      "buttons": {
+        "previous": "Previous",
+        "next": "Next",
+        "finish": "Finish & Submit"
+      }
+    },
+    "edit": {
+      "title": "Edit Student",
+      "subtitle": "Modify the existing student's data",
+      "loading": "Loading information...",
+      "not_found": "The student does not exist or could not be loaded.",
+      "back_to_list": "Back to list",
+      "student_section": "Student Data",
+      "guardian_section": "Guardian Data",
+      "cancel": "Cancel",
+      "update": "Update Student",
+      "current_photo": "Current Photo",
+      "no_photo": "No Photo",
+      "errors": {
+        "name_required": "Full name is required",
+        "name_min": "Name must be at least 3 characters",
+        "document_required": "Document is required",
+        "numbers_only": "Numbers only",
+        "dob_required": "Date of birth is required",
+        "dob_future": "Date cannot be in the future",
+        "email_required": "Email is required",
+        "email_invalid": "Invalid email format",
+        "phone_required": "Phone is required",
+        "address_required": "Address is required"
+      }
+    }
+  },
+  "activities": {
+    "title": "Activity Management",
+    "subtitle": "Organize and communicate academy events",
+    "new_activity": "New Activity",
+    "stats": {
+      "total": "Total Events",
+      "upcoming": "Upcoming",
+      "this_month": "This Month"
+    },
+    "loading": "Loading activities...",
+    "empty_title": "No activities scheduled",
+    "empty_desc": "Start by creating your first event or open class.",
+    "create_now": "Create now",
+    "guests": "Guests",
+    "edit": "Edit",
+    "form": {
+      "new_title": "New Activity",
+      "edit_title": "Edit Activity",
+      "subtitle": "Complete the event information",
+      "title_label": "Activity Title",
+      "title_placeholder": "e.g. Open Flamenco Class",
+      "title_error": "Title is required (min. 5 characters)",
+      "image_label": "Event Image",
+      "image_upload": "Click to upload image",
+      "description_label": "Description",
+      "description_placeholder": "Event details...",
+      "date_label": "Date",
+      "time_label": "Time",
+      "invite_label": "Invite by Email",
+      "invite_placeholder": "email@example.com",
+      "cancel": "Cancel",
+      "save": "Save",
+      "saving": "Saving...",
+      "update": "Update",
+      "create": "Create Activity"
+    }
+  },
+  "payments": {
+    "title": "Payment Management",
+    "subtitle": "Manage payments and student plan statuses",
+    "new_payment": "Register New Payment",
+    "stats": {
+      "active": "Active Plans",
+      "expiring_soon": "Expiring Soon",
+      "expired": "Expired Plans"
+    },
+    "filters": {
+      "student": "Student",
+      "all_students": "All Students",
+      "plan_status": "Plan Status",
+      "all_statuses": "All Statuses",
+      "payment_method": "Payment Method",
+      "all_methods": "All Methods"
+    },
+    "table": {
+      "student": "Student",
+      "plan": "Plan",
+      "total": "Total",
+      "paid": "Paid",
+      "balance": "Balance",
+      "payment_status": "Payment Status",
+      "method": "Method",
+      "expiry": "Expiry",
+      "plan_status": "Plan Status",
+      "actions": "Actions"
+    },
+    "status": {
+      "completed": "Complete",
+      "partial": "Partial",
+      "active": "Active",
+      "expiring_soon": "Expiring Soon",
+      "expired": "Expired"
+    },
+    "loading": "Loading payment records...",
+    "empty_title": "No records found",
+    "empty_desc": "Try adjusting the filters or register a new payment.",
+    "form": {
+      "new_title": "New Payment",
+      "edit_title": "Payment Detail",
+      "new_subtitle": "Register a new payment or plan installment",
+      "edit_subtitle": "Manage installments and plan tracking",
+      "back": "Back",
+      "student_section": "Student Information",
+      "student_label": "Student",
+      "student_placeholder": "Select a student",
+      "plan_section": "Plan Details",
+      "plan_label": "Plan",
+      "plan_placeholder": "Select a plan",
+      "total_value": "Total Value",
+      "start_date": "Start Date",
+      "end_date": "End Date (Expiry)",
+      "payment_section": "First Installment",
+      "amount_label": "Amount to Pay",
+      "method_label": "Method",
+      "receipt_label": "Receipt Number",
+      "receipt_placeholder": "e.g. REC-001",
+      "summary": {
+        "total": "Plan Total",
+        "paid": "Total Paid",
+        "balance": "Pending Balance"
+      },
+      "installment_section": "Register New Installment",
+      "installment_amount": "Installment Amount",
+      "installment_method": "Method",
+      "installment_receipt": "Receipt No.",
+      "add_installment": "Add Installment",
+      "processing": "Processing...",
+      "history_section": "Installment History",
+      "no_history": "No installments registered yet.",
+      "cancel": "Cancel",
+      "save": "Saving...",
+      "register": "Register Payment",
+      "update": "Update Information"
+    }
+  },
+  "schedules": {
+    "title": "Schedule Management",
+    "subtitle": "Manage class schedules and activities",
+    "add_schedule": "Add Schedule",
+    "view_records": "View Records",
+    "stats": {
+      "active": "Active Schedules",
+      "attendance_today": "Attendance Today",
+      "classes_week": "Classes This Week"
+    },
+    "loading": "Loading schedules...",
+    "table": {
+      "class": "Class / Activity",
+      "instructor": "Instructor",
+      "day": "Day",
+      "schedule": "Schedule",
+      "status": "Status",
+      "actions": "Actions",
+      "empty": "No schedules registered"
+    },
+    "form": {
+      "add_title": "Add Schedule",
+      "edit_title": "Edit Schedule",
+      "add_subtitle": "Complete the data to register a new schedule",
+      "edit_subtitle": "Modify the details of the existing class",
+      "loading": "Loading data...",
+      "class_section": "Class Information",
+      "class_name": "Class / Activity Name",
+      "class_name_placeholder": "e.g. Salsa Level 1",
+      "class_name_error": "Name is required (min. 3 characters)",
+      "instructor": "Instructor / Teacher",
+      "instructor_placeholder": "Teacher name",
+      "instructor_error": "Instructor name is required",
+      "schedule_section": "Schedule Programming",
+      "day_label": "Day of the week",
+      "day_placeholder": "Select a day",
+      "start_time": "Start Time",
+      "end_time": "End Time",
+      "status_label": "Schedule Status",
+      "status_active": "Active",
+      "status_inactive": "Inactive",
+      "cancel": "Cancel",
+      "save_changes": "Save Changes",
+      "create": "Create Schedule"
+    },
+    "attendance": {
+      "title": "Attendance Records",
+      "subtitle": "Complete history of registered attendances",
+      "register_new": "Register New Attendance",
+      "loading": "Loading records...",
+      "table": {
+        "student": "Student",
+        "class": "Class",
+        "arrival": "Arrival Time",
+        "status": "Status",
+        "notes": "Notes"
+      },
+      "empty_title": "No records",
+      "empty_desc": "No attendance records to display.",
+      "register_first": "Register first attendance"
     }
   },
   "common": {
     "error": "Error",
     "success": "Success",
     "cancel": "Cancel",
-    "save": "Save"
+    "save": "Save",
+    "loading": "Loading...",
+    "na": "N/A",
+    "required": "required"
   }
 }
