@@ -549,3 +549,104 @@
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
 }
+
+/* ===== VERIFY BUTTON & MATCH RESULT ===== */
+.camera-actions {
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.btn-verify {
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 0.8rem 1.8rem;
+  border-radius: 50px;
+  font-family: var(--font-oswald);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+
+  &:hover:not(:disabled) {
+    transform: translateY(-3px);
+    filter: brightness(1.1);
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.5);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  i { font-size: 1.1rem; }
+}
+
+.match-result {
+  width: 100%;
+  margin-top: 1rem;
+  padding: 1rem 1.25rem;
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  border: 2px solid;
+
+  &.accepted {
+    background: rgba(34, 197, 94, 0.1);
+    border-color: #22c55e;
+    .match-icon { color: #22c55e; }
+    .match-bar { background: #22c55e; }
+  }
+
+  &.rejected {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: #ef4444;
+    .match-icon { color: #ef4444; }
+    .match-bar { background: #ef4444; }
+  }
+
+  .match-icon {
+    display: flex;
+    align-items: center;
+  }
+
+  .match-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .match-percentage {
+    font-family: var(--font-oswald);
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: white;
+  }
+
+  .match-label {
+    font-family: var(--font-urbanist);
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .match-bar-wrapper {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+
+  .match-bar {
+    height: 100%;
+    border-radius: 99px;
+    transition: width 0.6s ease;
+  }
+}
