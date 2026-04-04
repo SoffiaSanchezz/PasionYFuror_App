@@ -1,4 +1,4 @@
-<div class="dashboard-container">
+<div class="dashboard-container payments-page">
   <!-- SIDEBAR -->
   <app-sidebar [collapsed]="sidebarCollapsed" (collapsedChange)="onSidebarToggle($event)"></app-sidebar>
 
@@ -6,26 +6,15 @@
   <ion-content class="main-content" [class.sidebar-collapsed]="sidebarCollapsed">
     <div class="dashboard-wrapper">
       <!-- Header Section -->
-      <header class="dashboard-header">
-        <div class="header-left">
-          <div class="title-with-icon">
-            <div class="header-icon-box">
-              <i class="bi bi-currency-dollar"></i>
-            </div>
-            <div>
-              <h1 class="header-title">Gestión de Pagos</h1>
-              <p class="header-subtitle">Administra los pagos y estados de planes de los estudiantes</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="header-right">
-          <button class="btn-primary-custom" (click)="goToNewPayment()">
-            <i class="bi bi-plus-circle"></i>
-            <span>Registrar Nuevo Pago</span>
-          </button>
-        </div>
-      </header>
+      <app-page-header
+        title="Gestión de Pagos"
+        subtitle="Administra los pagos y estados de planes de los estudiantes"
+        icon="bi-currency-dollar">
+        <button class="btn-primary-custom" (click)="goToNewPayment()">
+          <i class="bi bi-plus-circle"></i>
+          <span>Registrar Nuevo Pago</span>
+        </button>
+      </app-page-header>
 
       <!-- Stats Grid -->
       <section class="stats-section">

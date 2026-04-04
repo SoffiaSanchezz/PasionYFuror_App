@@ -83,3 +83,17 @@ ion-card {
     border: 1px solid var(--border);
     border-radius: var(--radius);
 }
+
+/* ── Espacio superior en móvil para todas las vistas (excepto dashboard) ── */
+@media (max-width: 767px) {
+  .activities-container,
+  .content-wrapper,
+  .schedules-container {
+    padding-top: 1.25rem;
+  }
+
+  /* Pagos: el dashboard-wrapper dentro de payments tiene su propio padding */
+  .payments-page .dashboard-wrapper {
+    padding-top: 1.25rem;
+  }
+}
