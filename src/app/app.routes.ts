@@ -4,7 +4,7 @@ import { PageNotFoundComponent } from '@shared/components/page-not-found/page-no
 export const routes: Routes = [
     {
         path: '',
-        redirectTo: 'login',
+        loadComponent: () => import('./feature/dashboard/presentation/pages/home/home.page').then(m => m.HomePage),
         pathMatch: 'full',
     },
     {
