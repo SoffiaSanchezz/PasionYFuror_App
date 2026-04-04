@@ -5,7 +5,7 @@ import { MainDashboardComponent } from './dashboard/presentation/pages/main-dash
 const routes: Routes = [
   {
     path: 'dashboard',
-    component: MainDashboardComponent
+    loadChildren: () => import('./dashboard/dashboard-feature.module').then(m => m.DashboardFeatureModule)
   },
   {
     path: 'students',

@@ -23,12 +23,23 @@
   "dashboard": {
     "title": "DASHBOARD PASION Y FUROR",
     "welcome": "Bienvenido de nuevo, {{name}}",
-    "search": "Buscar estudiantes, clases...",
+    "search": {
+      "placeholder": "Buscar estudiantes, clases...",
+      "searching": "Buscando...",
+      "no_results": "Sin resultados para \"{{term}}\"",
+      "students": "Estudiantes",
+      "payments": "Pagos",
+      "activities": "Actividades"
+    },
     "stats": {
       "students": "Estudiantes",
       "classes_today": "Clases Hoy",
       "revenue": "Ingresos",
-      "attendance": "Asistencia"
+      "attendance": "Asistencia",
+      "total_enrolled": "Total inscritos",
+      "scheduled": "Programadas",
+      "total_collected": "Total recaudado",
+      "pending": "Pendiente"
     },
     "sections": {
       "today_classes": "Clases de Hoy",
@@ -39,12 +50,19 @@
     "actions": {
       "view_all": "Ver todas",
       "new_student": "Nuevo Estudiante",
-      "new_class": "Nueva Clase",
+      "manage_classes": "Gestionar Clases",
       "register_payment": "Registrar Pago",
-      "generate_report": "Generar Reporte"
+      "generate_report": "Generar Reporte",
+      "view_students": "Ver Estudiantes"
     },
     "messages": {
-      "coming_soon": "Próximamente: Vista de calendario"
+      "coming_soon": "Próximamente: Vista de calendario",
+      "no_classes": "No hay clases programadas para hoy",
+      "no_activity": "Sin actividad reciente"
+    },
+    "calendar": {
+      "instruction": "Haz click en un día marcado para ver la actividad",
+      "view_all_activities": "Ver todas las actividades"
     }
   },
   "common": {

@@ -5,7 +5,7 @@ import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 
-// Routing - El routing está en el mismo directorio
+// Routing - Asumiendo que el routing sigue en la carpeta padre
 import { AuthFeatureRoutingModule } from './auth-feature-routing.module';
 
 // Core - Subimos un nivel para encontrar core y data
