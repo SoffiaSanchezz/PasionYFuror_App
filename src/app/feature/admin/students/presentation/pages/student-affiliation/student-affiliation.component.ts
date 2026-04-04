@@ -34,8 +34,11 @@ export class StudentAffiliationComponent implements OnInit, OnDestroy, AfterView
   videoStream: MediaStream | null = null;
   capturedImage: SafeUrl | null = null;
   capturedImageDataUrl: string | null = null;
-  faceDescriptor: string | null = null;
   isNative = Capacitor.isNativePlatform();
+
+  // Verificación facial
+  matchResult: { percentage: number; accepted: boolean } | null = null;
+  isVerifying = false;
 
   private signaturePad!: CanvasRenderingContext2D;
   private isDrawing = false;
@@ -89,7 +92,7 @@ export class StudentAffiliationComponent implements OnInit, OnDestroy, AfterView
         asyncValidators: [this.documentUniqueValidator()],
         updateOn: 'blur'
       }],
-      dateOfBirth: ['', [Validators.required, this.dateNotFutureValidator]],
+      dateOfBirth: ['', [Validators.required, this.dateValidation.bind(this)]],
       email: ['', [Validators.required, Validators.email]],
       phone: ['', [Validators.required, Validators.pattern('^[0-9+ ]+$')]],
       address: ['', Validators.required],
@@ -109,6 +112,42 @@ export class StudentAffiliationComponent implements OnInit, OnDestroy, AfterView
     });
   }
 
+  // Bloquear caracteres no numéricos
+  onlyNumbers(event: KeyboardEvent): void {
+    const pattern = /[0-9]/;
+    if (!pattern.test(event.key)) {
+      event.preventDefault();
+    }
+  }
+
+  // Validador de Fecha mejorado
+  private dateValidation(control: AbstractControl): ValidationErrors | null {
+    if (!control.value) return null;
+    
+    const birthDate = new Date(control.value);
+    const today = new Date();
+    
+    // 1. Evitar fechas futuras
+    if (birthDate > today) {
+      return { futureDate: true };
+    }
+
+    // 2. Validar consistencia con el tipo de afiliación seleccionado
+    const age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+    const realAge = (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) ? age - 1 : age;
+
+    if (this.isMinor && realAge >= 18) {
+      return { adultSelectionError: true }; // Se marcó menor pero tiene 18+
+    }
+    
+    if (!this.isMinor && realAge < 18) {
+      return { minorSelectionError: true }; // Se marcó mayor pero tiene < 18
+    }
+
+    return null;
+  }
+
   // Validador Asíncrono para Documento Único
   private documentUniqueValidator() {
     return (control: AbstractControl): Observable<ValidationErrors | null> => {
@@ -121,14 +160,6 @@ export class StudentAffiliationComponent implements OnInit, OnDestroy, AfterView
         take(1)
       );
     };
-  }
-
-  // Validador de Fecha no Futura
-  private dateNotFutureValidator(control: AbstractControl): ValidationErrors | null {
-    if (!control.value) return null;
-    const date = new Date(control.value);
-    const today = new Date();
-    return date > today ? { futureDate: true } : null;
   }
 
   openRegulation(): void {
@@ -223,14 +254,21 @@ export class StudentAffiliationComponent implements OnInit, OnDestroy, AfterView
       await this.captureWithCapacitor();
       return;
     }
+    console.log('[Camera] Solicitando acceso a la cámara...');
     try {
       this.videoStream = await navigator.mediaDevices.getUserMedia({ 
-        video: { width: { ideal: 1280 }, height: { ideal: 720 } } 
+        video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: 'user' } 
       });
+      console.log('[Camera] Permiso concedido, asignando stream...');
       this.assignStreamToVideo();
-    } catch (err) {
-      console.error('Error accessing webcam:', err);
-      alert('No se pudo acceder a la cámara.');
+    } catch (err: any) {
+      console.error('[Camera] Error al acceder a la cámara:', err?.name, err?.message);
+      const msg = err?.name === 'NotAllowedError'
+        ? 'Permiso de cámara denegado. Habilítalo en la configuración del navegador.'
+        : err?.name === 'NotFoundError'
+          ? 'No se encontró ninguna cámara en este dispositivo.'
+          : 'No se pudo acceder a la cámara. Verifica que no esté en uso por otra aplicación.';
+      alert(msg);
     }
   }
 
@@ -241,11 +279,14 @@ export class StudentAffiliationComponent implements OnInit, OnDestroy, AfterView
         allowEditing: false,
         resultType: CameraResultType.DataUrl,
         source: CameraSource.Camera,
+        presentationStyle: 'fullscreen',
+        saveToGallery: false,
       });
 
       if (photo.dataUrl) {
         this.capturedImageDataUrl = photo.dataUrl;
         this.capturedImage = this.sanitizer.bypassSecurityTrustUrl(photo.dataUrl);
+        this.matchResult = null;
       }
     } catch (err) {
       console.error('Error con Capacitor Camera:', err);
@@ -255,10 +296,25 @@ export class StudentAffiliationComponent implements OnInit, OnDestroy, AfterView
 
   private assignStreamToVideo(): void {
     if (this.videoElement && this.videoElement.nativeElement) {
-      this.videoElement.nativeElement.srcObject = this.videoStream;
+      const video = this.videoElement.nativeElement;
+      video.srcObject = this.videoStream;
+      video.play().catch((e: unknown) => console.warn('Video play error:', e));
+      console.log('[Camera] Stream asignado al video correctamente');
     } else {
-      setTimeout(() => {
-        if (this.currentStep === 3) this.assignStreamToVideo();
+      // Reintenta hasta 20 veces (2 segundos total) esperando que el DOM renderice
+      let attempts = 0;
+      const retry = setInterval(() => {
+        attempts++;
+        if (this.videoElement && this.videoElement.nativeElement) {
+          const video = this.videoElement.nativeElement;
+          video.srcObject = this.videoStream;
+          video.play().catch((e: unknown) => console.warn('Video play error:', e));
+          console.log(`[Camera] Stream asignado en intento ${attempts}`);
+          clearInterval(retry);
+        } else if (attempts >= 20) {
+          console.error('[Camera] No se pudo encontrar el elemento video después de 2s');
+          clearInterval(retry);
+        }
       }, 100);
     }
   }
@@ -290,6 +346,7 @@ export class StudentAffiliationComponent implements OnInit, OnDestroy, AfterView
         this.capturedImageDataUrl = canvas.toDataURL('image/png');
         if (this.capturedImageDataUrl) {
           this.capturedImage = this.sanitizer.bypassSecurityTrustUrl(this.capturedImageDataUrl);
+          this.matchResult = null;
         }
         this.stopWebcam();
       } else {
@@ -301,6 +358,7 @@ export class StudentAffiliationComponent implements OnInit, OnDestroy, AfterView
   retakeImage(): void {
     this.capturedImage = null;
     this.capturedImageDataUrl = null;
+    this.matchResult = null;
     this.startWebcam();
   }
 
@@ -390,50 +448,42 @@ export class StudentAffiliationComponent implements OnInit, OnDestroy, AfterView
     this.contractForm.get('signature')?.setValue(null);
   }
 
+  verifyPhoto(): void {
+    if (!this.capturedImageDataUrl) return;
+    this.isVerifying = true;
+    this.matchResult = null;
+
+    this.studentsService.verifyStudentPhoto({ photo_file_base64: this.capturedImageDataUrl }).subscribe({
+      next: (result: any) => {
+        this.isVerifying = false;
+        this.matchResult = {
+          percentage: Math.round(result.match_percentage ?? result.similarity ?? 0),
+          accepted: result.accepted ?? result.match ?? false
+        };
+      },
+      error: () => {
+        this.isVerifying = false;
+        Swal.fire({
+          title: 'Error de Verificación',
+          text: 'No se pudo verificar la foto. Intente de nuevo.',
+          icon: 'error',
+          confirmButtonColor: '#B11226'
+        });
+      }
+    });
+  }
+
   submitAffiliation(): void {
     const studentData = this.toSnakeCase(this.studentForm.value);
     const guardianData = this.isMinor ? this.toSnakeCase(this.guardianForm.value) : undefined;
-    
-    // 1. OBTENCIÓN Y CONVERSIÓN SEGURA
-    // Forzamos la conversión a Array real de JS. Si es Float32Array, Array.from lo convierte perfecto.
-    let finalDescriptor: number[] = [];
-    
-    if (this.faceDescriptor && Array.isArray(this.faceDescriptor)) {
-      finalDescriptor = Array.from(this.faceDescriptor);
-    } else if (this.faceDescriptor && (this.faceDescriptor as any).buffer) {
-      // Caso de que sea un Float32Array u otro TypedArray
-      finalDescriptor = Array.from(this.faceDescriptor as any);
-    } else {
-      // Fallback a Mock solo para desarrollo
-      finalDescriptor = Array(128).fill(0).map(() => Math.random());
-    }
-
-    // 2. VALIDACIÓN ESTRICTA ANTES DEL POST
-    if (!Array.isArray(finalDescriptor) || finalDescriptor.length !== 128) {
-      console.error('ERROR CRÍTICO: Descriptor inválido', finalDescriptor);
-      Swal.fire({
-        title: 'Error de Biometría',
-        text: `El descriptor facial es inválido (Tipo: ${typeof finalDescriptor}, Longitud: ${finalDescriptor?.length || 0}). Por favor, repita la foto.`,
-        icon: 'error',
-        confirmButtonColor: '#B11226'
-      });
-      return;
-    }
 
     const affiliationData: any = {
       student: studentData,
       guardian: guardianData,
       photo_file_base64: this.capturedImageDataUrl || '',
       signature_image_base64: this.signatureDataUrl || '',
-      is_minor: this.isMinor,
-      face_descriptor: finalDescriptor // Enviamos el Array puro []
+      is_minor: this.isMinor
     };
-
-    // 3. DEBUG FINAL (Verifica que esto imprima 'object' y no 'number')
-    console.log('--- VERIFICACIÓN DE PAYLOAD ---');
-    console.log('face_descriptor es Array:', Array.isArray(affiliationData.face_descriptor));
-    console.log('Tipo de face_descriptor:', typeof affiliationData.face_descriptor);
-    console.log('Contenido (primeros 3):', affiliationData.face_descriptor.slice(0, 3));
 
     // Mostrar loader
     Swal.fire({

@@ -1,0 +1,124 @@
+<div class="att-page">
+  <div class="att-bg-overlay"></div>
+
+  <button class="att-back" (click)="goHome()">
+    <i class="bi bi-arrow-left"></i>
+    <span>Volver</span>
+  </button>
+
+  <div class="att-card">
+
+    <div class="att-header">
+      <div class="att-icon-box">
+        <i class="bi bi-person-bounding-box"></i>
+      </div>
+      <h1 class="att-title">Registro de Asistencia</h1>
+      <p class="att-subtitle">Ubica tu rostro dentro del recuadro y presiona el botón</p>
+    </div>
+
+    <div class="att-camera-wrapper">
+      <div class="att-camera" [class]="'state-' + state()">
+
+        <span class="corner tl"></span>
+        <span class="corner tr"></span>
+        <span class="corner bl"></span>
+        <span class="corner br"></span>
+
+        <video #videoEl
+          class="cam-video"
+          autoplay
+          playsinline
+          muted
+          [style.display]="(state() === 'idle' || state() === 'scanning') ? 'block' : 'none'">
+        </video>
+
+        <canvas #canvasEl style="display:none"></canvas>
+
+        <div class="cam-placeholder" *ngIf="state() === 'requesting-camera'">
+          <i class="bi bi-camera-fill cam-icon"></i>
+          <p class="cam-hint">Solicitando cámara...</p>
+        </div>
+
+        <div class="cam-idle-overlay" *ngIf="state() === 'idle'">
+          <p class="cam-hint">Cámara activa</p>
+        </div>
+
+        <div class="cam-scanning" *ngIf="state() === 'scanning'">
+          <div class="scan-line"></div>
+          <div class="scan-dots">
+            <span></span><span></span><span></span>
+          </div>
+          <p class="cam-hint scanning">Escaneando rostro...</p>
+        </div>
+
+        <div class="cam-result success" *ngIf="state() === 'success'">
+          <div class="result-icon-wrap success">
+            <i class="bi bi-check-circle-fill"></i>
+          </div>
+          <p class="result-title">¡Asistencia Registrada!</p>
+          <p class="result-sub" *ngIf="matchedStudent()">
+            Bienvenido, <strong>{{ matchedStudent()!.full_name }}</strong>
+          </p>
+          <p class="result-sub confidence" *ngIf="matchedStudent()">
+            {{ matchedStudent()!.confidence }}% de coincidencia
+          </p>
+          <p class="result-sub warn" *ngIf="errorMessage()">{{ errorMessage() }}</p>
+        </div>
+
+        <div class="cam-result error" *ngIf="state() === 'error'">
+          <div class="result-icon-wrap error">
+            <i class="bi bi-x-circle-fill"></i>
+          </div>
+          <p class="result-title">Rostro no reconocido</p>
+          <p class="result-sub">{{ errorMessage() || 'Asegúrate de estar bien iluminado e intenta de nuevo.' }}</p>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="att-status-badge" [class]="'badge-' + state()">
+      <i class="bi"
+         [class.bi-circle]="state() === 'idle'"
+         [class.bi-hourglass-split]="state() === 'requesting-camera'"
+         [class.bi-arrow-repeat]="state() === 'scanning'"
+         [class.bi-check-circle-fill]="state() === 'success'"
+         [class.bi-exclamation-triangle-fill]="state() === 'error'">
+      </i>
+      <span *ngIf="state() === 'requesting-camera'">Solicitando permiso de cámara...</span>
+      <span *ngIf="state() === 'idle'">Listo para escanear</span>
+      <span *ngIf="state() === 'scanning'">Procesando...</span>
+      <span *ngIf="state() === 'success'">Asistencia confirmada</span>
+      <span *ngIf="state() === 'error'">No se pudo verificar</span>
+    </div>
+
+    <div class="att-actions">
+      <button
+        class="att-btn primary"
+        (click)="register()"
+        [disabled]="state() !== 'idle'"
+        *ngIf="state() !== 'error' && state() !== 'success'">
+        <i class="bi bi-camera-fill" *ngIf="state() === 'idle'"></i>
+        <ion-spinner name="crescent" *ngIf="state() === 'scanning' || state() === 'requesting-camera'"></ion-spinner>
+        <span *ngIf="state() === 'idle'">Registrar Asistencia</span>
+        <span *ngIf="state() === 'scanning'">Escaneando...</span>
+        <span *ngIf="state() === 'requesting-camera'">Preparando...</span>
+      </button>
+
+      <button class="att-btn danger" (click)="retry()" *ngIf="state() === 'error'">
+        <i class="bi bi-arrow-counterclockwise"></i>
+        <span>Intentar de nuevo</span>
+      </button>
+
+      <button class="att-btn ghost" (click)="goHome()" *ngIf="state() === 'success'">
+        <i class="bi bi-house"></i>
+        <span>Volver al inicio</span>
+      </button>
+
+      <button class="att-btn primary" (click)="nextStudent()" *ngIf="state() === 'success'">
+        <i class="bi bi-person-fill-add"></i>
+        <span>Siguiente alumno</span>
+      </button>
+    </div>
+
+  </div>
+</div>

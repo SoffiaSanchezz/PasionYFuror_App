@@ -1,0 +1,214 @@
+<div class="dashboard-container payments-page">
+  <!-- SIDEBAR -->
+  <app-sidebar [collapsed]="sidebarCollapsed" (collapsedChange)="onSidebarToggle($event)"></app-sidebar>
+
+  <!-- MAIN CONTENT -->
+  <ion-content class="main-content" [class.sidebar-collapsed]="sidebarCollapsed">
+    <div class="dashboard-wrapper">
+      <!-- Header Section -->
+      <app-page-header
+        title="Gestión de Pagos"
+        subtitle="Administra los pagos y estados de planes de los estudiantes"
+        icon="bi-currency-dollar">
+        <button class="btn-primary-custom" (click)="goToNewPayment()">
+          <i class="bi bi-plus-circle"></i>
+          <span>Registrar Nuevo Pago</span>
+        </button>
+      </app-page-header>
+
+      <!-- Stats Grid -->
+      <section class="stats-section">
+        <div class="stat-card-custom green">
+          <div class="stat-icon-wrapper">
+            <i class="bi bi-check-circle"></i>
+          </div>
+          <div class="stat-details">
+            <span class="stat-value">{{ activePaymentsCount$ | async }}</span>
+            <span class="stat-label">Planes Activos</span>
+          </div>
+        </div>
+
+        <div class="stat-card-custom gold">
+          <div class="stat-icon-wrapper">
+            <i class="bi bi-exclamation-triangle"></i>
+          </div>
+          <div class="stat-details">
+            <span class="stat-value">{{ expiringSoonPaymentsCount$ | async }}</span>
+            <span class="stat-label">Próximos a Vencer</span>
+          </div>
+        </div>
+
+        <div class="stat-card-custom red">
+          <div class="stat-icon-wrapper">
+            <i class="bi bi-x-circle"></i>
+          </div>
+          <div class="stat-details">
+            <span class="stat-value">{{ expiredPaymentsCount$ | async }}</span>
+            <span class="stat-label">Planes Vencidos</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Filters Section -->
+      <section class="filters-card-custom">
+        <div class="filters-grid">
+          <div class="filter-group">
+            <label for="studentFilter" class="filter-label">Estudiante</label>
+            <div class="select-wrapper">
+              <select id="studentFilter" class="filter-select" (change)="onStudentFilterChange($event)">
+                <option value="">Todos los Estudiantes</option>
+                <option *ngFor="let student of (allStudents$ | async)" [value]="student.id">{{ student.full_name }}</option>
+              </select>
+              <i class="bi bi-chevron-down select-icon"></i>
+            </div>
+          </div>
+          <div class="filter-group">
+            <label for="planStatusFilter" class="filter-label">Estado del Plan</label>
+            <div class="select-wrapper">
+              <select id="planStatusFilter" class="filter-select" (change)="onPlanStatusFilterChange($event)">
+                <option value="">Todos los Estados</option>
+                <option value="active">Activo</option>
+                <option value="expiring_soon">Próximo a Vencer</option>
+                <option value="expired">Vencido</option>
+              </select>
+              <i class="bi bi-chevron-down select-icon"></i>
+            </div>
+          </div>
+          <div class="filter-group">
+            <label for="paymentMethodFilter" class="filter-label">Método de Pago</label>
+            <div class="select-wrapper">
+              <select id="paymentMethodFilter" class="filter-select" (change)="onPaymentMethodFilterChange($event)">
+                <option value="">Todos los Métodos</option>
+                <option *ngFor="let method of paymentMethods" [value]="method">{{ method }}</option>
+              </select>
+              <i class="bi bi-chevron-down select-icon"></i>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Content Section -->
+      <section class="content-card-custom">
+        <!-- Loading State -->
+        <div class="loading-overlay" *ngIf="isLoading">
+          <ion-spinner name="crescent"></ion-spinner>
+          <p>Cargando registros de pagos...</p>
+        </div>
+
+        <!-- Desktop Table View -->
+        <div class="table-container d-none d-lg-block" *ngIf="!isLoading">
+          <table class="custom-table">
+            <thead>
+              <tr>
+                <th>Estudiante</th>
+                <th>Plan</th>
+                <th>Total</th>
+                <th>Abonado</th>
+                <th>Saldo</th>
+                <th>Estado Pago</th>
+                <th>Método</th>
+                <th>Vencimiento</th>
+                <th>Estado Plan</th>
+                <th class="text-end">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let payment of (payments$ | async)">
+                <td>
+                  <div class="student-info-cell">
+                    <span class="student-name">{{ payment.studentName }}</span>
+                    <span class="receipt-id">{{ payment.receiptId }}</span>
+                  </div>
+                </td>
+                <td><span class="plan-badge">{{ payment.planAcquired }}</span></td>
+                <td class="amount-cell">{{ payment.totalValue | currency:'USD':'symbol':'1.0-0' }}</td>
+                <td class="amount-cell text-success">{{ payment.amountPaid | currency:'USD':'symbol':'1.0-0' }}</td>
+                <td class="amount-cell" [class.text-danger]="payment.pendingBalance > 0">
+                  {{ payment.pendingBalance | currency:'USD':'symbol':'1.0-0' }}
+                </td>
+                <td>
+                  <span class="status-pill" [class]="getPaymentStatusBadgeClass(payment)">
+                    <i class="bi" [class]="getPaymentStatusIcon(payment)"></i>
+                    {{ payment.status === 'completed' ? 'Completo' : 'Parcial' }}
+                  </span>
+                </td>
+                <td>{{ payment.paymentMethod }}</td>
+                <td><span class="date-cell">{{ payment.endDate | date:'dd/MM/yyyy' }}</span></td>
+                <td>
+                  <span class="plan-status-pill" [class]="getPlanStatusBadgeClass(payment)">
+                    <i class="bi" [class]="getPlanStatusIcon(payment)"></i>
+                    {{ payment.planStatus === 'active' ? 'Activo' : (payment.planStatus === 'expiring_soon' ? 'Por Vencer' : 'Vencido') }}
+                  </span>
+                </td>
+                <td class="text-end">
+                  <div class="action-buttons">
+                    <button class="btn-icon btn-edit" (click)="editPayment(payment.id)" title="Editar">
+                      <i class="bi bi-pencil-square"></i>
+                    </button>
+                    <button class="btn-icon btn-delete" (click)="deletePayment(payment.id)" title="Eliminar">
+                      <i class="bi bi-trash3"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Mobile/Tablet Card View -->
+        <div class="mobile-cards-grid d-lg-none" *ngIf="!isLoading">
+          <div class="payment-mobile-card" *ngFor="let payment of (payments$ | async)">
+            <div class="card-mobile-header">
+              <div class="student-main">
+                <span class="student-name">{{ payment.studentName }}</span>
+                <span class="receipt-id">{{ payment.receiptId }}</span>
+              </div>
+              <div class="plan-status-pill" [class]="getPlanStatusBadgeClass(payment)">
+                <i class="bi" [class]="getPlanStatusIcon(payment)"></i>
+              </div>
+            </div>
+            
+            <div class="card-mobile-body">
+              <div class="info-row">
+                <span class="info-label">Plan / Método</span>
+                <span class="info-value">{{ payment.planAcquired }} / {{ payment.paymentMethod }}</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Monto (Pagado/Total)</span>
+                <span class="info-value">
+                  <span class="text-success">{{ payment.amountPaid | currency:'USD':'symbol':'1.0-0' }}</span> / 
+                  {{ payment.totalValue | currency:'USD':'symbol':'1.0-0' }}
+                </span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Vencimiento</span>
+                <span class="info-value fw-bold">{{ payment.endDate | date:'dd/MM/yyyy' }}</span>
+              </div>
+            </div>
+
+            <div class="card-mobile-footer">
+               <span class="status-pill" [class]="getPaymentStatusBadgeClass(payment)">
+                {{ payment.status === 'completed' ? 'Completo' : 'Parcial' }}
+              </span>
+              <div class="mobile-actions">
+                <button class="btn-icon btn-edit" (click)="editPayment(payment.id)">
+                  <i class="bi bi-pencil-square"></i>
+                </button>
+                <button class="btn-icon btn-delete" (click)="deletePayment(payment.id)">
+                  <i class="bi bi-trash3"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state" *ngIf="!isLoading && (payments$ | async)?.length === 0">
+          <i class="bi bi-inbox"></i>
+          <h3>No se encontraron registros</h3>
+          <p>Intenta ajustar los filtros o registra un nuevo pago.</p>
+        </div>
+      </section>
+    </div>
+  </ion-content>
+</div>

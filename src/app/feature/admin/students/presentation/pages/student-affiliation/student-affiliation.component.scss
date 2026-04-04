@@ -395,10 +395,11 @@
     position: relative;
     width: 100%;
     max-width: 400px;
-    background: #ffffff; // Fondo blanco del contenedor
+    background: #1a1a1e;  /* fondo oscuro para que el video y botones sean visibles */
     padding: 20px;
     border-radius: 24px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -410,7 +411,7 @@
         border-radius: 16px;
         object-fit: cover;
         background: #000;
-        border: 1px solid #e2e8f0;
+        border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     .camera-overlay {
@@ -438,34 +439,44 @@
 }
 
 .btn-capture, .btn-retake {
-    background: var(--accent-primary);
-    color: white;
+    background: linear-gradient(135deg, #B11226 0%, #d32f2f 100%);
+    color: #ffffff;
     border: none;
-    padding: 0.8rem 2.2rem;
+    padding: 0.85rem 2.2rem;
     border-radius: 50px;
     font-family: var(--font-oswald);
     font-weight: 600;
+    font-size: 1rem;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 1.5px;
     display: flex;
     align-items: center;
     gap: 0.8rem;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    box-shadow: 0 4px 15px rgba(177, 18, 38, 0.3);
+    box-shadow: 0 6px 20px rgba(177, 18, 38, 0.4);
 
     &:hover {
-        transform: translateY(-3px);
-        filter: brightness(1.1);
-        box-shadow: 0 8px 20px rgba(177, 18, 38, 0.5);
+        transform: translateY(-3px) scale(1.03);
+        box-shadow: 0 10px 28px rgba(177, 18, 38, 0.55);
+        background: linear-gradient(135deg, #d32f2f 0%, #f44336 100%);
+    }
+
+    &:active {
+        transform: translateY(-1px);
     }
 
     i { font-size: 1.3rem; }
 }
 
 .btn-retake {
-    background: #4a5568;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    background: linear-gradient(135deg, #374151 0%, #4b5563 100%);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+
+    &:hover {
+        background: linear-gradient(135deg, #4b5563 0%, #6b7280 100%);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    }
 }
 
 .signature-pad-container {
@@ -548,4 +559,105 @@
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== VERIFY BUTTON & MATCH RESULT ===== */
+.camera-actions {
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.btn-verify {
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 0.8rem 1.8rem;
+  border-radius: 50px;
+  font-family: var(--font-oswald);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+
+  &:hover:not(:disabled) {
+    transform: translateY(-3px);
+    filter: brightness(1.1);
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.5);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  i { font-size: 1.1rem; }
+}
+
+.match-result {
+  width: 100%;
+  margin-top: 1rem;
+  padding: 1rem 1.25rem;
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  border: 2px solid;
+
+  &.accepted {
+    background: rgba(34, 197, 94, 0.1);
+    border-color: #22c55e;
+    .match-icon { color: #22c55e; }
+    .match-bar { background: #22c55e; }
+  }
+
+  &.rejected {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: #ef4444;
+    .match-icon { color: #ef4444; }
+    .match-bar { background: #ef4444; }
+  }
+
+  .match-icon {
+    display: flex;
+    align-items: center;
+  }
+
+  .match-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .match-percentage {
+    font-family: var(--font-oswald);
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: white;
+  }
+
+  .match-label {
+    font-family: var(--font-urbanist);
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .match-bar-wrapper {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+
+  .match-bar {
+    height: 100%;
+    border-radius: 99px;
+    transition: width 0.6s ease;
+  }
 }

@@ -12,6 +12,7 @@
 /* Responsive: En móviles añadimos espacio para la navegación inferior si aplica */
 @media (max-width: 767px) {
   .main-content {
+    padding-top: 85px; /* Espacio para la top-nav (70px + 15px de margen) */
     padding-bottom: 80px; /* Espacio para la bottom-nav */
   }
 }

@@ -16,18 +16,15 @@
       </div>
 
       <!-- Header Section -->
-      <header class="page-header">
-        <div class="header-info">
-          <h1 class="title">GESTIÓN DE ESTUDIANTES</h1>
-          <p class="subtitle">Panel de administración académica y control de afiliados</p>
-        </div>
-        <div class="header-actions">
-          <button class="btn-add" routerLink="/admin/students/new">
-            <i class="bi bi-person-plus-fill"></i>
-            <span>Nuevo Estudiante</span>
-          </button>
-        </div>
-      </header>
+      <app-page-header
+        title="GESTIÓN DE ESTUDIANTES"
+        subtitle="Panel de administración académica y control de afiliados"
+        icon="bi-people-fill">
+        <button class="btn-add" routerLink="/admin/students/new">
+          <i class="bi bi-person-plus-fill"></i>
+          <span>Nuevo Estudiante</span>
+        </button>
+      </app-page-header>
 
       <!-- Stats Summary -->
       <section class="stats-summary" *ngIf="!isLoading || activeStudents.length > 0">

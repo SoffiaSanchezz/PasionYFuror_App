@@ -174,6 +174,7 @@
                     <line x1="2" x2="22" y1="10" y2="10" />
                   </svg>
                   <input type="text" class="form-input" formControlName="documentId" placeholder="Ej: 1234567890"
+                    (keypress)="onlyNumbers($event)"
                     [class.is-invalid]="studentForm.get('documentId')?.invalid && studentForm.get('documentId')?.touched">
                 </div>
                 <span *ngIf="studentForm.get('documentId')?.errors?.['required'] && studentForm.get('documentId')?.touched" class="error-message">
@@ -208,6 +209,12 @@
                 </span>
                 <span *ngIf="studentForm.get('dateOfBirth')?.errors?.['futureDate'] && studentForm.get('dateOfBirth')?.touched" class="error-message">
                   La fecha no puede ser futura
+                </span>
+                <span *ngIf="studentForm.get('dateOfBirth')?.errors?.['adultSelectionError'] && studentForm.get('dateOfBirth')?.touched" class="error-message">
+                  Seleccionaste 'Menor de edad', pero la fecha indica que es adulto
+                </span>
+                <span *ngIf="studentForm.get('dateOfBirth')?.errors?.['minorSelectionError'] && studentForm.get('dateOfBirth')?.touched" class="error-message">
+                  Seleccionaste 'Mayor de edad', pero la fecha indica que es menor
                 </span>
               </div>
 
@@ -435,6 +442,29 @@
                   <i class="bi bi-arrow-counterclockwise"></i>
                   Repetir Foto
                 </button>
+                <button class="btn-verify" (click)="verifyPhoto()" type="button" [disabled]="isVerifying">
+                  <i class="bi bi-shield-check"></i>
+                  {{ isVerifying ? 'Verificando...' : 'Verificar Foto' }}
+                </button>
+              </div>
+
+              <!-- Resultado del match -->
+              <div *ngIf="matchResult" class="match-result" [class.accepted]="matchResult.accepted" [class.rejected]="!matchResult.accepted">
+                <div class="match-icon">
+                  <svg *ngIf="matchResult.accepted" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/>
+                  </svg>
+                  <svg *ngIf="!matchResult.accepted" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/>
+                  </svg>
+                </div>
+                <div class="match-info">
+                  <span class="match-percentage">{{ matchResult.percentage }}% de coincidencia</span>
+                  <span class="match-label">{{ matchResult.accepted ? 'Identidad verificada' : 'No coincide con el registro' }}</span>
+                </div>
+                <div class="match-bar-wrapper">
+                  <div class="match-bar" [style.width.%]="matchResult.percentage"></div>
+                </div>
               </div>
             </div>
             <!-- Canvas oculto para procesamiento web -->

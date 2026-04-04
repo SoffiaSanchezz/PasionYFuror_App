@@ -1,3 +1,4 @@
+import { PageHeaderComponent } from '@shared/components/page-header/page-header.component';
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
@@ -13,7 +14,7 @@ import { environment } from '@environments/environment';
 @Component({
   selector: 'app-activities-list-page',
   standalone: true,
-  imports: [CommonModule, RouterModule, IonicModule, SidebarComponent],
+  imports: [CommonModule, RouterModule, IonicModule, SidebarComponent, PageHeaderComponent],
   templateUrl: './activities-list-page.component.html',
   styleUrls: ['./activities-list-page.component.scss']
 })

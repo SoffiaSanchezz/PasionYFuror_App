@@ -61,6 +61,10 @@ export class StudentsService {
     return this.api.post<Student>(`${this.endpoint}/affiliate`, data);
   }
 
+  verifyStudentPhoto(data: { photo_file_base64: string }): Observable<any> {
+    return this.api.post<any>(`${this.endpoint}/verify-photo`, data);
+  }
+
   getGuardianInfo(id: string): Observable<any> {
     return this.api.get<any>(`${this.endpoint}/${id}/guardian`);
   }

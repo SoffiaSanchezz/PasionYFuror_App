@@ -48,10 +48,12 @@
               </div>
 
               <!-- Student Photo Preview -->
-              <div class="photo-preview-section" *ngIf="studentPhotoUrl">
+              <div class="photo-preview-section">
                 <div class="avatar-wrapper">
-                  <img [src]="studentPhotoUrl" alt="Foto del Estudiante">
-                  <div class="avatar-label">Foto Actual</div>
+                  <img [src]="studentPhotoUrl || 'assets/img/LogoPasionyFuror.png'" 
+                       alt="Foto del Estudiante"
+                       onerror="this.src='assets/img/LogoPasionyFuror.png'">
+                  <div class="avatar-label">{{ studentPhotoUrl ? 'Foto Actual' : 'Sin Foto' }}</div>
                 </div>
               </div>
 
@@ -68,7 +70,8 @@
                   </div>
                   <span *ngIf="studentForm.get('fullName')?.invalid && studentForm.get('fullName')?.touched"
                     class="error-message">
-                    Nombre completo es requerido
+                    <span *ngIf="studentForm.get('fullName')?.errors?.['required']">Nombre completo es requerido</span>
+                    <span *ngIf="studentForm.get('fullName')?.errors?.['minlength']">El nombre debe tener al menos 3 caracteres</span>
                   </span>
                 </div>
 
@@ -80,11 +83,13 @@
                   <div class="input-wrapper">
                     <i class="bi bi-card-text input-icon"></i>
                     <input type="text" class="form-input" formControlName="documentId" placeholder="Ej: 1234567890"
+                      (keypress)="onlyNumbers($event)"
                       [class.is-invalid]="studentForm.get('documentId')?.invalid && studentForm.get('documentId')?.touched">
                   </div>
                   <span *ngIf="studentForm.get('documentId')?.invalid && studentForm.get('documentId')?.touched"
                     class="error-message">
-                    Documento es requerido
+                    <span *ngIf="studentForm.get('documentId')?.errors?.['required']">Documento es requerido</span>
+                    <span *ngIf="studentForm.get('documentId')?.errors?.['pattern']">Solo se aceptan números</span>
                   </span>
                 </div>
 
@@ -100,7 +105,8 @@
                   </div>
                   <span *ngIf="studentForm.get('dateOfBirth')?.invalid && studentForm.get('dateOfBirth')?.touched"
                     class="error-message">
-                    Fecha de nacimiento es requerida
+                    <span *ngIf="studentForm.get('dateOfBirth')?.errors?.['required']">Fecha de nacimiento es requerida</span>
+                    <span *ngIf="studentForm.get('dateOfBirth')?.errors?.['futureDate']">La fecha no puede ser futura</span>
                   </span>
                 </div>
 

@@ -1,19 +1,24 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
+import { MainDashboardComponent } from './main-dashboard.component';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
-import { MainDashboardsComponent } from './main-dashboards.component';
-
-describe('MainDashboardsComponent', () => {
-  let component: MainDashboardsComponent;
-  let fixture: ComponentFixture<MainDashboardsComponent>;
+describe('MainDashboardComponent', () => {
+  let component: MainDashboardComponent;
+  let fixture: ComponentFixture<MainDashboardComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ MainDashboardsComponent ],
-      imports: [IonicModule.forRoot()]
+      imports: [
+        IonicModule.forRoot(),
+        MainDashboardComponent,
+        HttpClientTestingModule,
+        RouterTestingModule
+      ]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(MainDashboardsComponent);
+    fixture = TestBed.createComponent(MainDashboardComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));
