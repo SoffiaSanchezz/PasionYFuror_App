@@ -1,9 +1,8 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { BehaviorSubject, Observable, Subscription, forkJoin, of, timer } from 'rxjs';
-import { catchError, map, switchMap } from 'rxjs/operators';
-import { StudentsService } from '../students/students.service';
-import { PaymentsService } from '../payments/payments.service';
-import { ActivitiesService } from '../activities/activities.service';
+import { BehaviorSubject, Observable, Subscription, timer } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { ApiService } from '@shared/services/api/api.service';
 
 export interface AppNotification {
   id: string;
@@ -16,141 +15,114 @@ export interface AppNotification {
   date: Date;
 }
 
-@Injectable({
-  providedIn: 'root'
-})
+interface BackendNotification {
+  id: string;
+  type: 'student' | 'payment' | 'class' | 'system';
+  icon: string;
+  title: string;
+  description: string;
+  isRead: boolean;
+  createdAt: string;
+}
+
+interface NotificationsResponse {
+  notifications: BackendNotification[];
+  unreadCount: number;
+}
+
+const POLL_MS = 30_000;
+
+@Injectable({ providedIn: 'root' })
 export class NotificationService implements OnDestroy {
-  private notifications$ = new BehaviorSubject<AppNotification[]>([]);
+  // Solo contiene notificaciones NO leídas
+  private readonly _notifs$ = new BehaviorSubject<AppNotification[]>([]);
+  private readonly _count$ = new BehaviorSubject<number>(0);
   private pollSub?: Subscription;
 
-  // IDs ya vistos para no duplicar entre refrescos
-  private seenIds = new Set<string>();
-
-  constructor(
-    private readonly studentsService: StudentsService,
-    private readonly paymentsService: PaymentsService,
-    private readonly activitiesService: ActivitiesService
-  ) {
-    this.fetchFromBackend();
-    // Refresco automático cada 60 segundos
-    this.pollSub = timer(60_000, 60_000).subscribe(() => this.fetchFromBackend());
+  constructor(private readonly api: ApiService) {
+    this._fetch();
+    this.pollSub = timer(POLL_MS, POLL_MS).subscribe(() => this._fetch());
   }
 
   ngOnDestroy(): void {
     this.pollSub?.unsubscribe();
   }
 
+  // ── API pública ───────────────────────────────────────────────────────
+
   getNotifications(): Observable<AppNotification[]> {
-    return this.notifications$.asObservable().pipe(
-      map(list => list.sort((a, b) => b.date.getTime() - a.date.getTime()))
-    );
+    return this._notifs$.asObservable();
   }
 
   getUnreadCount(): Observable<number> {
-    return this.notifications$.pipe(
-      map(list => list.filter(n => !n.read).length)
-    );
+    return this._count$.asObservable();
   }
 
+  refresh(): void {
+    this._fetch();
+  }
+
+  /**
+   * Marca como leída: la elimina del estado local inmediatamente
+   * y persiste en backend. No reaparece al recargar porque el backend
+   * ya no la devuelve (filtra is_read=false).
+   */
   markAsRead(id: string): void {
-    const updated = this.notifications$.value.map(n => n.id === id ? { ...n, read: true } : n);
-    this.notifications$.next(updated);
+    this._removeLocal(id);                                    // optimistic
+    this.api.patch<BackendNotification>(`notifications/${id}/read`, {})
+      .pipe(catchError(() => of(null)))
+      .subscribe();
   }
 
   markAllAsRead(): void {
-    const updated = this.notifications$.value.map(n => ({ ...n, read: true }));
-    this.notifications$.next(updated);
+    this._notifs$.next([]);
+    this._count$.next(0);
+    this.api.patch<any>('notifications/read-all', {})
+      .pipe(catchError(() => of(null)))
+      .subscribe();
   }
 
   deleteNotification(id: string): void {
-    const updated = this.notifications$.value.filter(n => n.id !== id);
-    this.notifications$.next(updated);
-    this.seenIds.delete(id);
+    this._removeLocal(id);
+    this.api.delete<any>(`notifications/${id}`)
+      .pipe(catchError(() => of(null)))
+      .subscribe();
   }
 
-  private fetchFromBackend(): void {
-    forkJoin({
-      students: this.studentsService.getAllStudents().pipe(catchError(() => of([]))),
-      payments: this.paymentsService.getPayments().pipe(catchError(() => of([]))),
-      activities: this.activitiesService.getActivities().pipe(catchError(() => of([])))
-    }).subscribe(({ students, payments, activities }) => {
-      const incoming: AppNotification[] = [];
+  // ── Internos ──────────────────────────────────────────────────────────
 
-      // Últimos 3 estudiantes registrados
-      const recentStudents = Array.isArray(students)
-        ? [...students]
-            .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
-            .slice(0, 3)
-        : [];
-
-      recentStudents.forEach(s => {
-        const id = `student-${s.id}`;
-        incoming.push({
-          id,
-          type: 'student',
-          icon: 'bi-person-plus-fill',
-          title: 'Nuevo Estudiante Registrado',
-          description: `${s.full_name} se ha unido a la academia.`,
-          time: this.getRelativeTime(s.created_at),
-          read: this.seenIds.has(id),
-          date: new Date(s.created_at)
-        });
-        this.seenIds.add(id);
+  private _fetch(): void {
+    this.api.get<NotificationsResponse>('notifications')
+      .pipe(catchError(() => of(null)))
+      .subscribe(res => {
+        if (!res) return;
+        // El backend ya filtra is_read=false, así que todo lo que llega es no leído
+        const mapped = res.notifications.map(n => this._map(n));
+        this._notifs$.next(mapped);
+        this._count$.next(res.unreadCount);
       });
-
-      // Últimos 3 pagos
-      const recentPayments = Array.isArray(payments)
-        ? [...payments]
-            .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-            .slice(0, 3)
-        : [];
-
-      recentPayments.forEach(p => {
-        const id = `payment-${p.id}`;
-        const amount = p.amountPaid;
-        const dateStr = p.createdAt;
-        incoming.push({
-          id,
-          type: 'payment',
-          icon: 'bi-cash-stack',
-          title: 'Pago Recibido',
-          description: `Pago procesado exitosamente ($${amount.toFixed(2)}).`,
-          time: this.getRelativeTime(dateStr),
-          read: this.seenIds.has(id),
-          date: new Date(dateStr)
-        });
-        this.seenIds.add(id);
-      });
-
-      // Últimas 2 actividades creadas
-      const recentActivities = Array.isArray(activities)
-        ? [...activities]
-            .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-            .slice(0, 2)
-        : [];
-
-      recentActivities.forEach(a => {
-        const id = `activity-${a.id}`;
-        incoming.push({
-          id,
-          type: 'class',
-          icon: 'bi-calendar-plus',
-          title: 'Nueva Actividad Creada',
-          description: `Se ha creado la actividad "${a.title}".`,
-          time: this.getRelativeTime(a.createdAt),
-          read: this.seenIds.has(id),
-          date: new Date(a.createdAt)
-        });
-        this.seenIds.add(id);
-      });
-
-      if (incoming.length > 0) {
-        this.notifications$.next(incoming);
-      }
-    });
   }
 
-  private getRelativeTime(dateStr: string): string {
+  private _removeLocal(id: string): void {
+    const updated = this._notifs$.value.filter(n => n.id !== id);
+    this._notifs$.next(updated);
+    this._count$.next(updated.length);
+  }
+
+  private _map(n: BackendNotification): AppNotification {
+    return {
+      id: n.id,
+      type: n.type,
+      icon: n.icon,
+      title: n.title,
+      description: n.description,
+      read: n.isRead,
+      time: this._relativeTime(n.createdAt),
+      date: new Date(n.createdAt)
+    };
+  }
+
+  private _relativeTime(dateStr: string): string {
     const date = new Date(dateStr);
     if (isNaN(date.getTime())) return 'Recientemente';
     const diff = Math.floor((Date.now() - date.getTime()) / 1000);

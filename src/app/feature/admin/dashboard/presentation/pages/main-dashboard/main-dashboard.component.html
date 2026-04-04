@@ -1,28 +1,96 @@
 <div class="dashboard-container">
-    <!-- Loader Overlay -->
+    <!-- Loader -->
     <div *ngIf="isLoading" class="loader-overlay">
         <ng-lottie [options]="lottieOptions" [width]="'400px'" [height]="'400px'"></ng-lottie>
     </div>
 
-    <!-- SIDEBAR -->
     <app-sidebar [collapsed]="sidebarCollapsed" (collapsedChange)="onSidebarToggle($event)"></app-sidebar>
 
-    <!-- MAIN CONTENT -->
     <ion-content class="main-content" [class.sidebar-collapsed]="sidebarCollapsed" *ngIf="!isLoading">
         <div class="dashboard-wrapper">
-            <!-- Header -->
+
+            <!-- ── Header ── -->
             <header class="dashboard-header">
                 <div class="header-left">
-                    <img src="assets/img/LogoPasionyFuror.png" alt="Logo Furor y Pasion" class="logo-mobile" />
+                    <img src="assets/img/LogoPasionyFuror.png" alt="Logo" class="logo-mobile" />
                     <h1 class="header-title">DASHBOARD FUROR Y PASION</h1>
                     <p class="header-subtitle">Bienvenido de nuevo, {{ userName }}</p>
                 </div>
                 <div class="header-right">
-                    <app-search-input 
-                        placeholder="Buscar estudiantes, clases..."
-                        (onSearch)="handleSearch($event)"
-                        class="dashboard-search">
-                    </app-search-input>
+
+                    <!-- Search con resultados -->
+                    <div class="search-wrapper">
+                        <app-search-input
+                            placeholder="Buscar estudiantes, actividades..."
+                            (onSearch)="handleSearch($event)"
+                            class="dashboard-search">
+                        </app-search-input>
+
+                        <!-- Panel de resultados -->
+                        <div class="search-results-panel" *ngIf="showSearchResults">
+                            <!-- Buscando -->
+                            <div class="search-loading" *ngIf="isSearching">
+                                <ion-spinner name="crescent" color="danger"></ion-spinner>
+                                <span>Buscando...</span>
+                            </div>
+
+                            <!-- Sin resultados -->
+                            <div class="search-empty" *ngIf="!isSearching && !hasSearchResults">
+                                <i class="bi bi-search"></i>
+                                <span>Sin resultados para "{{ searchTerm }}"</span>
+                            </div>
+
+                            <!-- Estudiantes -->
+                            <div *ngIf="searchResults?.students?.length">
+                                <div class="result-group-label">
+                                    <i class="bi bi-people-fill"></i> Estudiantes
+                                </div>
+                                <div class="result-item" *ngFor="let s of searchResults!.students"
+                                     (click)="goToStudent(s.id)">
+                                    <div class="result-icon student"><i class="bi bi-person"></i></div>
+                                    <div class="result-info">
+                                        <span class="result-title">{{ s.full_name }}</span>
+                                        <span class="result-sub">{{ s.document_id }} · {{ s.status }}</span>
+                                    </div>
+                                    <i class="bi bi-chevron-right result-arrow"></i>
+                                </div>
+                            </div>
+
+                            <!-- Pagos -->
+                            <div *ngIf="searchResults?.payments?.length">
+                                <div class="result-group-label">
+                                    <i class="bi bi-cash-stack"></i> Pagos
+                                </div>
+                                <div class="result-item" *ngFor="let p of searchResults!.payments"
+                                     (click)="goToPayment(p.id)">
+                                    <div class="result-icon payment"><i class="bi bi-receipt"></i></div>
+                                    <div class="result-info">
+                                        <span class="result-title">{{ p.studentName }}</span>
+                                        <span class="result-sub">{{ p.receiptId }} · {{ p.planAcquired }}</span>
+                                    </div>
+                                    <i class="bi bi-chevron-right result-arrow"></i>
+                                </div>
+                            </div>
+
+                            <!-- Actividades -->
+                            <div *ngIf="searchResults?.activities?.length">
+                                <div class="result-group-label">
+                                    <i class="bi bi-calendar-event"></i> Actividades
+                                </div>
+                                <div class="result-item" *ngFor="let a of searchResults!.activities"
+                                     (click)="goToActivity(a.id)">
+                                    <div class="result-icon activity"><i class="bi bi-calendar-heart"></i></div>
+                                    <div class="result-info">
+                                        <span class="result-title">{{ a.title }}</span>
+                                        <span class="result-sub">{{ a.eventDate }} · {{ a.eventTime }}</span>
+                                    </div>
+                                    <i class="bi bi-chevron-right result-arrow"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Notificaciones -->
                     <div class="notification-container">
                         <button class="notification-btn" (click)="toggleNotifications($event)">
                             <i class="bi bi-bell"></i>
@@ -30,60 +98,39 @@
                                 {{ count > 9 ? '9+' : count }}
                             </span>
                         </button>
-                        <app-notification-dropdown 
+                        <app-notification-dropdown
                             *ngIf="showNotifications"
                             (close)="showNotifications = false"
                             (viewAll)="navigateToNotifications()">
                         </app-notification-dropdown>
                     </div>
+
                     <div class="header-avatar" [title]="userName">
                         <span>{{ userInitials }}</span>
                     </div>
                 </div>
             </header>
 
-            <!-- Stats Section -->
+            <!-- ── Stats ── -->
             <section class="stats-section">
-                <app-stat-card 
-                    label="Estudiantes" 
-                    [value]="totalStudents.toString()" 
-                    icon="bi-people-fill" 
-                    colorClass="students" 
-                    change="Total inscritos" 
-                    changeType="positive">
+                <app-stat-card label="Estudiantes"  [value]="totalStudents.toString()"
+                    icon="bi-people-fill"    colorClass="students" change="Total inscritos"  changeType="positive">
                 </app-stat-card>
-
-                <app-stat-card 
-                    label="Clases Hoy" 
-                    [value]="todayClasses.length.toString()" 
-                    icon="bi-calendar-check" 
-                    colorClass="classes" 
-                    change="Programadas" 
-                    changeType="neutral">
+                <app-stat-card label="Clases Hoy"   [value]="todayClasses.length.toString()"
+                    icon="bi-calendar-check" colorClass="classes"  change="Programadas"      changeType="neutral">
                 </app-stat-card>
-
-                <app-stat-card 
-                    label="Ingresos" 
-                    [value]="(totalRevenue | currency:'USD':'symbol':'1.0-0') || '0'" 
-                    icon="bi-currency-dollar" 
-                    colorClass="revenue" 
-                    change="Total recaudado" 
-                    changeType="positive">
+                <app-stat-card label="Ingresos"     [value]="(totalRevenue | currency:'USD':'symbol':'1.0-0') || '0'"
+                    icon="bi-currency-dollar" colorClass="revenue" change="Total recaudado"  changeType="positive">
                 </app-stat-card>
-
-                <app-stat-card 
-                    label="Asistencia" 
-                    value="--" 
-                    icon="bi-check-circle" 
-                    colorClass="attendance" 
-                    change="Pendiente implementar" 
-                    changeType="neutral">
+                <app-stat-card label="Asistencia"   value="--"
+                    icon="bi-check-circle"   colorClass="attendance" change="Pendiente"      changeType="neutral">
                 </app-stat-card>
             </section>
 
-            <!-- Main Content Grid -->
+            <!-- ── Content Grid ── -->
             <section class="content-grid">
-                <!-- Schedule Card -->
+
+                <!-- Clases de hoy -->
                 <div class="card schedule-card">
                     <div class="card-header">
                         <h2 class="card-title">Clases de Hoy</h2>
@@ -91,7 +138,7 @@
                     </div>
                     <div class="schedule-list" *ngIf="todayClasses.length > 0; else noClasses">
                         <div class="schedule-item d-flex align-items-center" *ngFor="let cls of todayClasses">
-                            <div class="schedule-time text-center me-3" style="min-width: 80px;">
+                            <div class="schedule-time text-center me-3" style="min-width:80px">
                                 <div class="fw-bold">{{ cls.time }}</div>
                                 <small class="text-muted">{{ cls.duration }}</small>
                             </div>
@@ -99,8 +146,8 @@
                                 <div class="fw-semibold">{{ cls.name }}</div>
                                 <small class="text-muted">{{ cls.instructor }}</small>
                             </div>
-                            <div class="schedule-meta text-end" style="min-width: 100px;">
-                                <div class="progress mb-1" style="height: 4px;">
+                            <div class="schedule-meta text-end" style="min-width:100px">
+                                <div class="progress mb-1" style="height:4px">
                                     <div class="progress-bar bg-danger" [style.width.%]="cls.capacityPercent"></div>
                                 </div>
                                 <small class="text-muted">{{ cls.enrolled }}/{{ cls.capacity }}</small>
@@ -115,19 +162,20 @@
                     </ng-template>
                 </div>
 
-                <!-- Activity Card -->
+                <!-- Actividad reciente -->
                 <div class="card activity-card">
                     <div class="card-header">
                         <h2 class="card-title">Actividad Reciente</h2>
+                        <!-- <button class="card-action" (click)="navigateToStudents()">Ver estudiantes</button> -->
                     </div>
                     <div class="activity-list" *ngIf="recentActivity.length > 0; else noActivity">
-                        <div class="activity-item d-flex align-items-center" *ngFor="let activity of recentActivity">
-                            <div class="activity-avatar me-3" [ngClass]="activity.type">
-                                <i class="bi" [ngClass]="activity.icon"></i>
+                        <div class="activity-item d-flex align-items-center" *ngFor="let a of recentActivity">
+                            <div class="activity-avatar me-3" [ngClass]="a.type">
+                                <i class="bi" [ngClass]="a.icon"></i>
                             </div>
                             <div class="activity-info flex-grow-1">
-                                <div class="activity-title">{{ activity.title }}</div>
-                                <small class="text-muted">{{ activity.time }}</small>
+                                <div class="activity-title">{{ a.title }}</div>
+                                <small class="text-muted">{{ a.time }}</small>
                             </div>
                         </div>
                     </div>
@@ -139,57 +187,91 @@
                     </ng-template>
                 </div>
 
-                <!-- Quick Actions -->
+                <!-- Acciones rápidas -->
                 <div class="card quick-actions-card">
-                    <div class="card-header">
-                        <h2 class="card-title">Acciones Rápidas</h2>
-                    </div>
+                    <div class="card-header"><h2 class="card-title">Acciones Rápidas</h2></div>
                     <div class="quick-actions">
                         <button class="quick-action-btn" (click)="navigateToAddStudent()">
-                            <i class="bi bi-person-plus"></i>
-                            <span>Nuevo Estudiante</span>
+                            <i class="bi bi-person-plus"></i><span>Nuevo Estudiante</span>
                         </button>
                         <button class="quick-action-btn" (click)="navigateToClasses()">
-                            <i class="bi bi-calendar-plus"></i>
-                            <span>Gestionar Clases</span>
+                            <i class="bi bi-calendar-plus"></i><span>Gestionar Clases</span>
                         </button>
                         <button class="quick-action-btn" (click)="navigateToRegisterPayment()">
-                            <i class="bi bi-receipt"></i>
-                            <span>Registrar Pago</span>
+                            <i class="bi bi-receipt"></i><span>Registrar Pago</span>
                         </button>
                         <button class="quick-action-btn" (click)="navigateToStudents()">
-                            <i class="bi bi-people"></i>
-                            <span>Ver Estudiantes</span>
+                            <i class="bi bi-people"></i><span>Ver Estudiantes</span>
                         </button>
                     </div>
                 </div>
 
-                <!-- Calendar -->
+                <!-- Calendario -->
                 <div class="card calendar-card">
                     <div class="card-header">
                         <h2 class="card-title">Calendario</h2>
                     </div>
-                    <div class="calendar-placeholder">
-                        <div class="calendar-mini">
-                            <div class="calendar-header-mini">
-                                <span class="text-capitalize">{{ currentMonthName }}</span>
-                            </div>
-                            <div class="calendar-grid-mini">
-                                <div class="day-name">L</div><div class="day-name">M</div><div class="day-name">X</div><div class="day-name">J</div><div class="day-name">V</div><div class="day-name">S</div><div class="day-name">D</div>
-                                
-                                <div *ngFor="let day of calendarDays" 
-                                     class="day" 
-                                     [class.empty]="!day.day"
-                                     [class.today]="day.isToday"
-                                     [class.event]="day.hasEvent">
-                                    {{ day.day }}
-                                </div>
+                    <div class="calendar-mini">
+                        <div class="calendar-header-mini">
+                            <span class="text-capitalize">{{ currentMonthName }}</span>
+                        </div>
+                        <div class="calendar-grid-mini">
+                            <div class="day-name">L</div><div class="day-name">M</div>
+                            <div class="day-name">X</div><div class="day-name">J</div>
+                            <div class="day-name">V</div><div class="day-name">S</div>
+                            <div class="day-name">D</div>
+
+                            <div *ngFor="let day of calendarDays"
+                                 class="day"
+                                 [class.empty]="!day.day"
+                                 [class.today]="day.isToday"
+                                 [class.event]="day.hasEvent"
+                                 [class.clickable]="day.hasEvent"
+                                 [title]="day.hasEvent ? day.activities[0]?.title : ''"
+                                 (click)="onDayClick(day)">
+                                {{ day.day }}
+                                <span class="event-dot" *ngIf="day.hasEvent"></span>
                             </div>
                         </div>
-                        <p class="mt-3 text-muted"><small>Datos sincronizados con actividades reales</small></p>
                     </div>
+                    <p class="mt-3 text-muted"><small>Haz click en un día marcado para ver la actividad</small></p>
                 </div>
+
             </section>
         </div>
     </ion-content>
+
+    <!-- ── Modal Calendario ── -->
+    <div class="cal-modal-backdrop" *ngIf="showCalendarModal" (click)="closeCalendarModal()">
+        <div class="cal-modal" (click)="$event.stopPropagation()">
+            <div class="cal-modal-header">
+                <h3 class="cal-modal-title">
+                    <i class="bi bi-calendar-event me-2"></i>{{ selectedDayLabel }}
+                </h3>
+                <button class="cal-modal-close" (click)="closeCalendarModal()">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+            <div class="cal-modal-body">
+                <div class="cal-activity-item" *ngFor="let act of selectedDayActivities">
+                    <div class="cal-activity-time">
+                        <i class="bi bi-clock"></i> {{ act.eventTime }}
+                    </div>
+                    <div class="cal-activity-info">
+                        <div class="cal-activity-title">{{ act.title }}</div>
+                        <div class="cal-activity-desc" *ngIf="act.description">{{ act.description }}</div>
+                    </div>
+                    <button class="cal-activity-btn" (click)="navigateToActivityDetail(act.id)">
+                        <i class="bi bi-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="cal-modal-footer">
+                <button class="cal-modal-view-all" (click)="navigateToActivities()">
+                    Ver todas las actividades
+                </button>
+            </div>
+        </div>
+    </div>
+
 </div>

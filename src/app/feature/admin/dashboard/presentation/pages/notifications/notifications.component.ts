@@ -36,7 +36,7 @@ import { SidebarComponent } from '@shared/components/menus/sidebar/sidebar.compo
 
                 <div class="title-group">
                   <h1 class="glass-title">Centro de Notificaciones</h1>
-                  <p class="glass-subtitle">Academia Pasión y Furor</p>
+                  <p class="glass-subtitle">Academia Furor y Pasion</p>
                 </div>
 
                 <button class="glass-action-btn" (click)="markAllAsRead()">

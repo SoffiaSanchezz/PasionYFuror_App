@@ -82,6 +82,11 @@ import { Observable, map } from 'rxjs';
       to { opacity: 1; transform: translateY(0) scale(1); }
     }
 
+    @keyframes notifPulse {
+      0%   { background: rgba(177, 18, 38, 0.12); }
+      100% { background: rgba(177, 18, 38, 0.02); }
+    }
+
     .dropdown-header {
       padding: 1.25rem;
       border-bottom: 1px solid #27272a;
@@ -152,6 +157,7 @@ import { Observable, map } from 'rxjs';
       &:hover { background: #1f1f23; }
       &.unread { 
         background: rgba(177, 18, 38, 0.02);
+        animation: notifPulse 0.4s ease;
         .notif-title { color: #fafafa; font-weight: 700; }
       }
       &:not(.unread) {
@@ -241,11 +247,14 @@ export class NotificationDropdownComponent implements OnInit {
 
   constructor(private notificationService: NotificationService) {
     this.recentNotifications$ = this.notificationService.getNotifications().pipe(
-      map(list => list.slice(0, 5)) // Solo mostrar las 5 más recientes en el dropdown
+      map(list => list.slice(0, 5))
     );
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    // Fuerza refresco al abrir el dropdown
+    this.notificationService.refresh();
+  }
 
   onNotificationClick(n: AppNotification): void {
     this.notificationService.markAsRead(n.id);
