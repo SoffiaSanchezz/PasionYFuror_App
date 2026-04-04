@@ -1,7 +1,6 @@
 <div class="att-page">
   <div class="att-bg-overlay"></div>
 
-  <!-- Back button -->
   <button class="att-back" (click)="goHome()">
     <i class="bi bi-arrow-left"></i>
     <span>Volver</span>
@@ -9,7 +8,6 @@
 
   <div class="att-card">
 
-    <!-- Header -->
     <div class="att-header">
       <div class="att-icon-box">
         <i class="bi bi-person-bounding-box"></i>
@@ -18,17 +16,14 @@
       <p class="att-subtitle">Ubica tu rostro dentro del recuadro y presiona el botón</p>
     </div>
 
-    <!-- Camera area -->
     <div class="att-camera-wrapper">
       <div class="att-camera" [class]="'state-' + state()">
 
-        <!-- Corner guides -->
         <span class="corner tl"></span>
         <span class="corner tr"></span>
         <span class="corner bl"></span>
         <span class="corner br"></span>
 
-        <!-- Video en vivo — visible en idle y scanning -->
         <video #videoEl
           class="cam-video"
           autoplay
@@ -37,27 +32,17 @@
           [style.display]="(state() === 'idle' || state() === 'scanning') ? 'block' : 'none'">
         </video>
 
-        <!-- Canvas oculto para captura -->
         <canvas #canvasEl style="display:none"></canvas>
 
-        <!-- LOADING MODELS -->
-        <div class="cam-placeholder" *ngIf="state() === 'loading-models'">
-          <ion-spinner name="crescent" style="--color:#B11226; width:40px; height:40px"></ion-spinner>
-          <p class="cam-hint">Cargando modelos...</p>
-        </div>
-
-        <!-- REQUESTING CAMERA -->
         <div class="cam-placeholder" *ngIf="state() === 'requesting-camera'">
           <i class="bi bi-camera-fill cam-icon"></i>
           <p class="cam-hint">Solicitando cámara...</p>
         </div>
 
-        <!-- IDLE: overlay sutil sobre el video -->
         <div class="cam-idle-overlay" *ngIf="state() === 'idle'">
           <p class="cam-hint">Cámara activa</p>
         </div>
 
-        <!-- SCANNING: animated overlay sobre el video -->
         <div class="cam-scanning" *ngIf="state() === 'scanning'">
           <div class="scan-line"></div>
           <div class="scan-dots">
@@ -66,7 +51,6 @@
           <p class="cam-hint scanning">Escaneando rostro...</p>
         </div>
 
-        <!-- SUCCESS -->
         <div class="cam-result success" *ngIf="state() === 'success'">
           <div class="result-icon-wrap success">
             <i class="bi bi-check-circle-fill"></i>
@@ -75,10 +59,12 @@
           <p class="result-sub" *ngIf="matchedStudent()">
             Bienvenido, <strong>{{ matchedStudent()!.full_name }}</strong>
           </p>
-          <p class="result-sub" *ngIf="!matchedStudent()">Tu presencia ha sido confirmada.</p>
+          <p class="result-sub confidence" *ngIf="matchedStudent()">
+            {{ matchedStudent()!.confidence }}% de coincidencia
+          </p>
+          <p class="result-sub warn" *ngIf="errorMessage()">{{ errorMessage() }}</p>
         </div>
 
-        <!-- ERROR -->
         <div class="cam-result error" *ngIf="state() === 'error'">
           <div class="result-icon-wrap error">
             <i class="bi bi-x-circle-fill"></i>
@@ -90,16 +76,14 @@
       </div>
     </div>
 
-    <!-- Status badge -->
     <div class="att-status-badge" [class]="'badge-' + state()">
       <i class="bi"
          [class.bi-circle]="state() === 'idle'"
-         [class.bi-hourglass-split]="state() === 'loading-models' || state() === 'requesting-camera'"
+         [class.bi-hourglass-split]="state() === 'requesting-camera'"
          [class.bi-arrow-repeat]="state() === 'scanning'"
          [class.bi-check-circle-fill]="state() === 'success'"
          [class.bi-exclamation-triangle-fill]="state() === 'error'">
       </i>
-      <span *ngIf="state() === 'loading-models'">Cargando modelos de IA...</span>
       <span *ngIf="state() === 'requesting-camera'">Solicitando permiso de cámara...</span>
       <span *ngIf="state() === 'idle'">Listo para escanear</span>
       <span *ngIf="state() === 'scanning'">Procesando...</span>
@@ -107,7 +91,6 @@
       <span *ngIf="state() === 'error'">No se pudo verificar</span>
     </div>
 
-    <!-- Actions -->
     <div class="att-actions">
       <button
         class="att-btn primary"
@@ -115,10 +98,10 @@
         [disabled]="state() !== 'idle'"
         *ngIf="state() !== 'error' && state() !== 'success'">
         <i class="bi bi-camera-fill" *ngIf="state() === 'idle'"></i>
-        <ion-spinner name="crescent" *ngIf="state() === 'scanning' || state() === 'loading-models' || state() === 'requesting-camera'"></ion-spinner>
+        <ion-spinner name="crescent" *ngIf="state() === 'scanning' || state() === 'requesting-camera'"></ion-spinner>
         <span *ngIf="state() === 'idle'">Registrar Asistencia</span>
         <span *ngIf="state() === 'scanning'">Escaneando...</span>
-        <span *ngIf="state() === 'loading-models' || state() === 'requesting-camera'">Preparando...</span>
+        <span *ngIf="state() === 'requesting-camera'">Preparando...</span>
       </button>
 
       <button class="att-btn danger" (click)="retry()" *ngIf="state() === 'error'">
@@ -129,6 +112,11 @@
       <button class="att-btn ghost" (click)="goHome()" *ngIf="state() === 'success'">
         <i class="bi bi-house"></i>
         <span>Volver al inicio</span>
+      </button>
+
+      <button class="att-btn primary" (click)="nextStudent()" *ngIf="state() === 'success'">
+        <i class="bi bi-person-fill-add"></i>
+        <span>Siguiente alumno</span>
       </button>
     </div>
 

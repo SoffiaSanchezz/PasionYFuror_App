@@ -40,8 +40,9 @@ export class NotificationService implements OnDestroy {
   private pollSub?: Subscription;
 
   constructor(private readonly api: ApiService) {
-    this._fetch();
-    this.pollSub = timer(POLL_MS, POLL_MS).subscribe(() => this._fetch());
+    // TODO: habilitar cuando el endpoint /notifications esté implementado en el backend
+    // this._fetch();
+    // this.pollSub = timer(POLL_MS, POLL_MS).subscribe(() => this._fetch());
   }
 
   ngOnDestroy(): void {

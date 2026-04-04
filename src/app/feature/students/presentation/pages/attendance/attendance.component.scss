@@ -304,6 +304,17 @@
   font-size: 0.8rem;
   color: rgba(255,255,255,0.5);
   margin: 0;
+
+  &.confidence {
+    color: #4ade80;
+    font-weight: 700;
+    font-size: 0.85rem;
+  }
+
+  &.warn {
+    color: #fbbf24;
+    font-size: 0.78rem;
+  }
 }
 
 /* ── Status badge ────────────────────────────── */
