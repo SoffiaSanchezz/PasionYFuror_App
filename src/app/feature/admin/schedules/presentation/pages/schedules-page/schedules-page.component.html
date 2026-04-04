@@ -7,25 +7,19 @@
         <div class="schedules-container dashboard-container">
             <!-- Header Section -->
             <header class="page-header">
-                <div class="header-content">
-                    <div class="title-section">
-                        <div class="title-text">
-                            <h1>Gestión de Horarios</h1>
-                            <p class="subtitle">Administra los horarios de clases y actividades</p>
-                        </div>
-                    </div>
-
-                    <div class="header-actions">
-                        <button class="btn-action btn-primary-custom" (click)="goToNewSchedule()">
-                            <i class="bi bi-calendar-plus"></i>
-                            <span>Añadir Horario</span>
-                        </button>
-                        <button class="btn-action btn-secondary-custom" (click)="goToAttendanceRecords()">
-                            <i class="bi bi-list-check"></i>
-                            <span>Ver Registros</span>
-                        </button>
-                    </div>
-                </div>
+                <app-page-header
+                  title="Gestión de Horarios"
+                  subtitle="Administra los horarios de clases y actividades"
+                  icon="bi-calendar-week">
+                  <button class="btn-action btn-primary-custom" (click)="goToNewSchedule()">
+                      <i class="bi bi-calendar-plus"></i>
+                      <span>Añadir Horario</span>
+                  </button>
+                  <button class="btn-action btn-secondary-custom" (click)="goToAttendanceRecords()">
+                      <i class="bi bi-list-check"></i>
+                      <span>Ver Registros</span>
+                  </button>
+                </app-page-header>
             </header>
 
             <!-- Stats Cards -->

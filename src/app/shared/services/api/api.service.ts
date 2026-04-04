@@ -9,6 +9,7 @@ import { Injectable } from '@angular/core';
 import { ApiConfig } from '@shared/services/api/api.config';
 import { environment } from '../../../../environments/environment';
 import { Observable, catchError, map, throwError } from 'rxjs';
+import { SessionProviderService } from '@shared/services/session/session-provider.service';
 
 // Tipos para el API Service
 type ApiResponse<T = unknown> = T;
@@ -18,12 +19,20 @@ type ApiRequestData = any;
     providedIn: 'root',
 })
 export class ApiService {
-    constructor(private http: HttpClient) {}
+    constructor(
+        private http: HttpClient,
+        private session: SessionProviderService
+    ) {}
 
     private getHeaders(): HttpHeaders {
-        return new HttpHeaders({
+        const token = this.session.getInformationToken();
+        const headers: Record<string, string> = {
             'Content-Type': ApiConfig.contentType,
-        });
+        };
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+        return new HttpHeaders(headers);
     }
 
     public get<T = unknown>(url: string, params?: HttpParams): Observable<ApiResponse<T>> {

@@ -1,3 +1,4 @@
+import { PageHeaderComponent } from '@shared/components/page-header/page-header.component';
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
@@ -13,7 +14,7 @@ import { GetSchedulesUseCase, DeleteScheduleUseCase } from '../../../domain/usec
 @Component({
   selector: 'app-schedules-page',
   standalone: true,
-  imports: [CommonModule, RouterModule, IonicModule, SidebarComponent, ScheduleListTableComponent],
+  imports: [CommonModule, RouterModule, IonicModule, SidebarComponent, ScheduleListTableComponent, PageHeaderComponent],
   templateUrl: './schedules-page.component.html',
   styleUrls: ['./schedules-page.component.scss']
 })

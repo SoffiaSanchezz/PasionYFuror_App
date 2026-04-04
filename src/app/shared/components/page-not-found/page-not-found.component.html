@@ -1,3 +1,31 @@
-<p>
-  page-not-found works!
-</p>
+<ion-content [fullscreen]="true" class="ion-no-padding">
+  <div class="not-found-wrapper">
+    <!-- Video de fondo inmersivo -->
+    <div class="video-container">
+      <video autoplay loop muted playsinline class="background-video">
+        <source src="assets/animations/404.mp4" type="video/mp4">
+      </video>
+      <div class="video-overlay"></div>
+    </div>
+
+    <!-- Contenido flotante -->
+    <div class="content-overlay">
+      <div class="text-group">
+        <h1 class="glitch-text" data-text="404">404</h1>
+        <h2 class="subtitle">Página no encontrada</h2>
+        <p class="description">
+          Parece que te perdiste... <br>
+          <span class="highlight">pero el ritmo sigue 💃</span>
+        </p>
+      </div>
+
+      <ion-button 
+        routerLink="/" 
+        fill="clear" 
+        class="cta-button">
+        <ion-icon slot="start" name="home-outline"></ion-icon>
+        Volver al inicio
+      </ion-button>
+    </div>
+  </div>
+</ion-content>
