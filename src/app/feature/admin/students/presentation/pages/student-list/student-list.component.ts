@@ -1,4 +1,5 @@
 // src/app/feature/admin/students/presentation/pages/student-list/student-list.component.ts
+import { PageHeaderComponent } from '@shared/components/page-header/page-header.component';
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
@@ -18,7 +19,7 @@ import { StudentsService } from 'src/app/shared/services/students/students.servi
 @Component({
   selector: 'app-student-list',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, SidebarComponent, StatCardComponent, DataTableComponent, IonicModule],
+  imports: [CommonModule, RouterModule, FormsModule, SidebarComponent, StatCardComponent, DataTableComponent, IonicModule, PageHeaderComponent],
   templateUrl: './student-list.component.html',
   styleUrls: ['./student-list.component.scss']
 })

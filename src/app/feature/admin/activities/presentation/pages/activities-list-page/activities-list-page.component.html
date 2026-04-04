@@ -8,20 +8,14 @@
   <div class="activities-container">
     <!-- Header -->
     <div class="page-header">
-      <div class="header-content">
-        <div class="title-section">
-          <div class="title-icon"><i class="bi bi-calendar-event"></i></div>
-          <div class="title-text">
-            <h1>Gestión de Actividades</h1>
-            <p class="subtitle">Organiza y comunica los eventos de la academia</p>
-          </div>
-        </div>
-        <div class="header-actions">
-          <button class="btn-action btn-primary-custom" (click)="goToNewActivity()">
-            <i class="bi bi-plus-lg"></i> Nueva Actividad
-          </button>
-        </div>
-      </div>
+      <app-page-header
+        title="Gestión de Actividades"
+        subtitle="Organiza y comunica los eventos de la academia"
+        icon="bi-calendar-event">
+        <button class="btn-action btn-primary-custom" (click)="goToNewActivity()">
+          <i class="bi bi-plus-lg"></i> Nueva Actividad
+        </button>
+      </app-page-header>
     </div>
 
     <!-- Stats Grid -->

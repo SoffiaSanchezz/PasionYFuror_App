@@ -1,3 +1,4 @@
+import { PageHeaderComponent } from '@shared/components/page-header/page-header.component';
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
@@ -13,7 +14,7 @@ import Swal from 'sweetalert2';
 @Component({
   selector: 'app-payments-list-page',
   standalone: true,
-  imports: [CommonModule, IonicModule, SidebarComponent],
+  imports: [CommonModule, IonicModule, SidebarComponent, PageHeaderComponent],
   templateUrl: './payments-list-page.component.html',
   styleUrls: ['./payments-list-page.component.scss']
 })
