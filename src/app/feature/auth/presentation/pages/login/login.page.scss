@@ -38,6 +38,45 @@
     z-index: 1;
 }
 
+/* Botón volver — esquina superior izquierda, sobre el overlay */
+.btn-back-home {
+    position: absolute;
+    top: 1.25rem;
+    left: 1.25rem;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-family: var(--font-urbanist);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+
+    i { font-size: 1rem; }
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.22);
+        border-color: rgba(255, 255, 255, 0.4);
+        transform: translateX(-3px);
+    }
+
+    @media (max-width: 480px) {
+        top: 1rem;
+        left: 1rem;
+        padding: 0.45rem 0.85rem;
+        font-size: 0.82rem;
+    }
+}
+
 /* Original custom font styles and specific colors not covered by Bootstrap */
 .card-title {
     font-family: var(--font-rock-salt); /* Assuming --font-rock-salt is defined elsewhere */

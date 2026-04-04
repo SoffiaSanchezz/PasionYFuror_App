@@ -63,6 +63,10 @@ export class LoginPage implements OnInit {
   get email() { return this.loginForm.get('email'); }
   get password() { return this.loginForm.get('password'); }
 
+  goHome(): void {
+    this.router.navigate(['/']);
+  }
+
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
   }

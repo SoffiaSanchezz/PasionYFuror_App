@@ -1,5 +1,11 @@
 <ion-content>
     <div class="login-container d-flex justify-content-center align-items-center min-vh-100 p-3 overflow-hidden">
+
+        <!-- Botón volver — fuera del card, sobre el overlay -->
+        <button class="btn-back-home" (click)="goHome()" type="button" aria-label="Volver al inicio">
+            <i class="bi bi-arrow-left"></i>
+            <span>Volver</span>
+        </button>
         <!-- Lottie Loader (conditional display) -->
         <div *ngIf="isLoading" class="loader-overlay">
             <ng-lottie [options]="lottieOptions" [width]="'500px'" [height]="'500px'"></ng-lottie>
