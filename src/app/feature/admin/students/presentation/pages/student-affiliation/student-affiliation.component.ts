@@ -251,14 +251,21 @@ export class StudentAffiliationComponent implements OnInit, OnDestroy, AfterView
       await this.captureWithCapacitor();
       return;
     }
+    console.log('[Camera] Solicitando acceso a la cámara...');
     try {
       this.videoStream = await navigator.mediaDevices.getUserMedia({ 
-        video: { width: { ideal: 1280 }, height: { ideal: 720 } } 
+        video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: 'user' } 
       });
+      console.log('[Camera] Permiso concedido, asignando stream...');
       this.assignStreamToVideo();
-    } catch (err) {
-      console.error('Error accessing webcam:', err);
-      alert('No se pudo acceder a la cámara.');
+    } catch (err: any) {
+      console.error('[Camera] Error al acceder a la cámara:', err?.name, err?.message);
+      const msg = err?.name === 'NotAllowedError'
+        ? 'Permiso de cámara denegado. Habilítalo en la configuración del navegador.'
+        : err?.name === 'NotFoundError'
+          ? 'No se encontró ninguna cámara en este dispositivo.'
+          : 'No se pudo acceder a la cámara. Verifica que no esté en uso por otra aplicación.';
+      alert(msg);
     }
   }
 
@@ -283,10 +290,25 @@ export class StudentAffiliationComponent implements OnInit, OnDestroy, AfterView
 
   private assignStreamToVideo(): void {
     if (this.videoElement && this.videoElement.nativeElement) {
-      this.videoElement.nativeElement.srcObject = this.videoStream;
+      const video = this.videoElement.nativeElement;
+      video.srcObject = this.videoStream;
+      video.play().catch((e: unknown) => console.warn('Video play error:', e));
+      console.log('[Camera] Stream asignado al video correctamente');
     } else {
-      setTimeout(() => {
-        if (this.currentStep === 3) this.assignStreamToVideo();
+      // Reintenta hasta 20 veces (2 segundos total) esperando que el DOM renderice
+      let attempts = 0;
+      const retry = setInterval(() => {
+        attempts++;
+        if (this.videoElement && this.videoElement.nativeElement) {
+          const video = this.videoElement.nativeElement;
+          video.srcObject = this.videoStream;
+          video.play().catch((e: unknown) => console.warn('Video play error:', e));
+          console.log(`[Camera] Stream asignado en intento ${attempts}`);
+          clearInterval(retry);
+        } else if (attempts >= 20) {
+          console.error('[Camera] No se pudo encontrar el elemento video después de 2s');
+          clearInterval(retry);
+        }
       }, 100);
     }
   }

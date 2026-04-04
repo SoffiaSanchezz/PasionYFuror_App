@@ -53,3 +53,7 @@ import 'zone.js';  // Included with Angular CLI.
 /***************************************************************************************************
  * APPLICATION IMPORTS
  */
+
+// Shim para módulos de Node.js que face-api.js intenta importar en el browser.
+// webpack no puede resolver 'fs' en entorno browser — este shim lo reemplaza con un objeto vacío.
+(window as any).global = window;

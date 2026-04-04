@@ -8,6 +8,11 @@ export const routes: Routes = [
         pathMatch: 'full',
     },
     {
+        path: 'attendance',
+        loadComponent: () => import('./feature/students/presentation/pages/attendance/attendance.component')
+            .then(m => m.AttendanceComponent),
+    },
+    {
         path: 'login',
         loadChildren: () => import('./feature/auth/presentation/auth-feature.module').then(m => m.AuthFeatureModule),
     },

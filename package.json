@@ -33,6 +33,7 @@
     "@ngx-translate/http-loader": "^17.0.0",
     "@types/bootstrap": "^5.2.10",
     "bootstrap": "^5.3.8",
+    "face-api.js": "^0.22.2",
     "ionicons": "^7.0.0",
     "lottie-web": "^5.13.0",
     "ngx-lottie": "^20.0.0",
