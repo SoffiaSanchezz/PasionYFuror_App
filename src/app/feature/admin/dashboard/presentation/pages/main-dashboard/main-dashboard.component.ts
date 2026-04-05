@@ -95,6 +95,9 @@ export class MainDashboardComponent implements OnInit, OnDestroy {
   selectedDayActivities: CalendarActivity[] = [];
   selectedDayLabel = '';
 
+  // ── User menu (avatar — solo móvil) ───────────────────────────────────
+  showUserMenu = false;
+
   unreadNotificationsCount$: Observable<number>;
   private subscriptions = new Subscription();
 
@@ -140,6 +143,29 @@ export class MainDashboardComponent implements OnInit, OnDestroy {
       const inside = this.el.nativeElement.querySelector('.search-wrapper')?.contains(target);
       if (!inside) { this.showSearchResults = false; this.cdr.markForCheck(); }
     }
+    if (this.showUserMenu) {
+      const inside = this.el.nativeElement.querySelector('.user-menu-container')?.contains(target);
+      if (!inside) { this.showUserMenu = false; this.cdr.markForCheck(); }
+    }
+  }
+
+  // ── User menu ─────────────────────────────────────────────────────────
+  toggleUserMenu(event: Event): void {
+    if (window.innerWidth >= 768) return;
+    event.stopPropagation();
+    this.showUserMenu = !this.showUserMenu;
+    this.cdr.markForCheck();
+  }
+
+  closeUserMenu(): void {
+    this.showUserMenu = false;
+    this.cdr.markForCheck();
+  }
+
+  logoutFromHeader(): void {
+    this.showUserMenu = false;
+    this.sessionProvider.clearSession();
+    this.router.navigate(['/login'], { replaceUrl: true });
   }
 
   // ── Search ────────────────────────────────────────────────────────────

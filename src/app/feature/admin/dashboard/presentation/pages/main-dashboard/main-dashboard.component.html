@@ -6,7 +6,7 @@
 
     <app-sidebar [collapsed]="sidebarCollapsed" (collapsedChange)="onSidebarToggle($event)"></app-sidebar>
 
-    <ion-content class="main-content" [class.sidebar-collapsed]="sidebarCollapsed" *ngIf="!isLoading">
+    <ion-content class="main-content" [class.sidebar-collapsed]="sidebarCollapsed" *ngIf="!isLoading" scrollEvents="true">
         <div class="dashboard-wrapper">
 
             <!-- ── Header ── -->
@@ -105,9 +105,22 @@
                         </app-notification-dropdown>
                     </div>
 
-                    <div class="header-avatar" [title]="userName">
+                    <div class="header-avatar user-menu-container" [title]="userName"
+                         (click)="toggleUserMenu($event)">
                         <span>{{ userInitials }}</span>
+                        <!-- Dropdown logout — solo móvil -->
+                        <div class="user-menu-dropdown" *ngIf="showUserMenu" (click)="$event.stopPropagation()">
+                            <div class="user-menu-info">
+                                <span class="user-menu-name">{{ userName }}</span>
+                            </div>
+                            <button class="user-menu-logout" (click)="logoutFromHeader()">
+                                <i class="bi bi-box-arrow-right"></i>
+                                <span>Cerrar Sesión</span>
+                            </button>
+                        </div>
                     </div>
+                    <!-- Backdrop para cerrar el menú -->
+                    <div class="user-menu-backdrop" *ngIf="showUserMenu" (click)="closeUserMenu()"></div>
                 </div>
             </header>
 

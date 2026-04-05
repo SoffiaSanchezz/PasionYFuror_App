@@ -6,7 +6,7 @@
   <aside class="sidebar-spacer" [class.collapsed]="sidebarCollapsed"></aside>
 
   <!-- CONTENIDO PRINCIPAL -->
-  <ion-content class="main-content">
+  <ion-content class="main-content" scrollEvents="true">
     <div class="content-wrapper">
       
       <!-- Loader Overlay -->
@@ -111,7 +111,7 @@
         </ion-toolbar>
       </ion-header>
 
-      <ion-content class="ion-padding" style="--background: #1a1a1a; --color: white;">
+      <ion-content class="ion-padding" style="--background: #1a1a1a; --color: white;" scrollEvents="true">
         <div class="modal-body-custom">
           <div class="student-ref-custom mb-4 p-3 rounded" style="background: rgba(255,255,255,0.05);">
             <label class="d-block small text-danger fw-bold">ESTUDIANTE</label>

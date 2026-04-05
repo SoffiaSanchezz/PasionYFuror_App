@@ -1,4 +1,6 @@
-<!-- SIDEBAR (Escritorio y Tablet) -->
+<!-- ══════════════════════════════════════════
+     SIDEBAR — Desktop y Tablet (≥768px)
+     ══════════════════════════════════════════ -->
 <aside class="sidebar d-none d-md-flex" [class.collapsed]="collapsed">
   <div class="sidebar-header">
     <div class="logo">
@@ -13,8 +15,8 @@
   <nav class="sidebar-nav">
     <ul>
       <li *ngFor="let item of navItems">
-        <a [routerLink]="item.route" routerLinkActive="active" 
-          (click)="setActiveItem(item)" [title]="collapsed ? item.label : ''">
+        <a [routerLink]="item.route" routerLinkActive="active"
+           (click)="setActiveItem(item)" [title]="collapsed ? item.label : ''">
           <i class="bi" [class]="'bi-' + item.icon"></i>
           <span class="nav-label" *ngIf="!collapsed">{{ item.label }}</span>
           <span class="badge" *ngIf="item.badge && !collapsed">{{ item.badge }}</span>
@@ -40,17 +42,51 @@
   </div>
 </aside>
 
-<!-- BOTTOM NAVIGATION (Móvil) -->
+<!-- ══════════════════════════════════════════
+     BOTTOM NAVIGATION — Solo Móvil (<768px)
+     Se oculta al hacer scroll hacia abajo
+     ══════════════════════════════════════════ -->
 <nav class="bottom-nav d-md-none" [class.hidden]="isHidden">
   <div class="bottom-nav-container">
-    <a *ngFor="let item of navItems" 
-       [routerLink]="item.route" 
-       routerLinkActive="active" 
-       class="bottom-nav-item">
+
+    <!-- Ítems de navegación -->
+    <a *ngFor="let item of navItems"
+       [routerLink]="item.route"
+       routerLinkActive="active"
+       class="bottom-nav-item"
+       (click)="closeAvatarMenu()">
       <div class="nav-icon-wrapper">
         <i class="bi" [class]="'bi-' + item.icon"></i>
       </div>
       <span class="nav-text">{{ item.label }}</span>
     </a>
+
+    <!-- Avatar con dropdown de logout — solo móvil -->
+    <div class="bottom-nav-item bottom-nav-user" (click)="toggleAvatarMenu($event)">
+      <div class="nav-icon-wrapper user-avatar-btn" [class.active-menu]="showAvatarMenu">
+        <span class="user-initials-text">{{ userInitials }}</span>
+      </div>
+      <span class="nav-text">Perfil</span>
+    </div>
+
   </div>
 </nav>
+
+<!-- Dropdown del avatar — aparece encima del bottom-nav -->
+<div class="user-dropdown" *ngIf="showAvatarMenu" (click)="$event.stopPropagation()">
+  <div class="user-dropdown-info">
+    <div class="user-dropdown-avatar">{{ userInitials }}</div>
+    <div class="user-dropdown-details">
+      <span class="user-dropdown-name">{{ userName }}</span>
+      <span class="user-dropdown-role">{{ userRole }}</span>
+    </div>
+  </div>
+  <div class="user-dropdown-divider"></div>
+  <button class="user-dropdown-logout" (click)="logout()">
+    <i class="bi bi-box-arrow-right"></i>
+    <span>Cerrar Sesión</span>
+  </button>
+</div>
+
+<!-- Backdrop: cierra el dropdown al tocar fuera -->
+<div class="user-dropdown-backdrop" *ngIf="showAvatarMenu" (click)="closeAvatarMenu()"></div>

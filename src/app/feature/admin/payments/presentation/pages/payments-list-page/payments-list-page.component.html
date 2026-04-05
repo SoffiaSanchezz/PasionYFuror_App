@@ -3,7 +3,7 @@
   <app-sidebar [collapsed]="sidebarCollapsed" (collapsedChange)="onSidebarToggle($event)"></app-sidebar>
 
   <!-- MAIN CONTENT -->
-  <ion-content class="main-content" [class.sidebar-collapsed]="sidebarCollapsed">
+  <ion-content class="main-content" [class.sidebar-collapsed]="sidebarCollapsed" scrollEvents="true">
     <div class="dashboard-wrapper">
       <!-- Header Section -->
       <app-page-header
