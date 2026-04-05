@@ -62,6 +62,11 @@ export class PaymentsListPageComponent implements OnInit {
 
   ngOnInit() { this.loadPayments(); }
 
+  // Se ejecuta CADA VEZ que la vista se hace visible (incluso desde caché de Ionic)
+  ionViewWillEnter(): void {
+    this.loadPayments();
+  }
+
   loadPayments() {
     this.isLoading = true;
     this.getPaymentsUC.execute().pipe(

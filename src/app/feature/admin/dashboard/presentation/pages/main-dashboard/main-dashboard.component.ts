@@ -117,6 +117,13 @@ export class MainDashboardComponent implements OnInit, OnDestroy {
     this._setupSearch();
   }
 
+  // Se ejecuta cada vez que el dashboard se hace visible (navegación de vuelta)
+  ionViewWillEnter(): void {
+    if (!this.isLoading) {
+      this.loadDashboardData();
+    }
+  }
+
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
     this.searchSubject.complete();
