@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'http://localhost:5000' // O la URL de tu servidor en producción
+  apiUrl: 'https://guests-omissions-acts-committee.trycloudflare.com',
 };

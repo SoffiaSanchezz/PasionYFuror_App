@@ -4,6 +4,8 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { ActivatedRoute, Router } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 import { IonicModule } from '@ionic/angular';
+import { Capacitor } from '@capacitor/core';
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import Swal from 'sweetalert2';
 
 import { GetActivityByIdUseCase, CreateActivityUseCase, UpdateActivityUseCase } from '../../../domain/usecases/activities.usecases';
@@ -84,6 +86,67 @@ export class ActivityFormComponent implements OnInit {
           this.onCancel();
         }
       });
+  }
+
+  get isNative(): boolean {
+    return Capacitor.isNativePlatform();
+  }
+
+  async openImagePicker(): Promise<void> {
+    if (this.isNative) {
+      await this.pickImageNative();
+    }
+    // En web el input file del template maneja la selección
+  }
+
+  async pickImageNative(): Promise<void> {
+    try {
+      // Verificar estado actual sin solicitar aún
+      const current = await Camera.checkPermissions();
+      console.log('[Camera] Current permissions:', JSON.stringify(current));
+
+      if (current.photos === 'denied') {
+        Swal.fire('Permiso denegado', 'Habilita el acceso a fotos en Ajustes > Aplicaciones > Furor Y Pasion > Permisos', 'warning');
+        return;
+      }
+
+      // Si no está granted/limited, solicitarlo explícitamente
+      if (current.photos === 'prompt' || current.photos === 'prompt-with-rationale') {
+        const requested = await Camera.requestPermissions({ permissions: ['photos'] });
+        console.log('[Camera] Requested permissions:', JSON.stringify(requested));
+        if (requested.photos === 'denied') {
+          Swal.fire('Permiso denegado', 'Habilita el acceso a fotos en Ajustes > Aplicaciones > Furor Y Pasion > Permisos', 'warning');
+          return;
+        }
+      }
+
+      console.log('[Camera] Calling getPhoto...');
+      const photo = await Camera.getPhoto({
+        quality: 80,
+        allowEditing: false,
+        resultType: CameraResultType.Base64,
+        source: CameraSource.Photos,
+        promptLabelHeader: 'Seleccionar foto',
+        promptLabelPhoto: 'Desde la galería',
+        promptLabelPicture: 'Tomar foto'
+      });
+
+      console.log('[Camera] Photo received, format:', photo.format, 'has base64:', !!photo.base64String);
+
+      if (photo.base64String) {
+        const dataUrl = `data:image/${photo.format};base64,${photo.base64String}`;
+        this.imageUrl = dataUrl;
+        this.activityForm.patchValue({ image_file_base64: dataUrl });
+        this.cdr.detectChanges();
+      }
+    } catch (err: any) {
+      const msg: string = err?.message ?? '';
+      console.error('[Camera] Error:', msg, err);
+      const cancelled = msg.toLowerCase().includes('cancel') || msg.toLowerCase().includes('no image') || msg.toLowerCase().includes('dismissed');
+      if (!cancelled) {
+        Swal.fire('Error', `No se pudo acceder a la galería: ${msg}`, 'error');
+      }
+    }
   }
 
   onFileSelected(event: any): void {

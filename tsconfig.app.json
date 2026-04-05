@@ -15,6 +15,18 @@
   ],
   "exclude": [
     "src/test.ts",
-    "src/**/*.spec.ts"
+    "src/**/*.spec.ts",
+    "src/app/core/base/index.ts",
+    "src/app/core/i18n/index.ts",
+    "src/app/core/i18n/services/index.ts",
+    "src/app/core/i18n/services/page-config.service.ts",
+    "src/app/core/i18n/services/translation-resolver.service.ts",
+    "src/app/core/i18n/translation-loader.ts",
+    "src/app/core/service-provider/service-provider.module.fake.ts",
+    "src/app/feature/auth/core/entities/user.entity.ts",
+    "src/app/feature/students/student-feature.module.ts",
+    "src/app/feature/students/student-routing.module.ts",
+    "src/app/shared/components/admin/students/student-card/student-card.component.ts",
+    "src/app/shared/services/error-handler/error-handler.service.ts"
   ]
 }

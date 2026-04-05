@@ -30,7 +30,12 @@
               <div class="upload-placeholder" *ngIf="!imageUrl">
                 <i class="fas fa-cloud-upload-alt"></i>
                 <span>Click para subir imagen</span>
-                <input type="file" (change)="onFileSelected($event)" accept="image/*">
+                <!-- Web: input file nativo del browser -->
+                <input *ngIf="!isNative" type="file" (change)="onFileSelected($event)" accept="image/*">
+                <!-- Móvil: botón que abre la galería con Capacitor -->
+                <button *ngIf="isNative" type="button" class="btn-pick-native" (click)="openImagePicker()">
+                  Seleccionar de galería
+                </button>
               </div>
               <button type="button" class="btn-remove-image" *ngIf="imageUrl" (click)="removeImage()">
                 <i class="fas fa-times"></i>

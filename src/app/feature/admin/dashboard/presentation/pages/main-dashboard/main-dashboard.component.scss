@@ -1,8 +1,3 @@
-/* ========================================
-   DASHBOARD SCSS - PASION Y FUROR
-   ======================================== */
-
-/* ── Layout base ─────────────────────────────────────────────────── */
 .dashboard-container {
   position: relative;
   width: 100%;
@@ -34,7 +29,6 @@
   margin: 0 auto;
 }
 
-/* ── Header ──────────────────────────────────────────────────────── */
 .dashboard-header {
   display: flex;
   align-items: center;
@@ -49,7 +43,6 @@
   flex-direction: column;
 }
 
-/* Logo: oculto en desktop, visible solo en móvil */
 .logo-mobile {
   display: none;
 }
@@ -148,7 +141,6 @@
     filter: brightness(1.1);
   }
 
-  /* Ocultar en móvil — las iniciales ya están en el bottom-nav del sidebar */
   @media (max-width: 767px) {
     display: none !important;
   }
@@ -173,8 +165,6 @@
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
   z-index: 1200;
   animation: menuFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) both;
-
-  // En desktop el avatar no es interactivo — ocultar el dropdown
   @media (min-width: 768px) { display: none !important; }
 }
 
@@ -226,8 +216,6 @@
 
   @media (min-width: 768px) { display: none !important; }
 }
-
-/* ── Stats & Grid ────────────────────────────────────────────────── */
 .stats-section {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -241,7 +229,6 @@
   gap: 1.5rem;
 }
 
-/* ── Loader ──────────────────────────────────────────────────────── */
 .loader-overlay {
   position: fixed;
   top: 0;
@@ -255,7 +242,6 @@
   z-index: 9999;
 }
 
-/* ── Cards ───────────────────────────────────────────────────────── */
 .card {
   background: var(--card);
   border: 1px solid var(--border);
@@ -302,7 +288,7 @@
   }
 }
 
-/* ── Quick Actions ───────────────────────────────────────────────── */
+
 .quick-actions {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
