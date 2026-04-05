@@ -85,31 +85,7 @@ export class ApiService {
     }
 
     private errorHandler(error: HttpErrorResponse) {
-        let errorMessage = 'Ocurrió un error inesperado';
-        
-        if (error.error instanceof ErrorEvent) {
-            // Error del lado del cliente
-            errorMessage = `Error: ${error.error.message}`;
-        } else {
-            // Error del lado del servidor (400, 500, etc)
-            console.error('API Error:', error);
-            
-            // Si el backend envió un mensaje de error estructurado
-            if (error.error) {
-                if (typeof error.error === 'string') {
-                    errorMessage = error.error;
-                } else if (error.error.message) {
-                    errorMessage = error.error.message;
-                } else if (error.error.error) {
-                    errorMessage = error.error.error;
-                } else if (error.error.errors) {
-                    // Si hay múltiples errores de validación, los concatenamos
-                    errorMessage = Object.values(error.error.errors).join(', ');
-                }
-            }
-        }
-        
-        // Retornamos el mensaje para que el suscriptor pueda mostrarlo
-        return throwError(() => errorMessage);
+        console.error('API Error:', error.status, error.message, error.error);
+        return throwError(() => error);
     }
 }
