@@ -3,10 +3,10 @@ import {
   OnInit, OnDestroy
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, Router } from '@angular/router';
+import { RouterModule, Router, NavigationEnd } from '@angular/router';
 import { SessionProviderService } from '@shared/services/session/session-provider.service';
 import { IonicModule } from '@ionic/angular';
-import { Subscription } from 'rxjs';
+import { Subscription, filter } from 'rxjs';
 import { ScrollService } from '@shared/services/scroll/scroll.service';
 
 interface NavItem {
@@ -35,7 +35,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
   isHidden = false;
   showAvatarMenu = false;
 
-  private scrollSub?: Subscription;
+  private subs = new Subscription();
 
   navItems: NavItem[] = [
     { icon: 'grid-fill',           label: 'Inicio',      route: '/admin/dashboard' },
@@ -56,25 +56,34 @@ export class SidebarComponent implements OnInit, OnDestroy {
     this.userRole = this.sessionProvider.getUserRole();
     this.userInitials = this._initials(this.userName);
 
-    // Suscripción al servicio global de scroll — funciona en TODAS las vistas
-    this.scrollSub = this.scrollService.scroll$.subscribe(dir => {
-      if (window.innerWidth >= 768) return; // solo móvil
-      this.isHidden = dir === 'down';
-    });
+    // 1. Escucha la dirección del scroll — solo actúa en móvil
+    this.subs.add(
+      this.scrollService.scroll$.subscribe(dir => {
+        if (window.innerWidth >= 768) return;
+        this.isHidden = dir === 'down';
+      })
+    );
+
+    // 2. Al cambiar de ruta → resetea scroll y muestra el nav
+    //    Evita que el nav quede oculto al navegar entre vistas
+    this.subs.add(
+      this.router.events.pipe(
+        filter(e => e instanceof NavigationEnd)
+      ).subscribe(() => {
+        this.isHidden = false;
+        this.showAvatarMenu = false;
+        this.scrollService.reset();
+      })
+    );
   }
 
   ngOnDestroy(): void {
-    this.scrollSub?.unsubscribe();
+    this.subs.unsubscribe();
   }
 
   // ── Avatar menu ───────────────────────────────────────────────────────
-  toggleAvatarMenu(event: Event): void {
-    event.stopPropagation();
-    this.showAvatarMenu = !this.showAvatarMenu;
-  }
-
   closeAvatarMenu(): void {
-    this.showAvatarMenu = false;
+    // mantenido por compatibilidad con los (click) de los nav items
   }
 
   // ── Sidebar desktop ───────────────────────────────────────────────────
