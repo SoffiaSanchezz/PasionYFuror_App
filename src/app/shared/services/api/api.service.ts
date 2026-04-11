@@ -85,7 +85,33 @@ export class ApiService {
     }
 
     private errorHandler(error: HttpErrorResponse) {
-        console.error('API Error:', error.status, error.message, error.error);
-        return throwError(() => error);
+        let message = 'Error inesperado. Inténtalo más tarde.';
+
+        if (error.error instanceof ErrorEvent) {
+            // Error de red / cliente
+            message = 'Sin conexión. Verifica tu internet.';
+        } else if (error.status === 0) {
+            message = 'No se pudo conectar con el servidor.';
+        } else {
+            // Extraer mensaje del cuerpo de respuesta del backend
+            const body = error.error;
+            if (typeof body === 'string' && body.length) {
+                message = body;
+            } else if (body?.message) {
+                message = body.message;
+            } else if (body?.error) {
+                message = body.error;
+            } else if (body?.errors) {
+                message = Object.values(body.errors).join(', ');
+            }
+        }
+
+        console.error(`API Error [${error.status}]:`, message, error.error);
+
+        return throwError(() => ({
+            status: error.status,
+            message,
+            error: error.error
+        }));
     }
 }

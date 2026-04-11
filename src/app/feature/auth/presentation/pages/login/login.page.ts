@@ -121,14 +121,15 @@ export class LoginPage implements OnInit {
   }
 
   private handleLoginError(err: any): void {
-    const errorMap: Record<number, string> = {
+    const statusMessages: Record<number, string> = {
       401: 'Credenciales incorrectas.',
       404: 'Usuario no encontrado.',
       500: 'Error interno del servidor.',
-      400: err.error?.error || 'Datos inválidos.'
+      400: err.message || 'Datos inválidos.',
+      0:   'Sin conexión. Verifica tu internet.'
     };
 
-    this.errorMessage = errorMap[err.status] || 'Error inesperado. Inténtalo más tarde.';
+    this.errorMessage = statusMessages[err.status] ?? err.message ?? 'Error inesperado. Inténtalo más tarde.';
     this.cdr.detectChanges();
   }
 }
