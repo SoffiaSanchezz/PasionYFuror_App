@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://guests-omissions-acts-committee.trycloudflare.com',
+  apiUrl: 'https://outcomes-analysts-monte-highlight.trycloudflare.com',
 };
