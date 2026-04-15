@@ -317,6 +317,163 @@
   }
 }
 
+/* ── Result schedule badge ───────────────────── */
+.result-schedule-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  margin-top: 0.25rem;
+  background: rgba(34,197,94,0.1);
+  border: 1px solid rgba(34,197,94,0.25);
+  border-radius: 10px;
+  padding: 0.5rem 1rem;
+
+  i { color: #4ade80; font-size: 1rem; }
+
+  span {
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #fff;
+  }
+
+  .sched-time {
+    font-family: 'Urbanist', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: rgba(255,255,255,0.45);
+  }
+}
+
+/* ── Upcoming list (en estado error) ─────────── */
+.upcoming-list {
+  margin-top: 0.5rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.upcoming-label {
+  font-family: 'Urbanist', sans-serif;
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.35);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0 0 0.2rem;
+}
+
+.upcoming-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: 'Urbanist', sans-serif;
+  font-size: 0.78rem;
+  color: rgba(255,255,255,0.55);
+
+  i { color: #fbbf24; font-size: 0.75rem; }
+}
+
+/* ── Pick schedule ───────────────────────────── */
+.pick-student-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: rgba(34,197,94,0.08);
+  border: 1px solid rgba(34,197,94,0.2);
+  border-radius: 12px;
+
+  i { font-size: 1.5rem; color: #4ade80; flex-shrink: 0; }
+
+  div { display: flex; flex-direction: column; gap: 0.1rem; }
+}
+
+.pick-name {
+  font-family: 'Oswald', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.pick-confidence {
+  font-family: 'Urbanist', sans-serif;
+  font-size: 0.75rem;
+  color: #4ade80;
+}
+
+.pick-schedule-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.pick-schedule-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.9rem 1rem;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    background: rgba(177,18,38,0.12);
+    border-color: rgba(177,18,38,0.35);
+    transform: translateX(3px);
+  }
+}
+
+.pick-schedule-icon {
+  width: 38px;
+  height: 38px;
+  background: rgba(177,18,38,0.15);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  i { color: #B11226; font-size: 1.1rem; }
+}
+
+.pick-schedule-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.pick-sched-name {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.pick-sched-meta {
+  font-family: 'Urbanist', sans-serif;
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.4);
+}
+
+.pick-sched-teacher {
+  font-family: 'Urbanist', sans-serif;
+  font-size: 0.75rem;
+  color: rgba(177,18,38,0.8);
+}
+
+.pick-arrow {
+  color: rgba(255,255,255,0.2);
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
 /* ── Status badge ────────────────────────────── */
 .att-status-badge {
   display: flex;
