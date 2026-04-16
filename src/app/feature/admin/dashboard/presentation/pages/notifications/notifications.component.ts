@@ -4,19 +4,15 @@ import { Router } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { NotificationService, AppNotification } from '@shared/services/notifications/notification.service';
 import { Observable } from 'rxjs';
-import { SidebarComponent } from '@shared/components/menus/sidebar/sidebar.component';
 
 @Component({
   selector: 'app-notifications-page',
   standalone: true,
-  imports: [CommonModule, IonicModule, SidebarComponent],
+  imports: [CommonModule, IonicModule],
   template: `
     <div class="notifications-viewport">
-      <!-- Sidebar integrado -->
-      <app-sidebar [collapsed]="sidebarCollapsed" (collapsedChange)="sidebarCollapsed = $event"></app-sidebar>
-      
       <!-- Contenedor Principal con Fondo -->
-      <div class="main-glass-container" [class.sidebar-collapsed]="sidebarCollapsed">
+      <div class="main-glass-container">
         
         <!-- Overlay oscuro para profundidad -->
         <div class="dark-overlay">
@@ -114,14 +110,12 @@ import { SidebarComponent } from '@shared/components/menus/sidebar/sidebar.compo
     .main-glass-container {
       flex: 1;
       height: 100vh;
-      margin-left: 280px;
       transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       background-image: url('/assets/img/corregidofondoescuela2025.jpg');
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
       
-      &.sidebar-collapsed { margin-left: 80px; }
       @media (max-width: 767px) { margin-left: 0 !important; }
     }
 
@@ -392,7 +386,6 @@ import { SidebarComponent } from '@shared/components/menus/sidebar/sidebar.compo
 })
 export class NotificationsPageComponent implements OnInit {
   notifications$: Observable<AppNotification[]>;
-  sidebarCollapsed = false;
 
   constructor(
     private notificationService: NotificationService,

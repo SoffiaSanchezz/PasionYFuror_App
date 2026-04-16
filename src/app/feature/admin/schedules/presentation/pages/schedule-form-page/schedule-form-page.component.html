@@ -1,7 +1,5 @@
-<div class="page-wrapper" [class.sidebar-collapsed]="sidebarCollapsed">
-  <app-sidebar [collapsed]="sidebarCollapsed" (collapsedChange)="onSidebarToggle($event)"></app-sidebar>
-
-  <main class="main-content">
+<div class="page-wrapper">
+  <main class="main-content" appScrollTrack>
     <div class="affiliation-wrapper">
       <div class="affiliation-card">
         <!-- Header (Mismo estilo que estudiantes) -->

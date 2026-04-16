@@ -6,19 +6,19 @@ import { IonicModule } from '@ionic/angular';
 import { finalize } from 'rxjs/operators';
 import { StudentsService } from '@shared/services/students/students.service';
 import { GetPaymentByIdUseCase, CreatePaymentUseCase, UpdatePaymentUseCase, AddInstallmentUseCase } from '../../../domain/usecases/payments.usecases';
-import { SidebarComponent } from '@shared/components/menus/sidebar/sidebar.component';
 import { PaymentEntity } from '../../../domain/entities/payment.entity';
 import Swal from 'sweetalert2';
+
+import { ScrollTrackDirective } from '@shared/directives/scroll-track.directive';
 
 @Component({
   selector: 'app-payment-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, IonicModule, SidebarComponent],
+  imports: [CommonModule, ReactiveFormsModule, IonicModule, ScrollTrackDirective],
   templateUrl: './payment-form.component.html',
   styleUrls: ['./payment-form.component.scss']
 })
 export class PaymentFormComponent implements OnInit {
-  sidebarCollapsed = false;
   paymentForm!: FormGroup;
   installmentForm!: FormGroup;
   isEditMode = false;
@@ -63,10 +63,6 @@ export class PaymentFormComponent implements OnInit {
       const currentDate = this.paymentForm.get('startDate')?.value;
       if (currentDate) this.calculateEndDate(currentDate);
     });
-  }
-
-  onSidebarToggle(collapsed: boolean) {
-    this.sidebarCollapsed = collapsed;
   }
 
   private initForm() {

@@ -1,66 +1,146 @@
-import { Injectable, OnDestroy } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Injectable, OnDestroy, NgZone } from '@angular/core';
+import { Subject, BehaviorSubject } from 'rxjs';
+import { distinctUntilChanged } from 'rxjs/operators';
 
 export type ScrollDirection = 'up' | 'down';
 
 /**
- * ScrollService — detecta la dirección del scroll en CUALQUIER contenedor.
+ * ScrollService — detecta dirección de scroll de forma confiable.
  *
- * Estrategia:
- *  1. capture:true en 'scroll' → captura scroll de window, div, main, etc.
- *  2. 'ionScroll' → captura scroll de ion-content (Ionic)
- *  3. Para window/document, usa window.pageYOffset (no scrollTop del target)
+ * Arquitectura:
+ *  - Un único contenedor activo se registra a la vez (el que está visible).
+ *  - Las páginas llaman a register() al entrar y unregister() al salir.
+ *  - Si ninguna página registra un contenedor, escucha window como fallback.
+ *  - El estado se resetea completamente al cambiar de contenedor.
  */
 @Injectable({ providedIn: 'root' })
 export class ScrollService implements OnDestroy {
-  private readonly _dir$ = new Subject<ScrollDirection>();
-  readonly scroll$ = this._dir$.asObservable();
+
+  private readonly _dir$ = new BehaviorSubject<ScrollDirection>('up');
+  readonly scroll$ = this._dir$.asObservable().pipe(distinctUntilChanged());
 
   private lastY = 0;
-  private readonly THRESHOLD = 8;
-  private readonly MIN_OFFSET = 40;
+  private ticking = false;
+  private activeContainer: HTMLElement | null = null;
 
-  private readonly scrollHandler = (e: Event): void => {
-    const target = e.target as Element | Document | null;
-    if (!target) return;
+  // Thresholds
+  private readonly THRESHOLD = 10;   // px mínimos de delta para emitir
+  private readonly MIN_OFFSET = 50;  // px mínimos de scroll para ocultar
 
-    let st: number;
+  // Listener del contenedor activo
+  private containerListener: ((e: Event) => void) | null = null;
 
-    if (target === document || target === document.documentElement || target === document.body) {
-      st = window.pageYOffset || document.documentElement.scrollTop || 0;
-    } else {
-      st = (target as HTMLElement).scrollTop ?? 0;
-    }
-
-    this._emit(st);
+  // Listener de window (fallback cuando no hay contenedor registrado)
+  private readonly windowListener = (): void => {
+    if (this.activeContainer) return; // hay contenedor registrado, ignorar window
+    this._scheduleEmit(window.scrollY ?? window.pageYOffset ?? 0);
   };
 
-  private readonly ionScrollHandler = (e: Event): void => {
-    const st: number = (e as CustomEvent).detail?.scrollTop ?? 0;
-    this._emit(st);
-  };
-
-  constructor() {
-    document.addEventListener('scroll', this.scrollHandler, { capture: true, passive: true });
-    document.addEventListener('ionScroll', this.ionScrollHandler, { passive: true });
+  constructor(private ngZone: NgZone) {
+    // Fallback: escucha window para páginas sin ion-content
+    this.ngZone.runOutsideAngular(() => {
+      window.addEventListener('scroll', this.windowListener, { passive: true });
+    });
   }
 
   ngOnDestroy(): void {
-    document.removeEventListener('scroll', this.scrollHandler, { capture: true } as any);
-    document.removeEventListener('ionScroll', this.ionScrollHandler);
+    window.removeEventListener('scroll', this.windowListener);
+    this._detachContainer();
     this._dir$.complete();
   }
 
-  /** Resetea la posición — llamar al cambiar de ruta para que el nav vuelva a aparecer */
+  /**
+   * Registra el contenedor de scroll activo (llamar en ionViewWillEnter / ngOnInit).
+   * Acepta HTMLElement (div, main) o IonContent nativo.
+   */
+  register(container: HTMLElement): void {
+    if (this.activeContainer === container) return;
+    this._detachContainer();
+    this.activeContainer = container;
+    this.lastY = 0;
+    this._dir$.next('up');
+
+    this.containerListener = (): void => {
+      this._scheduleEmit(container.scrollTop);
+    };
+
+    this.ngZone.runOutsideAngular(() => {
+      container.addEventListener('scroll', this.containerListener!, { passive: true });
+    });
+  }
+
+  /**
+   * Registra un ion-content de Ionic escuchando su evento ionScroll.
+   * Usar cuando el contenedor es <ion-content>.
+   */
+  registerIonContent(el: HTMLElement): void {
+    if (this.activeContainer === el) return;
+    this._detachContainer();
+    this.activeContainer = el;
+    this.lastY = 0;
+    this._dir$.next('up');
+
+    this.containerListener = (e: Event): void => {
+      const st: number = (e as CustomEvent).detail?.scrollTop ?? 0;
+      this._scheduleEmit(st);
+    };
+
+    this.ngZone.runOutsideAngular(() => {
+      el.addEventListener('ionScroll', this.containerListener!, { passive: true });
+    });
+  }
+
+  /**
+   * Desregistra el contenedor activo (llamar en ionViewWillLeave / ngOnDestroy).
+   */
+  unregister(container: HTMLElement): void {
+    if (this.activeContainer !== container) return;
+    this._detachContainer();
+    this.lastY = 0;
+    this._dir$.next('up');
+  }
+
+  /**
+   * Resetea el estado — el nav vuelve a aparecer.
+   * Llamar al navegar entre rutas.
+   */
   reset(): void {
     this.lastY = 0;
     this._dir$.next('up');
   }
 
+  // ── Privados ──────────────────────────────────────────────────────────
+
+  private _detachContainer(): void {
+    if (this.activeContainer && this.containerListener) {
+      this.activeContainer.removeEventListener('scroll', this.containerListener);
+      this.activeContainer.removeEventListener('ionScroll', this.containerListener);
+    }
+    this.activeContainer = null;
+    this.containerListener = null;
+  }
+
+  private _scheduleEmit(scrollTop: number): void {
+    if (this.ticking) return;
+    this.ticking = true;
+    requestAnimationFrame(() => {
+      this.ticking = false;
+      this._emit(scrollTop);
+    });
+  }
+
   private _emit(st: number): void {
-    if (Math.abs(st - this.lastY) <= this.THRESHOLD) return;
-    const dir: ScrollDirection = (st > this.lastY && st > this.MIN_OFFSET) ? 'down' : 'up';
-    this.lastY = st <= 0 ? 0 : st;
-    this._dir$.next(dir);
+    const delta = st - this.lastY;
+
+    if (Math.abs(delta) < this.THRESHOLD) return;
+
+    const dir: ScrollDirection = delta > 0 && st > this.MIN_OFFSET ? 'down' : 'up';
+
+    this.lastY = st < 0 ? 0 : st;
+
+    // Volver al zone de Angular solo si el valor cambia
+    if (this._dir$.value !== dir) {
+      this.ngZone.run(() => this._dir$.next(dir));
+    }
   }
 }

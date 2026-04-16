@@ -6,18 +6,18 @@ import { IonicModule } from '@ionic/angular';
 import { finalize } from 'rxjs';
 import Swal from 'sweetalert2';
 
-import { SidebarComponent } from '@shared/components/menus/sidebar/sidebar.component';
 import { CreateScheduleUseCase, UpdateScheduleUseCase, GetScheduleByIdUseCase } from '../../../domain/usecases/schedules.usecases';
+
+import { ScrollTrackDirective } from '@shared/directives/scroll-track.directive';
 
 @Component({
   selector: 'app-schedule-form-page',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, IonicModule, SidebarComponent, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, IonicModule, RouterModule, ScrollTrackDirective],
   templateUrl: './schedule-form-page.component.html',
   styleUrls: ['./schedule-form-page.component.scss']
 })
 export class ScheduleFormPageComponent implements OnInit {
-  sidebarCollapsed = false;
   scheduleForm!: FormGroup;
   isEditMode = false;
   scheduleId: string | null = null;
@@ -71,10 +71,6 @@ export class ScheduleFormPageComponent implements OnInit {
           this.router.navigate(['/admin/schedules']);
         }
       });
-  }
-
-  onSidebarToggle(collapsed: boolean): void {
-    this.sidebarCollapsed = collapsed;
   }
 
   onSubmit(): void {

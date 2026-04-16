@@ -7,19 +7,19 @@ import { IonicModule } from '@ionic/angular';
 import Swal from 'sweetalert2';
 
 import { ScheduleEntity } from '../../../domain/entities/schedule.entity';
-import { SidebarComponent } from '@shared/components/menus/sidebar/sidebar.component';
 import { ScheduleListTableComponent } from '../../components/schedule-list-table/schedule-list-table.component';
 import { GetSchedulesUseCase, DeleteScheduleUseCase } from '../../../domain/usecases/schedules.usecases';
+
+import { ScrollTrackDirective } from '@shared/directives/scroll-track.directive';
 
 @Component({
   selector: 'app-schedules-page',
   standalone: true,
-  imports: [CommonModule, RouterModule, IonicModule, SidebarComponent, ScheduleListTableComponent, PageHeaderComponent],
+  imports: [CommonModule, RouterModule, IonicModule, ScheduleListTableComponent, PageHeaderComponent, ScrollTrackDirective],
   templateUrl: './schedules-page.component.html',
   styleUrls: ['./schedules-page.component.scss']
 })
 export class SchedulesPageComponent implements OnInit {
-  sidebarCollapsed = false;
   isLoading = false;
   
   private schedulesSubject = new BehaviorSubject<ScheduleEntity[]>([]);
@@ -109,10 +109,6 @@ export class SchedulesPageComponent implements OnInit {
     }
 
     this.cdr.detectChanges();
-  }
-
-  onSidebarToggle(collapsed: boolean): void {
-    this.sidebarCollapsed = collapsed;
   }
 
   goToNewSchedule(): void {

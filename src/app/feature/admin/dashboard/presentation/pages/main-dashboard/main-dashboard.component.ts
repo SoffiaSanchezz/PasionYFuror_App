@@ -12,13 +12,13 @@ import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 
 import { SessionProviderService } from '@shared/services/session/session-provider.service';
 import { StatCardComponent } from '@shared/components/cards/stat-card/stat-card.component';
-import { SidebarComponent } from '../../../../../../shared/components/menus/sidebar/sidebar.component';
 import { SearchInputComponent } from '@shared/components/inputs/search-input/search-input.component';
 import { DashboardService } from '@shared/services/dashboard/dashboard.service';
 import { NotificationService } from '@shared/services/notifications/notification.service';
 import { NotificationDropdownComponent } from '@shared/components/notifications/notification-dropdown.component';
 import { SearchService, SearchResult } from '@shared/services/search/search.service';
 import { TranslateModule } from '@ngx-translate/core';
+import { ScrollTrackDirective } from '@shared/directives/scroll-track.directive';
 
 interface TodayClass {
   time: string; duration: string; name: string;
@@ -50,8 +50,8 @@ export interface CalendarActivity {
   standalone: true,
   imports: [
     CommonModule, FormsModule, LottieComponent, StatCardComponent,
-    SidebarComponent, SearchInputComponent, IonicModule,
-    NotificationDropdownComponent, TranslateModule
+    SearchInputComponent, IonicModule,
+    NotificationDropdownComponent, TranslateModule, ScrollTrackDirective
   ],
   templateUrl: './main-dashboard.component.html',
   styleUrls: ['./main-dashboard.component.scss'],
@@ -59,7 +59,6 @@ export interface CalendarActivity {
 })
 export class MainDashboardComponent implements OnInit, OnDestroy {
   // UI State
-  sidebarCollapsed = false;
   isLoading = true;
   showNotifications = false;
 
@@ -313,8 +312,6 @@ export class MainDashboardComponent implements OnInit, OnDestroy {
   }
 
   // ── Sidebar / Notifications ───────────────────────────────────────────
-
-  onSidebarToggle(collapsed: boolean): void { this.sidebarCollapsed = collapsed; }
 
   toggleNotifications(event: Event): void {
     event.stopPropagation();

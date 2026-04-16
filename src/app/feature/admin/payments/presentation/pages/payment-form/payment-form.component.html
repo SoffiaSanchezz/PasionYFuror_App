@@ -1,9 +1,6 @@
 <div class="dashboard-container">
-  <!-- SIDEBAR -->
-  <app-sidebar [collapsed]="sidebarCollapsed" (collapsedChange)="onSidebarToggle($event)"></app-sidebar>
-
   <!-- MAIN CONTENT -->
-  <ion-content class="main-content" [class.sidebar-collapsed]="sidebarCollapsed" scrollEvents="true">
+  <ion-content class="main-content" appScrollTrack scrollEvents="true">
     <div class="dashboard-wrapper">
       <div class="affiliation-wrapper">
         <div class="affiliation-card" [class.wide-card]="isEditMode">

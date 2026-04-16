@@ -1,10 +1,4 @@
-<div class="activities-layout">
-  <!-- SIDEBAR (Fijo) -->
-  <app-sidebar [collapsed]="sidebarCollapsed" (collapsedChange)="onSidebarToggle($event)"></app-sidebar>
-
-  <!-- ESPACIADOR (Ocupa el espacio del sidebar en el flujo flex) -->
-  <aside class="sidebar-spacer" [class.collapsed]="sidebarCollapsed"></aside>
-
+<ion-content class="activities-layout" appScrollTrack scrollEvents="true">
   <div class="activities-container">
     <!-- Header -->
     <div class="page-header">
@@ -100,4 +94,4 @@
       </div>
     </div>
   </div>
-</div>
+</ion-content>

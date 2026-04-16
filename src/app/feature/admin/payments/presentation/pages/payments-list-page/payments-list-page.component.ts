@@ -8,18 +8,18 @@ import { PaymentEntity } from '../../../domain/entities/payment.entity';
 import { GetPaymentsUseCase, DeletePaymentUseCase } from '../../../domain/usecases/payments.usecases';
 import { StudentsService } from '@shared/services/students/students.service';
 import { IonicModule } from '@ionic/angular';
-import { SidebarComponent } from '@shared/components/menus/sidebar/sidebar.component';
 import Swal from 'sweetalert2';
+
+import { ScrollTrackDirective } from '@shared/directives/scroll-track.directive';
 
 @Component({
   selector: 'app-payments-list-page',
   standalone: true,
-  imports: [CommonModule, IonicModule, SidebarComponent, PageHeaderComponent],
+  imports: [CommonModule, IonicModule, PageHeaderComponent, ScrollTrackDirective],
   templateUrl: './payments-list-page.component.html',
   styleUrls: ['./payments-list-page.component.scss']
 })
 export class PaymentsListPageComponent implements OnInit {
-  sidebarCollapsed = false;
   private paymentsSubject = new BehaviorSubject<PaymentEntity[]>([]);
   isLoading = false;
 
@@ -106,7 +106,6 @@ export class PaymentsListPageComponent implements OnInit {
 
   goToNewPayment() { this.router.navigate(['/admin/payments/new']); }
   editPayment(id: string) { this.router.navigate(['/admin/payments/edit', id]); }
-  onSidebarToggle(collapsed: boolean) { this.sidebarCollapsed = collapsed; }
 
   onStudentFilterChange(e: any) { this.studentFilter$.next(e.target.value); }
   onPlanStatusFilterChange(e: any) { this.statusFilter$.next(e.target.value); }

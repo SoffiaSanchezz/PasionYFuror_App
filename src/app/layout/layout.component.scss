@@ -3,16 +3,29 @@
   min-height: 100vh;
 }
 
-/* El main-content es el contenedor principal que envuelve las vistas */
+/* El main ocupa el espacio restante junto al sidebar */
 .main-content {
   flex: 1;
   width: 100%;
+  transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Responsive: En móviles añadimos espacio para la navegación inferior si aplica */
+/* Desktop: desplazar el main según el estado del sidebar */
+@media (min-width: 768px) {
+  .main-content.sidebar-expanded {
+    margin-left: 280px;
+  }
+
+  .main-content.sidebar-collapsed {
+    margin-left: 80px;
+  }
+}
+
+/* Móvil: sin margen lateral, espacio para bottom-nav */
 @media (max-width: 767px) {
   .main-content {
-    padding-top: 85px; /* Espacio para la top-nav (70px + 15px de margen) */
+    margin-left: 0 !important;
+    padding-top: 0;
     padding-bottom: 80px; /* Espacio para la bottom-nav */
   }
 }

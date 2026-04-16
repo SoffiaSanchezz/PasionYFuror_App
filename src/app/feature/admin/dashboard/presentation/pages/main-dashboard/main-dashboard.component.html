@@ -4,9 +4,7 @@
         <ng-lottie [options]="lottieOptions" [width]="'400px'" [height]="'400px'"></ng-lottie>
     </div>
 
-    <app-sidebar [collapsed]="sidebarCollapsed" (collapsedChange)="onSidebarToggle($event)"></app-sidebar>
-
-    <ion-content class="main-content" [class.sidebar-collapsed]="sidebarCollapsed" *ngIf="!isLoading" scrollEvents="true">
+    <ion-content class="main-content" appScrollTrack *ngIf="!isLoading" scrollEvents="true">
         <div class="dashboard-wrapper">
 
             <!-- ── Header ── -->

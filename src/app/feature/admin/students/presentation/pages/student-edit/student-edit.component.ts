@@ -8,17 +8,17 @@ import { of } from 'rxjs';
 import { IonicModule } from '@ionic/angular';
 
 import { GetStudentsUseCase, UpdateStudentUseCase } from '../../../domain/usecases/students.usecases';
-import { SidebarComponent } from '@shared/components/menus/sidebar/sidebar.component';
+
+import { ScrollTrackDirective } from '@shared/directives/scroll-track.directive';
 
 @Component({
   selector: 'app-student-edit',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, IonicModule, RouterModule, SidebarComponent],
+  imports: [CommonModule, ReactiveFormsModule, IonicModule, RouterModule, ScrollTrackDirective],
   templateUrl: './student-edit.component.html',
   styleUrls: ['./student-edit.component.scss'],
 })
 export class StudentEditComponent implements OnInit {
-  sidebarCollapsed = false;
   studentForm!: FormGroup;
   guardianForm!: FormGroup;
   isMinor = false;
@@ -41,10 +41,6 @@ export class StudentEditComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadStudentData();
-  }
-
-  onSidebarToggle(collapsed: boolean): void {
-    this.sidebarCollapsed = collapsed;
   }
 
   private initForms(): void {

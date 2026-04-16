@@ -4,22 +4,22 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 import { IonicModule } from '@ionic/angular';
-import { SidebarComponent } from '@shared/components/menus/sidebar/sidebar.component';
 import Swal from 'sweetalert2';
 
 import { ActivityEntity } from '../../../domain/entities/activity.entity';
 import { GetActivitiesUseCase, DeleteActivityUseCase } from '../../../domain/usecases/activities.usecases';
 import { environment } from '@environments/environment';
 
+import { ScrollTrackDirective } from '@shared/directives/scroll-track.directive';
+
 @Component({
   selector: 'app-activities-list-page',
   standalone: true,
-  imports: [CommonModule, RouterModule, IonicModule, SidebarComponent, PageHeaderComponent],
+  imports: [CommonModule, RouterModule, IonicModule, PageHeaderComponent, ScrollTrackDirective],
   templateUrl: './activities-list-page.component.html',
   styleUrls: ['./activities-list-page.component.scss']
 })
 export class ActivitiesListPageComponent implements OnInit {
-  sidebarCollapsed = false;
   activities: ActivityEntity[] = [];
   isLoading = false;
   baseUrl = environment.apiUrl + '/uploads';
@@ -82,10 +82,6 @@ export class ActivitiesListPageComponent implements OnInit {
       // Comparamos mes y año local (al añadir T00:00:00 se interpreta como local en la mayoría de navegadores)
       return eventDate.getMonth() === currentMonth && eventDate.getFullYear() === currentYear;
     }).length;
-  }
-
-  onSidebarToggle(collapsed: boolean): void {
-    this.sidebarCollapsed = collapsed;
   }
 
   goToNewActivity(): void {

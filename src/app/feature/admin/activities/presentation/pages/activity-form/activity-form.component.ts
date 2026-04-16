@@ -9,18 +9,16 @@ import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import Swal from 'sweetalert2';
 
 import { GetActivityByIdUseCase, CreateActivityUseCase, UpdateActivityUseCase } from '../../../domain/usecases/activities.usecases';
-import { SidebarComponent } from '@shared/components/menus/sidebar/sidebar.component';
 import { environment } from '@environments/environment';
 
 @Component({
   selector: 'app-activity-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, SidebarComponent, IonicModule],
+  imports: [CommonModule, ReactiveFormsModule, IonicModule],
   templateUrl: './activity-form.component.html',
   styleUrls: ['./activity-form.component.scss']
 })
 export class ActivityFormComponent implements OnInit {
-  sidebarCollapsed = false;
   activityForm!: FormGroup;
   isEditMode = false;
   activityId: string | null = null;
@@ -215,9 +213,5 @@ export class ActivityFormComponent implements OnInit {
 
   onCancel(): void {
     this.router.navigate(['/admin/activities']);
-  }
-
-  onSidebarToggle(collapsed: boolean): void {
-    this.sidebarCollapsed = collapsed;
   }
 }

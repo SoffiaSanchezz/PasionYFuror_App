@@ -1,7 +1,14 @@
 <div class="page-wrapper">
-  
-  <main [class.main-content]="isAdminRoute()">
-    <!-- Las vistas de actividades y otras rutas cargan aquí -->
+
+  <!-- Sidebar único para todas las rutas admin -->
+  <app-sidebar *ngIf="isAdminRoute()"
+    [collapsed]="sidebarCollapsed"
+    (collapsedChange)="sidebarCollapsed = $event">
+  </app-sidebar>
+
+  <main [class.main-content]="isAdminRoute()"
+        [class.sidebar-expanded]="isAdminRoute() && !sidebarCollapsed"
+        [class.sidebar-collapsed]="isAdminRoute() && sidebarCollapsed">
     <ion-router-outlet></ion-router-outlet>
   </main>
 

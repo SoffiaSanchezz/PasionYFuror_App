@@ -1,12 +1,6 @@
 <div class="student-page-container">
-  <!-- SIDEBAR (Fijo) -->
-  <app-sidebar [collapsed]="sidebarCollapsed" (collapsedChange)="onSidebarToggle($event)"></app-sidebar>
-
-  <!-- ESPACIADOR (Ocupa el espacio del sidebar en el flujo flex) -->
-  <aside class="sidebar-spacer" [class.collapsed]="sidebarCollapsed"></aside>
-
   <!-- CONTENIDO PRINCIPAL -->
-  <ion-content class="main-content" scrollEvents="true">
+  <ion-content class="main-content" appScrollTrack scrollEvents="true">
     <div class="content-wrapper">
       
       <!-- Loader Overlay -->

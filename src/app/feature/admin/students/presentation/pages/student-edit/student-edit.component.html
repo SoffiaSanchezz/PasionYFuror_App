@@ -1,8 +1,5 @@
 <div class="student-page-container">
-  <!-- SIDEBAR -->
-  <app-sidebar [collapsed]="sidebarCollapsed" (collapsedChange)="onSidebarToggle($event)"></app-sidebar>
-
-  <ion-content class="main-content" [class.sidebar-collapsed]="sidebarCollapsed" scrollEvents="true">
+  <ion-content class="main-content" appScrollTrack scrollEvents="true">
     <div class="content-wrapper">
       <div class="affiliation-card">
         <!-- Card Header -->

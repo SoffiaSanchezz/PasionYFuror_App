@@ -1,9 +1,6 @@
-<div class="page-wrapper" [class.sidebar-collapsed]="sidebarCollapsed">
-    <!-- SIDEBAR -->
-    <app-sidebar [collapsed]="sidebarCollapsed" (collapsedChange)="onSidebarToggle($event)"></app-sidebar>
-
+<div class="page-wrapper">
     <!-- MAIN CONTENT -->
-    <main class="main-content">
+    <main class="main-content" appScrollTrack>
         <div class="schedules-container dashboard-container">
             <!-- Header Section -->
             <header class="page-header">

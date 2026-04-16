@@ -9,7 +9,6 @@ import { IonicModule, NavController } from '@ionic/angular';
 
 import Swal from 'sweetalert2';
 
-import { SidebarComponent } from 'src/app/shared/components/menus/sidebar/sidebar.component';
 import { StatCardComponent } from 'src/app/shared/components/cards/stat-card/stat-card.component';
 import { DataTableComponent, TableColumn, TableAction } from 'src/app/shared/components/tables/data-table/data-table.component';
 import { StudentEntity } from 'src/app/feature/admin/students/domain/entities/student.entity';
@@ -18,16 +17,16 @@ import { StudentsService } from 'src/app/shared/services/students/students.servi
 import { SchedulesService } from 'src/app/shared/services/schedules/schedules.service';
 import { ScheduleEntity } from 'src/app/feature/admin/schedules/domain/entities/schedule.entity';
 
+import { ScrollTrackDirective } from '@shared/directives/scroll-track.directive';
+
 @Component({
   selector: 'app-student-list',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, SidebarComponent, StatCardComponent, DataTableComponent, IonicModule, PageHeaderComponent],
+  imports: [CommonModule, RouterModule, FormsModule, StatCardComponent, DataTableComponent, IonicModule, PageHeaderComponent, ScrollTrackDirective],
   templateUrl: './student-list.component.html',
   styleUrls: ['./student-list.component.scss']
 })
 export class StudentListComponent implements OnInit {
-  sidebarCollapsed: boolean = false;
-  
   activeStudents: StudentEntity[] = [];
   disabledStudents: StudentEntity[] = [];
   filteredActiveStudents: StudentEntity[] = [];
@@ -114,10 +113,6 @@ export class StudentListComponent implements OnInit {
       page.classList.remove('ion-page-hidden');
       page.removeAttribute('aria-hidden');
     }
-  }
-
-  onSidebarToggle(collapsed: boolean): void {
-    this.sidebarCollapsed = collapsed;
   }
 
   loadSchedules(): void {

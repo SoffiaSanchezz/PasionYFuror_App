@@ -64,21 +64,44 @@ export class SidebarComponent implements OnInit, OnDestroy {
       })
     );
 
-    // 2. Al cambiar de ruta → resetea scroll y muestra el nav
-    //    Evita que el nav quede oculto al navegar entre vistas
+    // 2. Al cambiar de ruta → muestra el nav (el ScrollService ya resetea
+    //    su estado cuando la nueva página registra su contenedor)
     this.subs.add(
       this.router.events.pipe(
         filter(e => e instanceof NavigationEnd)
       ).subscribe(() => {
-        this.isHidden = false;
+        this._showNav();
         this.showAvatarMenu = false;
-        this.scrollService.reset();
       })
     );
+
+    // 3. App vuelve del background (Android/Capacitor)
+    document.addEventListener('resume', this._onAppResume, false);
+
+    // 4. Tab switching / multitarea
+    document.addEventListener('visibilitychange', this._onVisibilityChange, false);
   }
 
   ngOnDestroy(): void {
     this.subs.unsubscribe();
+    document.removeEventListener('resume', this._onAppResume, false);
+    document.removeEventListener('visibilitychange', this._onVisibilityChange, false);
+  }
+
+  private readonly _onAppResume = (): void => {
+    this._showNav();
+    this.scrollService.reset();
+  };
+
+  private readonly _onVisibilityChange = (): void => {
+    if (document.visibilityState === 'visible') {
+      this._showNav();
+      this.scrollService.reset();
+    }
+  };
+
+  private _showNav(): void {
+    this.isHidden = false;
   }
 
   // ── Avatar menu ───────────────────────────────────────────────────────
