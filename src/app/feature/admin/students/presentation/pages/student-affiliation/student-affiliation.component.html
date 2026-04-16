@@ -388,9 +388,16 @@
           </div>
 
           <div class="signature-pad-container">
-            <h4 class="signature-title">Firma del Estudiante/Acudiente</h4>
+            <h4 class="signature-title">Firma del Estudiante</h4>
             <canvas #signatureCanvas class="signature-canvas"></canvas>
             <button type="button" class="btn-clear-signature" (click)="clearSignature()">Limpiar Firma</button>
+          </div>
+
+          <!-- Firma del Acudiente (solo si es menor) -->
+          <div class="signature-pad-container" *ngIf="isMinor">
+            <h4 class="signature-title">Firma del Acudiente</h4>
+            <canvas #guardianSignatureCanvas class="signature-canvas"></canvas>
+            <button type="button" class="btn-clear-signature" (click)="clearGuardianSignature()">Limpiar Firma</button>
           </div>
         </div>
 

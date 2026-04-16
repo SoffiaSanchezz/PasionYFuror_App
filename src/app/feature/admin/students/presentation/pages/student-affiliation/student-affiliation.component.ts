@@ -23,6 +23,7 @@ export class StudentAffiliationComponent implements OnInit, OnDestroy, AfterView
   @ViewChild('videoElement') videoElement!: ElementRef;
   @ViewChild('canvasElement') canvasElement!: ElementRef;
   @ViewChild('signatureCanvas') signatureCanvas!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('guardianSignatureCanvas') guardianSignatureCanvas!: ElementRef<HTMLCanvasElement>;
 
   currentStep: number = 1;
   isMinor: boolean = false;
@@ -41,8 +42,11 @@ export class StudentAffiliationComponent implements OnInit, OnDestroy, AfterView
   isVerifying = false;
 
   private signaturePad!: CanvasRenderingContext2D;
+  private guardianSignaturePad!: CanvasRenderingContext2D;
   private isDrawing = false;
+  private isDrawingGuardian = false;
   signatureDataUrl: string | null = null;
+  guardianSignatureDataUrl: string | null = null;
 
   // Regulation State
   showRegulationModal: boolean = false;
@@ -109,6 +113,7 @@ export class StudentAffiliationComponent implements OnInit, OnDestroy, AfterView
     this.contractForm = this.fb.group({
       acceptTerms: [false, Validators.requiredTrue],
       signature: [null, Validators.required],
+      guardianSignature: [null],
     });
   }
 
@@ -205,6 +210,14 @@ export class StudentAffiliationComponent implements OnInit, OnDestroy, AfterView
       }
       control?.updateValueAndValidity();
     });
+
+    const guardianSigControl = this.contractForm?.get('guardianSignature');
+    if (isMinor) {
+      guardianSigControl?.setValidators([Validators.required]);
+    } else {
+      guardianSigControl?.clearValidators();
+    }
+    guardianSigControl?.updateValueAndValidity();
   }
 
   nextStep(): void {
@@ -222,11 +235,12 @@ export class StudentAffiliationComponent implements OnInit, OnDestroy, AfterView
         if (this.isMinor) this.guardianForm.markAllAsTouched();
       }
     } else if (this.currentStep === 3) {
-      if (this.contractForm.valid && this.capturedImage && this.signatureDataUrl) {
+      if (this.contractForm.valid && this.capturedImage && this.signatureDataUrl && (!this.isMinor || this.guardianSignatureDataUrl)) {
         this.submitAffiliation();
       } else {
         this.contractForm.markAllAsTouched();
         if (!this.signatureDataUrl) alert('Por favor, firme el contrato.');
+        if (this.isMinor && !this.guardianSignatureDataUrl) alert('Por favor, el acudiente debe firmar el contrato.');
         if (!this.capturedImage) alert('Por favor, capture una foto.');
       }
     }
@@ -363,28 +377,37 @@ export class StudentAffiliationComponent implements OnInit, OnDestroy, AfterView
   }
 
   private initSignaturePad(): void {
-    if (!this.signatureCanvas) return;
-    const canvas = this.signatureCanvas.nativeElement;
+    if (this.signatureCanvas) {
+      this.setupPad(this.signatureCanvas.nativeElement, 'student');
+    }
+    
+    if (this.isMinor && this.guardianSignatureCanvas) {
+      this.setupPad(this.guardianSignatureCanvas.nativeElement, 'guardian');
+    }
+  }
+
+  private setupPad(canvas: HTMLCanvasElement, type: 'student' | 'guardian'): void {
     const context = canvas.getContext('2d');
     if (!context) return;
     
-    this.signaturePad = context;
+    const pad = context;
+    if (type === 'student') this.signaturePad = pad;
+    else this.guardianSignaturePad = pad;
+
     canvas.width = canvas.offsetWidth;
     canvas.height = canvas.offsetHeight;
     
-    // Fondo blanco fijo para el canvas
-    this.signaturePad.fillStyle = '#ffffff';
-    this.signaturePad.fillRect(0, 0, canvas.width, canvas.height);
+    pad.fillStyle = '#ffffff';
+    pad.fillRect(0, 0, canvas.width, canvas.height);
     
-    this.signaturePad.strokeStyle = '#000000'; // Firma negra
-    this.signaturePad.lineWidth = 3;
-    this.signaturePad.lineCap = 'round';
+    pad.strokeStyle = '#000000';
+    pad.lineWidth = 3;
+    pad.lineCap = 'round';
     
-    canvas.addEventListener('mousedown', this.startDrawing.bind(this));
-    canvas.addEventListener('mousemove', this.draw.bind(this));
-    canvas.addEventListener('mouseup', this.stopDrawing.bind(this));
+    canvas.addEventListener('mousedown', (e) => this.startDrawing(e, type));
+    canvas.addEventListener('mousemove', (e) => this.draw(e, type));
+    canvas.addEventListener('mouseup', () => this.stopDrawing(type));
     
-    // Soporte táctil corregido (previniendo scroll accidental)
     canvas.addEventListener('touchstart', (e) => {
       e.preventDefault();
       const touch = e.touches[0];
@@ -411,41 +434,73 @@ export class StudentAffiliationComponent implements OnInit, OnDestroy, AfterView
     }, { passive: false });
   }
 
-  private startDrawing(event: MouseEvent): void {
-    this.isDrawing = true;
-    this.signaturePad.beginPath();
-    const { x, y } = this.getCanvasPosition(event);
-    this.signaturePad.moveTo(x, y);
-    this.contractForm.get('signature')?.setValue(true);
+  private startDrawing(event: MouseEvent, type: 'student' | 'guardian'): void {
+    const isStudent = type === 'student';
+    const canvas = isStudent ? this.signatureCanvas.nativeElement : this.guardianSignatureCanvas.nativeElement;
+    const pad = isStudent ? this.signaturePad : this.guardianSignaturePad;
+    
+    if (isStudent) this.isDrawing = true;
+    else this.isDrawingGuardian = true;
+
+    pad.beginPath();
+    const { x, y } = this.getCanvasPosition(event, canvas);
+    pad.moveTo(x, y);
+    this.contractForm.get(isStudent ? 'signature' : 'guardianSignature')?.setValue(true);
   }
 
-  private draw(event: MouseEvent): void {
-    if (!this.isDrawing) return;
-    const { x, y } = this.getCanvasPosition(event);
-    this.signaturePad.lineTo(x, y);
-    this.signaturePad.stroke();
+  private draw(event: MouseEvent, type: 'student' | 'guardian'): void {
+    const isStudent = type === 'student';
+    if (isStudent && !this.isDrawing) return;
+    if (!isStudent && !this.isDrawingGuardian) return;
+
+    const canvas = isStudent ? this.signatureCanvas.nativeElement : this.guardianSignatureCanvas.nativeElement;
+    const pad = isStudent ? this.signaturePad : this.guardianSignaturePad;
+
+    const { x, y } = this.getCanvasPosition(event, canvas);
+    pad.lineTo(x, y);
+    pad.stroke();
   }
 
-  private stopDrawing(): void {
-    if (!this.isDrawing) return;
-    this.isDrawing = false;
-    this.signatureDataUrl = this.signatureCanvas.nativeElement.toDataURL('image/png');
-    this.contractForm.get('signature')?.setValue(this.signatureDataUrl);
+  private stopDrawing(type: 'student' | 'guardian'): void {
+    const isStudent = type === 'student';
+    if (isStudent && !this.isDrawing) return;
+    if (!isStudent && !this.isDrawingGuardian) return;
+
+    if (isStudent) this.isDrawing = false;
+    else this.isDrawingGuardian = false;
+
+    const canvas = isStudent ? this.signatureCanvas.nativeElement : this.guardianSignatureCanvas.nativeElement;
+    const dataUrl = canvas.toDataURL('image/png');
+    
+    if (isStudent) {
+      this.signatureDataUrl = dataUrl;
+      this.contractForm.get('signature')?.setValue(this.signatureDataUrl);
+    } else {
+      this.guardianSignatureDataUrl = dataUrl;
+      this.contractForm.get('guardianSignature')?.setValue(this.guardianSignatureDataUrl);
+    }
   }
 
-  private getCanvasPosition(event: MouseEvent): { x: number; y: number } {
-    const canvas = this.signatureCanvas.nativeElement;
+  private getCanvasPosition(event: MouseEvent, canvas: HTMLCanvasElement): { x: number; y: number } {
     const rect = canvas.getBoundingClientRect();
     return { x: event.clientX - rect.left, y: event.clientY - rect.top };
   }
 
   clearSignature(): void {
     const canvas = this.signatureCanvas.nativeElement;
-    // Volver a pintar de blanco al limpiar
     this.signaturePad.fillStyle = '#ffffff';
     this.signaturePad.fillRect(0, 0, canvas.width, canvas.height);
     this.signatureDataUrl = null;
     this.contractForm.get('signature')?.setValue(null);
+  }
+
+  clearGuardianSignature(): void {
+    if (!this.guardianSignatureCanvas) return;
+    const canvas = this.guardianSignatureCanvas.nativeElement;
+    this.guardianSignaturePad.fillStyle = '#ffffff';
+    this.guardianSignaturePad.fillRect(0, 0, canvas.width, canvas.height);
+    this.guardianSignatureDataUrl = null;
+    this.contractForm.get('guardianSignature')?.setValue(null);
   }
 
   verifyPhoto(): void {
@@ -482,6 +537,7 @@ export class StudentAffiliationComponent implements OnInit, OnDestroy, AfterView
       guardian: guardianData,
       photo_file_base64: this.capturedImageDataUrl || '',
       signature_image_base64: this.signatureDataUrl || '',
+      guardian_signature_image_base64: this.isMinor ? (this.guardianSignatureDataUrl || '') : '',
       is_minor: this.isMinor
     };
 
