@@ -16,6 +16,8 @@ export interface StudentEntity {
   guardianRelationship?: string | null;
   guardianEmail?: string | null;
   faceDescriptor?: string | null;
+  allowedAllClasses?: boolean;
+  allowedScheduleIds?: string[];
   createdAt: string; // ISO format date string
   status: 'activo' | 'inactivo';
 }

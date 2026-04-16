@@ -53,13 +53,15 @@
           <!-- ACTIONS -->
           <td *ngIf="actions.length > 0" class="actions-cell">
             <div class="actions-wrapper">
-              <button *ngFor="let action of actions" 
-                      class="btn-action" 
-                      [ngClass]="action.color" 
-                      [title]="action.tooltip"
-                      (click)="onAction(action.name, row, $event)">
-                <i class="bi" [ngClass]="'bi-' + action.icon"></i>
-              </button>
+              <ng-container *ngFor="let action of actions">
+                <button *ngIf="!action.hidden || !action.hidden(row)"
+                        class="btn-action" 
+                        [ngClass]="action.color" 
+                        [title]="action.tooltip"
+                        (click)="onAction(action.name, row, $event)">
+                  <i class="bi" [ngClass]="'bi-' + action.icon"></i>
+                </button>
+              </ng-container>
             </div>
           </td>
         </tr>
@@ -101,12 +103,14 @@
       </div>
 
       <div class="card-actions-mobile">
-        <button *ngFor="let action of actions" 
-                class="m-btn-action" 
-                [ngClass]="action.color"
-                (click)="onAction(action.name, row, $event)">
-          <i class="bi" [ngClass]="'bi-' + action.icon"></i>
-        </button>
+        <ng-container *ngFor="let action of actions">
+          <button *ngIf="!action.hidden || !action.hidden(row)"
+                  class="m-btn-action" 
+                  [ngClass]="action.color"
+                  (click)="onAction(action.name, row, $event)">
+            <i class="bi" [ngClass]="'bi-' + action.icon"></i>
+          </button>
+        </ng-container>
       </div>
     </div>
   </div>

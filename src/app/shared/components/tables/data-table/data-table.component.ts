@@ -14,6 +14,7 @@ export interface TableAction {
   icon: string;
   color: string;
   tooltip: string;
+  hidden?: (row: any) => boolean;
 }
 
 @Component({

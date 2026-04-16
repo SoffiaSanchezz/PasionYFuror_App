@@ -72,6 +72,8 @@ export class StudentsImplementationRepository implements StudentsRepository {
       guardianRelationship: model.guardian_relationship,
       guardianEmail: model.guardian_email,
       faceDescriptor: model.face_descriptor,
+      allowedAllClasses: model.allowed_all_classes,
+      allowedScheduleIds: model.allowed_schedule_ids,
       status: model.status,
       createdAt: model.created_at,
     };

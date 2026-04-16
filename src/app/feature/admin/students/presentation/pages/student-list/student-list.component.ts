@@ -15,6 +15,8 @@ import { DataTableComponent, TableColumn, TableAction } from 'src/app/shared/com
 import { StudentEntity } from 'src/app/feature/admin/students/domain/entities/student.entity';
 import { DeleteStudentUseCase, GetStudentsUseCase } from 'src/app/feature/admin/students/domain/usecases/students.usecases';
 import { StudentsService } from 'src/app/shared/services/students/students.service';
+import { SchedulesService } from 'src/app/shared/services/schedules/schedules.service';
+import { ScheduleEntity } from 'src/app/feature/admin/schedules/domain/entities/schedule.entity';
 
 @Component({
   selector: 'app-student-list',
@@ -34,9 +36,15 @@ export class StudentListComponent implements OnInit {
   searchTerm: string = '';
   currentTab: string = 'active';
   isLoading: boolean = true;
-  selectedStudent: StudentEntity | null = null;
+  selectedStudent: any | null = null;
   selectedGuardianInfo: any = null;
   isGuardianModalOpen = false;
+
+  // Class assignment modal
+  isClassesModalOpen = false;
+  availableSchedules: ScheduleEntity[] = [];
+  selectedScheduleIds: string[] = [];
+  allowedAllClasses: boolean = false;
 
   // Table Configuration
   studentColumns: TableColumn[] = [
@@ -50,8 +58,14 @@ export class StudentListComponent implements OnInit {
 
   activeActions: TableAction[] = [
     { name: 'edit', icon: 'pencil-fill', color: 'primary', tooltip: 'Editar Estudiante' },
-    { name: 'guardian', icon: 'shield-lock-fill', color: 'success', tooltip: 'Ver Acudiente / Seguridad' },
-    { name: 'toggle', icon: 'eye-slash-fill', color: 'warning', tooltip: 'Desactivar Estudiante' },
+    { 
+      name: 'guardian', 
+      icon: 'shield-lock-fill', 
+      color: 'success', 
+      tooltip: 'Ver Acudiente / Seguridad',
+      hidden: (row) => !row.isMinor 
+    },
+    { name: 'classes', icon: 'mortarboard-fill', color: 'warning', tooltip: 'Asignar Clases' },
     { name: 'delete', icon: 'trash3-fill', color: 'danger', tooltip: 'Eliminar Permanente' }
   ];
 
@@ -64,6 +78,7 @@ export class StudentListComponent implements OnInit {
     private readonly getStudentsUseCase: GetStudentsUseCase,
     private readonly deleteStudentUseCase: DeleteStudentUseCase,
     private readonly studentsService: StudentsService,
+    private readonly schedulesService: SchedulesService,
     private readonly router: Router,
     private readonly navCtrl: NavController,
     private readonly cdr: ChangeDetectorRef
@@ -71,6 +86,7 @@ export class StudentListComponent implements OnInit {
 
   ngOnInit(): void {
     // ngOnInit solo se dispara una vez al crear el componente.
+    this.loadSchedules();
   }
 
   // Hook de Ionic: Se dispara cada vez que la página entra en foco
@@ -102,6 +118,15 @@ export class StudentListComponent implements OnInit {
 
   onSidebarToggle(collapsed: boolean): void {
     this.sidebarCollapsed = collapsed;
+  }
+
+  loadSchedules(): void {
+    this.schedulesService.getSchedules().subscribe({
+      next: (schedules) => {
+        this.availableSchedules = schedules;
+      },
+      error: (err) => console.error('Error al cargar horarios:', err)
+    });
   }
 
   loadStudents(): void {
@@ -155,7 +180,7 @@ export class StudentListComponent implements OnInit {
     this.selectedStudent = this.selectedStudent?.id === student.id ? null : student;
   }
 
-  onTableAction(event: { action: string, row: StudentEntity }): void {
+  onTableAction(event: { action: string, row: any }): void {
     const { action, row } = event;
     
     switch (action) {
@@ -164,6 +189,9 @@ export class StudentListComponent implements OnInit {
         break;
       case 'guardian':
         this.showGuardianInfo(row.id);
+        break;
+      case 'classes':
+        this.openClassesModal(row);
         break;
       case 'toggle':
         this.toggleStudentStatus(row);
@@ -268,5 +296,69 @@ export class StudentListComponent implements OnInit {
     this.selectedStudent = null;
     this.selectedGuardianInfo = null;
     this.cdr.detectChanges();
+  }
+
+  openClassesModal(student: any): void {
+    this.selectedStudent = student;
+    this.allowedAllClasses = student.allowedAllClasses || false;
+    this.selectedScheduleIds = student.allowedScheduleIds || [];
+    this.isClassesModalOpen = true;
+    this.cdr.detectChanges();
+  }
+
+  closeClassesModal(): void {
+    this.isClassesModalOpen = false;
+    this.selectedStudent = null;
+    this.cdr.detectChanges();
+  }
+
+  saveClassesAssignment(): void {
+    if (!this.selectedStudent) return;
+
+    this.isLoading = true;
+    this.cdr.detectChanges();
+
+    const data = {
+      allowed_all_classes: this.allowedAllClasses,
+      schedule_ids: this.selectedScheduleIds
+    };
+
+    this.studentsService.updateStudentSchedules(this.selectedStudent.id, data).subscribe({
+      next: () => {
+        Swal.fire({
+          title: '¡Éxito!',
+          text: 'Clases asignadas correctamente.',
+          icon: 'success',
+          timer: 1500,
+          showConfirmButton: false,
+          background: '#1a1a1a',
+          color: '#ffffff'
+        });
+        this.closeClassesModal();
+        this.loadStudents();
+      },
+      error: (err) => {
+        this.isLoading = false;
+        this.cdr.detectChanges();
+        Swal.fire('Error', 'No se pudo guardar la asignación.', 'error');
+        console.error('Error al guardar clases:', err);
+      }
+    });
+  }
+
+  toggleScheduleSelection(scheduleId: string): void {
+    const index = this.selectedScheduleIds.indexOf(scheduleId);
+    if (index > -1) {
+      this.selectedScheduleIds.splice(index, 1);
+    } else {
+      this.selectedScheduleIds.push(scheduleId);
+    }
+  }
+
+  onToggleAllClasses(event: any): void {
+    this.allowedAllClasses = event.detail.checked;
+    if (this.allowedAllClasses) {
+      this.selectedScheduleIds = [];
+    }
   }
 }

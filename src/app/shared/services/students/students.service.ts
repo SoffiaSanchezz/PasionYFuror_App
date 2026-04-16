@@ -21,6 +21,8 @@ export interface Student {
   guardian_email?: string | null;
   face_descriptor?: string | null;
   status: 'activo' | 'inactivo';
+  allowed_all_classes?: boolean;
+  allowed_schedule_ids?: string[];
   created_at: string;
   updated_at: string;
 }
@@ -71,6 +73,10 @@ export class StudentsService {
 
   getRegulation(): Observable<Blob> {
     return this.api.getBlob(`${this.endpoint}/regulation`);
+  }
+
+  updateStudentSchedules(id: string, data: { allowed_all_classes: boolean, schedule_ids: string[] }): Observable<Student> {
+    return this.api.put<Student>(`${this.endpoint}/${id}/schedules`, data);
   }
 
   checkDocumentExists(documentId: string): Observable<{exists: boolean}> {

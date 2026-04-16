@@ -102,7 +102,7 @@
     <ng-template>
       <ion-header>
         <ion-toolbar color="danger">
-          <ion-title>INFO. ACUDIENTE</ion-title>
+          <ion-title class="p-3">INFO. ACUDIENTE</ion-title>
           <ion-buttons slot="end">
             <ion-button (click)="closeGuardianModal()">
               <i class="bi bi-x-lg"></i>
@@ -112,49 +112,140 @@
       </ion-header>
 
       <ion-content class="ion-padding" style="--background: #1a1a1a; --color: white;" scrollEvents="true">
-        <div class="modal-body-custom">
-          <div class="student-ref-custom mb-4 p-3 rounded" style="background: rgba(255,255,255,0.05);">
-            <label class="d-block small text-danger fw-bold">ESTUDIANTE</label>
-            <p class="h5 m-0">{{ selectedStudent?.fullName || 'N/A' }}</p>
+        <div class="guardian-info-container">
+          
+          <!-- Encabezado Estudiante (Acento Rojo) -->
+          <div class="student-header-card">
+            <div class="header-icon"><i class="bi bi-person-bounding-box"></i></div>
+            <div class="header-text">
+              <label>ESTUDIANTE ASOCIADO</label>
+              <h3>{{ selectedStudent?.fullName || 'N/A' }}</h3>
+            </div>
           </div>
 
           <!-- Si es menor y hay info -->
-          <div class="guardian-details-custom d-grid gap-3" *ngIf="selectedStudent?.isMinor && selectedGuardianInfo">
-            <div class="info-item d-flex align-items-center gap-3">
-              <i class="bi bi-person-vcard fs-4 text-muted"></i>
-              <div><label class="small text-muted d-block text-uppercase">Nombre</label><p class="m-0 fw-bold">{{ selectedGuardianInfo.fullName }}</p></div>
+          <div class="guardian-details-grid" *ngIf="selectedStudent?.isMinor && selectedGuardianInfo">
+            
+            <!-- Card Nombre -->
+            <div class="info-data-card">
+              <div class="card-icon"><i class="bi bi-person-vcard-fill"></i></div>
+              <div class="card-content">
+                <label>Nombre del Acudiente</label>
+                <p>{{ selectedGuardianInfo.fullName }}</p>
+              </div>
             </div>
-            <div class="info-item d-flex align-items-center gap-3">
-              <i class="bi bi-telephone fs-4 text-muted"></i>
-              <div><label class="small text-muted d-block text-uppercase">Teléfono</label><p class="m-0 fw-bold">{{ selectedGuardianInfo.phone }}</p></div>
+
+            <!-- Card Teléfono -->
+            <div class="info-data-card">
+              <div class="card-icon"><i class="bi bi-telephone-fill"></i></div>
+              <div class="card-content">
+                <label>Teléfono de Contacto</label>
+                <p>{{ selectedGuardianInfo.phone }}</p>
+              </div>
             </div>
-            <div class="info-item d-flex align-items-center gap-3">
-              <i class="bi bi-envelope fs-4 text-muted"></i>
-              <div><label class="small text-muted d-block text-uppercase">Email</label><p class="m-0 fw-bold">{{ selectedGuardianInfo.email || 'N/A' }}</p></div>
+
+            <!-- Card Email -->
+            <div class="info-data-card">
+              <div class="card-icon"><i class="bi bi-envelope-at-fill"></i></div>
+              <div class="card-content">
+                <label>Correo Electrónico</label>
+                <p>{{ selectedGuardianInfo.email || 'No registrado' }}</p>
+              </div>
             </div>
-            <div class="info-item d-flex align-items-center gap-3">
-              <i class="bi bi-people fs-4 text-muted"></i>
-              <div><label class="small text-muted d-block text-uppercase">Vínculo</label><p class="m-0 fw-bold">{{ selectedGuardianInfo.relationship }}</p></div>
+
+            <!-- Card Vínculo -->
+            <div class="info-data-card">
+              <div class="card-icon"><i class="bi bi-people-fill"></i></div>
+              <div class="card-content">
+                <label>Vínculo / Parentesco</label>
+                <p>{{ selectedGuardianInfo.relationship }}</p>
+              </div>
             </div>
           </div>
 
           <!-- Si es mayor de edad -->
           <div class="no-guardian-content py-4 text-center" *ngIf="!selectedStudent?.isMinor">
-            <div class="alert alert-info bg-opacity-10 border-info border-opacity-25">
-              <i class="bi bi-info-circle-fill fs-1 d-block mb-3 text-info"></i>
-              <p class="m-0">Este estudiante es <strong>mayor de edad</strong>, no tiene acudiente registrado.</p>
+            <div class="alert-custom-info">
+              <i class="bi bi-info-circle-fill"></i>
+              <p>Este estudiante es <strong>mayor de edad</strong>.<br>No requiere acudiente registrado.</p>
             </div>
           </div>
 
           <!-- Si es menor pero no hay info -->
           <div class="no-guardian-content py-4 text-center" *ngIf="selectedStudent?.isMinor && !selectedGuardianInfo && !isLoading">
-            <div class="alert alert-warning bg-opacity-10 border-warning border-opacity-25">
-              <i class="bi bi-exclamation-triangle-fill fs-1 d-block mb-3 text-warning"></i>
-              <p class="m-0">No se pudo cargar la información del acudiente.</p>
+            <div class="alert-custom-warning">
+              <i class="bi bi-exclamation-triangle-fill"></i>
+              <p>No se encontró información detallada del acudiente para este menor.</p>
             </div>
           </div>
         </div>
       </ion-content>
+    </ng-template>
+  </ion-modal>
+
+  <!-- Modal Ionic para Asignación de Clases -->
+  <ion-modal [isOpen]="isClassesModalOpen" (didDismiss)="closeClassesModal()" class="classes-modal">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar color="warning">
+          <ion-title class="p-3">ASIGNAR PERMISOS DE CLASES</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="closeClassesModal()">
+              <i class="bi bi-x-lg"></i>
+            </ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content class="ion-padding" style="--background: #1a1a1a; --color: white;">
+        <div class="modal-body-custom">
+          <div class="student-ref-custom mb-4 p-3 rounded" style="background: rgba(255,255,255,0.05);">
+            <label class="d-block small text-warning fw-bold">ESTUDIANTE</label>
+            <p class="h5 m-0">{{ selectedStudent?.fullName || 'N/A' }}</p>
+          </div>
+
+          <ion-list style="background: transparent;">
+            <!-- Opción: Todas las clases -->
+            <ion-item lines="full" style="--background: transparent; --color: white;">
+              <ion-label>
+                <h2 style="color: white; font-weight: bold;">En cualquier clase</h2>
+                <p style="color: #aaa;">El estudiante podrá asistir a cualquier clase programada</p>
+              </ion-label>
+              <ion-checkbox slot="end" color="warning" [checked]="allowedAllClasses" (ionChange)="onToggleAllClasses($event)"></ion-checkbox>
+            </ion-item>
+
+            <div class="mt-4 mb-2 px-3">
+              <label class="small text-muted text-uppercase fw-bold">O seleccionar clases específicas:</label>
+            </div>
+
+            <!-- Listado de clases específicas -->
+            <div class="schedules-list" [class.disabled-list]="allowedAllClasses">
+              <ion-item *ngFor="let schedule of availableSchedules" lines="none" class="schedule-item mb-2 rounded" 
+                        style="--background: rgba(255,255,255,0.03); --color: white;">
+                <ion-label>
+                  <h3 style="color: white;">{{ schedule.name }}</h3>
+                  <p style="color: #888;">{{ schedule.day }} | {{ schedule.startTime }} - {{ schedule.endTime }}</p>
+                  <p style="color: #666; font-size: 0.8rem;">Prof: {{ schedule.teacherName }}</p>
+                </ion-label>
+                <ion-checkbox slot="end" color="warning" 
+                              [disabled]="allowedAllClasses"
+                              [checked]="selectedScheduleIds.includes(schedule.id)"
+                              (ionChange)="toggleScheduleSelection(schedule.id)">
+                </ion-checkbox>
+              </ion-item>
+            </div>
+          </ion-list>
+        </div>
+      </ion-content>
+
+      <ion-footer style="background: #1a1a1a;">
+        <ion-toolbar style="--background: #1a1a1a; padding: 10px;">
+          <ion-button expand="block" color="warning" (click)="saveClassesAssignment()" [disabled]="isLoading">
+            <ion-spinner name="crescent" *ngIf="isLoading"></ion-spinner>
+            <span *ngIf="!isLoading">GUARDAR ASIGNACIÓN</span>
+          </ion-button>
+        </ion-toolbar>
+      </ion-footer>
     </ng-template>
   </ion-modal>
 </div>
