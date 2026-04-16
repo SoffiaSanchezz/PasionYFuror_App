@@ -5,6 +5,12 @@ import { catchError } from 'rxjs/operators';
 import { SessionProviderService } from '@shared/services/session/session-provider.service';
 import { Router } from '@angular/router';
 
+// Rutas públicas que NO deben redirigir al login ante un 401
+const PUBLIC_API_ROUTES = [
+  '/face/identify-schedule',
+  '/attendance',
+];
+
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
   constructor(
@@ -26,8 +32,10 @@ export class AuthInterceptor implements HttpInterceptor {
 
     return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
-        // 2. Solo redirigir si es 401 y NO es el propio login fallando
-        if (error.status === 401 && !request.url.includes('/auth/login')) {
+        const isPublicRoute = PUBLIC_API_ROUTES.some(route => request.url.includes(route));
+
+        // 2. Redirigir al login solo si es 401, no es login y no es ruta pública
+        if (error.status === 401 && !request.url.includes('/auth/login') && !isPublicRoute) {
           this.sessionService.clearSession();
           this.router.navigate(['/login'], { replaceUrl: true });
         }

@@ -5,7 +5,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
-import { HttpClient } from '@angular/common/http';
+import { ApiService } from '@shared/services/api/api.service';
 import { environment } from '@environments/environment';
 
 type AttendanceState =
@@ -72,7 +72,7 @@ export class AttendanceComponent implements AfterViewInit, OnDestroy {
 
   constructor(
     private readonly router: Router,
-    private readonly http: HttpClient,
+    private readonly api: ApiService,
     private readonly cdr: ChangeDetectorRef
   ) {}
 
@@ -136,8 +136,8 @@ export class AttendanceComponent implements AfterViewInit, OnDestroy {
 
     const imageBase64 = this.captureFrame();
 
-    this.http.post<IdentifyScheduleResponse>(
-      `${environment.apiUrl}/face/identify-schedule`,
+    this.api.post<IdentifyScheduleResponse>(
+      `face/identify-schedule`,
       { image: imageBase64 }
     ).subscribe({
       next: (res) => {
@@ -168,7 +168,7 @@ export class AttendanceComponent implements AfterViewInit, OnDestroy {
         }
       },
       error: (err) => {
-        const msg = err?.error?.error ?? 'Rostro no reconocido en el sistema.';
+        const msg = err?.message ?? err?.error?.error ?? 'Rostro no reconocido en el sistema.';
         this.errorMessage.set(msg);
         this.state.set('error');
       }
@@ -183,8 +183,8 @@ export class AttendanceComponent implements AfterViewInit, OnDestroy {
 
   private recordAttendance(student: any, confidence: number, schedule: Schedule): void {
     const now = new Date().toISOString();
-    this.http.post(
-      `${environment.apiUrl}/attendance`,
+    this.api.post(
+      `attendance`,
       {
         studentId: student.id,
         classScheduleId: schedule.id,
@@ -199,7 +199,8 @@ export class AttendanceComponent implements AfterViewInit, OnDestroy {
         this.stopCamera();
       },
       error: (err) => {
-        const msg = err?.error?.error ?? '';
+        const msg = err?.message ?? err?.error?.error ?? '';
+        console.error('[Attendance] recordAttendance error:', JSON.stringify(err), 'msg:', msg);
         if (msg.includes('Ya existe')) {
           this.matchedStudent.set({ id: student.id, full_name: student.full_name, confidence });
           this.registeredSchedule.set(schedule);
